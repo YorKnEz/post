@@ -1,0 +1,122 @@
+@import 'theme.scss';
+@import 'typography.scss';
+
+body {
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    background-color: var(--text-white);
+}
+
+.nav {
+    background-color: var(--gradient-1);
+    height: 48px;
+    width: 100vw;
+    position: sticky;
+    top: 0px;
+}
+
+.poem {
+    &__header {
+        height: 100%;
+        display: flex;
+        background: linear-gradient(var(--gradient-1), var(--gradient-2));
+        color: var(--text-white);
+        padding: 12px 80px;
+    }
+
+    &__avatar-container {
+        max-height: 300px;
+    }
+
+    &__avatar {
+        height: 340px;
+        width: 340px;
+    }
+
+    &__header-container {
+        padding: 0 12px;
+    }
+
+    &__title {
+        margin: 0;
+        margin-bottom: 8px;
+    }
+
+    &__author {
+        color: var(--text-white);
+        margin: 0;
+        font-weight: 500;
+
+        &:visited {
+            color: var(--text-white);
+        }
+    }
+
+    &__short-description {
+    }
+
+    &__info {
+        display: flex;
+    }
+
+    &__item {
+        margin: 0 10px;
+
+        &:first-child {
+            margin-left: 0;
+        }
+
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+
+    &__container {
+        color: var(--text-black);
+        max-width: 1000px;
+        margin: 2rem auto;
+        padding: 0 8px;
+    }
+
+    &__content {
+        font-size: 18px;
+        line-height: 30px;
+    }
+
+    &__annotate {
+        position: absolute;
+        border: 1px solid var(--text-black);
+        background-color: var(--text-white);
+        padding: 4px 16px;
+        font-size: 16px;
+
+        &:hover {
+            color: var(--text-white);
+            background-color: var(--text-black);
+        }
+    }
+
+    &__annotated {
+        background-color: lightgray;
+    }
+}
+
+.footer {
+    background-color: var(--text-black);
+    height: 200px;
+    width: 100vw;
+}
+
+@media (max-width: 1024px) {
+    .poem__avatar {
+        height: 200px;
+        width: 200px;
+    }
+}
+
+@media (max-width: 767px) {
+    .poem__header {
+        flex-direction: column;
+    }
+}
