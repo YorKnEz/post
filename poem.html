@@ -17,31 +17,56 @@
         </nav>
         <main class="poem">
             <header class="poem__header">
-                <div class="poem__avatar-container">
-                    <img class="poem__avatar" src="img/avatar.png" />
-                </div>
-                <div class="poem__header-container">
-                    <h1 class="poem__title">Rap God</h1>
-                    <a class="poem__author" href="profile.html">Eminem</a>
-                    <p class="poem__short-description">
-                        “Rap God” is Eminem’s braggadocious ode to himself and
-                        his career. Over its six-minute run-time, he references
-                        comic books, throws back to his old songs, and raps
-                        crazily…
-                    </p>
-                    <div class="poem__info">
-                        <div class="poem__item">
-                            <i class="fa-regular fa-calendar"></i>
-                            <span>Oct. 14, 2013</span>
-                        </div>
-                        <div class="poem__item">
-                            <i class="fa-regular fa-eye"></i>
-                            <span>19M Views</span>
+                <div class="poem__header-wrapper">
+                    <div class="poem__avatar-container">
+                        <img class="poem__avatar" src="img/avatar.png" />
+                    </div>
+                    <div class="poem__header-container">
+                        <h1 class="poem__title">Rap God</h1>
+                        <a class="poem__author" href="profile.html">Eminem</a>
+                        <p class="poem__short-description">
+                            “Rap God” is Eminem’s braggadocious ode to himself
+                            and his career. Over its six-minute run-time, he
+                            references comic books, throws back to his old
+                            songs, and raps crazily…
+                        </p>
+                        <div class="poem__info">
+                            <div class="poem__item">
+                                <i class="fa-solid fa-calendar"></i>
+                                <span>Oct. 14, 2013</span>
+                            </div>
+                            <div class="poem__item">
+                                <i class="fa-solid fa-eye"></i>
+                                <span>19M Views</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </header>
             <section class="poem__container">
+                <header class="poem__content-header">
+                    <div class="poem__item">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <span>Rap God lyrics</span>
+                    </div>
+                    <div class="poem__item">
+                        <i class="fa-solid fa-language"></i>
+                        <button id="languages-dropdown" class="dropdown">
+                            <span class="dropdown__text">Languages</span>
+                            <div
+                                class="dropdown__container dropdown__container--hidden"
+                            >
+                                <span class="dropdown__item">Romanian</span>
+                                <span class="dropdown__item">English</span>
+                                <span class="dropdown__item">Zulu</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="poem__item">
+                        <i class="fa-solid fa-user-group"></i>
+                        <span>1940 contributors</span>
+                    </div>
+                </header>
                 <div id="poem-content" class="poem__content">
                     [Intro]<br />
                     "Look, I was gonna go easy on you not to hurt your
@@ -272,4 +297,5 @@
 
     <!-- put here so that the poem-content div is loaded -->
     <script src="js/poem.js"></script>
+    <script src="js/dropdown.js"></script>
 </html>
