@@ -1,7 +1,8 @@
-const root = document.querySelector('#poem-content')
+const root = document.querySelector('#lyrics')
 let range
 
-function annotate() {
+// realize the annotation on the selected text range
+const annotate = () => {
     // create the annotated element
     let region = document.createElement('a')
     region.classList.add('poem__annotated')
@@ -67,7 +68,8 @@ function annotate() {
     root.removeChild(range.endContainer)
 }
 
-function createAnnotateButton() {
+// creates the button that supports annotation
+const createAnnotateButton = () => {
     let button = document.createElement('button')
     button.innerHTML = 'Annotate'
     button.classList.add('poem__annotate')
@@ -76,27 +78,26 @@ function createAnnotateButton() {
     return button
 }
 
-let button = createAnnotateButton()
+const button = createAnnotateButton()
 
-function removeButton() {
+// hide the button from the screen
+const removeButton = () => {
     if (document.body.contains(button)) {
         document.body.removeChild(button)
     }
 }
 
-function annotated(node) {
+// checks whether a node is annotated or is a child of an annotated element
+const annotated = (node) => {
     return (
         node.parentNode.classList.contains('poem__annotated') ||
         node?.classList?.contains('poem__annotated')
     )
 }
 
-document.onmouseup = document.onselectionchange = function (ev) {
-    if (
-        ev.type == 'mouseup' &&
-        (!(ev.target != root || ev.target.parentNode != root) ||
-            !window.getSelection)
-    ) {
+// updates the current selection
+const handleSelection = (ev) => {
+    if (ev.type == 'mouseup' && !window.getSelection) {
         removeButton()
         return
     }
@@ -108,12 +109,9 @@ document.onmouseup = document.onselectionchange = function (ev) {
         return
     }
 
-    // console.log(selection)
-
     range = selection.getRangeAt(0)
     let allText = true
 
-    // console.log('============start==============')
     do {
         // make sure the selection is made within the root div
         if (
@@ -128,8 +126,6 @@ document.onmouseup = document.onselectionchange = function (ev) {
             break
         }
 
-        // console.log(range)
-
         // make sure end is not annotated, because otherwise weird checks have
         // to be done in the while below
         if (annotated(range.startContainer) || annotated(range.endContainer)) {
@@ -140,8 +136,6 @@ document.onmouseup = document.onselectionchange = function (ev) {
         let current = range.startContainer
 
         while (current != range.endContainer) {
-            // console.log(current)
-
             if (annotated(current)) {
                 allText = false
                 break
@@ -164,4 +158,15 @@ document.onmouseup = document.onselectionchange = function (ev) {
         bounds.width / 2 -
         button.getBoundingClientRect().width / 2 +
         'px'
+}
+
+document.onmouseup = document.onselectionchange = handleSelection
+
+document.onclick = (ev) => {
+    handleDropdownDisappear(ev)
+}
+
+window.onresize = (ev) => {
+    console.log('salut')
+    alignDropdown()
 }

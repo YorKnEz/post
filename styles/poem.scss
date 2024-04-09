@@ -15,6 +15,7 @@ body {
     width: 100vw;
     position: sticky;
     top: 0px;
+    z-index: 999;
 }
 
 .poem {
@@ -29,7 +30,7 @@ body {
     &__header-wrapper {
         display: flex;
         padding: 12px 1rem;
-        max-width: 1000px;
+        max-width: 1200px;
     }
 
     &__avatar-container {
@@ -80,10 +81,15 @@ body {
     }
 
     &__container {
-        max-width: 800px;
+        max-width: 1000px;
+        display: grid;
+        grid-template-columns: 60% 40%;
         color: var(--text-black);
         margin: 3rem auto;
         padding: 0 1rem;
+    }
+
+    &__content-wrapper {
     }
 
     &__content-header {
@@ -93,17 +99,17 @@ body {
     }
 
     &__content {
-        max-width: 550px;
-        font-size: 18px;
+        font-size: 1.2rem;
         line-height: 30px;
     }
 
     &__annotate {
         position: absolute;
         border: 1px solid var(--text-black);
+        color: var(--text-black);
         background-color: var(--text-white);
         padding: 4px 16px;
-        font-size: 16px;
+        font-size: 1rem;
 
         &:hover {
             color: var(--text-white);
@@ -112,6 +118,7 @@ body {
     }
 
     &__annotated {
+        cursor: pointer;
         background-color: var(--highlight);
     }
 }
@@ -123,10 +130,9 @@ body {
 }
 
 .dropdown {
-    // display: inline-block;
+    color: var(--text-black);
     background-color: transparent;
     border: none;
-    cursor: pointer;
     padding: 0;
     font-family: 'Montserrat', sans-serif;
     font-size: 0.8rem;
@@ -137,6 +143,7 @@ body {
     }
 
     &__text {
+        cursor: pointer;
     }
 
     &__container {
@@ -146,7 +153,7 @@ body {
         align-items: flex-start;
         border: 1px solid var(--text-black);
         background-color: var(--text-white);
-        font-size: 16px;
+        font-size: 1rem;
 
         &--hidden {
             display: none;
@@ -154,6 +161,7 @@ body {
     }
 
     &__item {
+        cursor: pointer;
         width: calc(100% - 32px);
         text-align: start;
         padding: 4px 16px;
@@ -162,6 +170,55 @@ body {
             background-color: var(--text-black);
             color: var(--text-white);
         }
+    }
+}
+
+.annotation {
+    position: relative;
+    background-color: var(--highlight);
+    padding: 20px 16px;
+    height: fit-content;
+
+    &--hidden {
+        display: none;
+    }
+
+    &__header {
+        display: grid;
+        grid-template-columns: 50% 50%;
+        margin-bottom: 16px;
+    }
+
+    &__button {
+        border: none;
+        background-color: transparent;
+        cursor: pointer;
+        grid-column: 1 / span 3;
+        margin-left: auto;
+        font-size: 1rem;
+    }
+
+    &__separator {
+        grid-column: 1 / span 3;
+        height: 1px;
+        margin: 16px 0;
+        background-color: var(--text-black);
+    }
+
+    &__title {
+    }
+
+    &__contributors {
+        margin-left: auto;
+    }
+
+    &__content {
+    }
+
+    &__footer {
+        display: flex;
+        justify-content: space-between;
+        margin: 16px 0;
     }
 }
 
