@@ -1,0 +1,51 @@
+@import 'theme.scss';
+
+.annotation {
+    position: relative;
+    background-color: var(--highlight);
+    padding: 20px 16px;
+    height: fit-content;
+
+    &--hidden {
+        display: none;
+    }
+
+    &__header {
+        display: grid;
+        grid-template-columns: 50% 50%;
+        margin-bottom: 16px;
+    }
+
+    &__button {
+        border: none;
+        background-color: transparent;
+        color: var(--text-black);
+        cursor: pointer;
+        grid-column: 1 / span 3;
+        margin-left: auto;
+        font-size: 1rem;
+    }
+
+    &__separator {
+        grid-column: 1 / span 3;
+        height: 1px;
+        margin: 16px 0;
+        background-color: var(--text-black);
+    }
+
+    &__title {
+    }
+
+    &__contributors {
+        margin-left: auto;
+    }
+
+    &__content {
+    }
+
+    &__footer {
+        display: flex;
+        justify-content: space-between;
+        margin: 16px 0;
+    }
+}
