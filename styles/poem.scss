@@ -129,50 +129,6 @@ body {
     width: 100vw;
 }
 
-.dropdown {
-    color: var(--text-black);
-    background-color: transparent;
-    border: none;
-    padding: 0;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 0.8rem;
-    font-weight: 500;
-
-    &:hover {
-        background-color: transparent;
-    }
-
-    &__text {
-        cursor: pointer;
-    }
-
-    &__container {
-        position: absolute;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        border: 1px solid var(--text-black);
-        background-color: var(--text-white);
-        font-size: 1rem;
-
-        &--hidden {
-            display: none;
-        }
-    }
-
-    &__item {
-        cursor: pointer;
-        width: calc(100% - 32px);
-        text-align: start;
-        padding: 4px 16px;
-
-        &:hover {
-            background-color: var(--text-black);
-            color: var(--text-white);
-        }
-    }
-}
-
 @media (max-width: 1024px) {
     .poem {
         &__avatar {
