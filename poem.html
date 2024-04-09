@@ -316,7 +316,53 @@
                         <br />
                     </div>
                 </div>
+                <div id="annotation" class="annotation annotation--hidden">
+                    <header class="annotation__header">
+                        <button
+                            onclick="handleAnnotationBoxClose()"
+                            class="annotation__button"
+                        >
+                            <i class="fa-solid fa-close"></i>
                         </button>
+                        <div class="annotation__separator"></div>
+                        <span class="annotation__title">Annotation</span>
+                        <span class="annotation__contributors">
+                            1 contributor
+                        </span>
+                    </header>
+                    <section class="annotation__content">
+                        When this song was released, he had sold 49 million
+                        albums and 42 million tracks in the United States.<br />
+                        His worldwide albums sales stand at more than 115
+                        million, singles 120 million, and the estimated sale of
+                        over 220 million records worldwide.
+                    </section>
+                    <footer class="annotation__footer">
+                        <div>
+                            <button
+                                onclick="handleLike()"
+                                class="annotation__button"
+                            >
+                                <i class="fa-solid fa-thumbs-up"></i>
+                            </button>
+                            <span>+162</span>
+                            <button
+                                onclick="handleDislike()"
+                                class="annotation__button"
+                            >
+                                <i class="fa-solid fa-thumbs-down"></i>
+                            </button>
+                        </div>
+                        <div>
+                            <button
+                                onclick="handleShare()"
+                                class="annotation__button"
+                            >
+                                <i class="fa-solid fa-share"></i>
+                                <span>Share</span>
+                            </button>
+                        </div>
+                    </footer>
                 </div>
             </section>
         </main>
@@ -326,4 +372,5 @@
     <!-- put here so that the lyrics div is loaded -->
     <script src="js/poem.js"></script>
     <script src="js/dropdown.js"></script>
+    <script src="js/annotationBox.js"></script>
 </html>

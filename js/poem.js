@@ -169,4 +169,5 @@ document.onclick = (ev) => {
 window.onresize = (ev) => {
     console.log('salut')
     alignDropdown()
+    alignAnnotationBox()
 }
