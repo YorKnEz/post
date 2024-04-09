@@ -61,9 +61,6 @@ body {
         }
     }
 
-    &__short-description {
-    }
-
     &__info {
         display: flex;
     }
@@ -87,9 +84,6 @@ body {
         color: var(--text-black);
         margin: 3rem auto;
         padding: 0 1rem;
-    }
-
-    &__content-wrapper {
     }
 
     &__content-header {
