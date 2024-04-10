@@ -7,12 +7,16 @@ body {
     font-weight: 500;
     font-size: 1rem;
     background-color: var(--text-white);
+    color: var(--text-black);
+}
+
+i {
+    color: var(--text-black);
 }
 
 .nav {
     background-color: var(--gradient-1);
     height: 48px;
-    width: 100vw;
     position: sticky;
     top: 0px;
     z-index: 999;
@@ -20,30 +24,24 @@ body {
 
 .poem {
     &__header {
-        height: 100%;
         background: linear-gradient(var(--gradient-1), var(--gradient-2));
         color: var(--text-white);
         display: flex;
         justify-content: center;
-    }
 
-    &__header-wrapper {
-        display: flex;
-        padding: 12px 1rem;
-        max-width: 1200px;
+        i {
+            color: var(--text--white);
+        }
     }
 
     &__avatar-container {
+        justify-self: end;
         max-height: 300px;
     }
 
     &__avatar {
-        height: 340px;
         width: 340px;
-    }
-
-    &__header-container {
-        padding: 0 12px;
+        aspect-ratio: 1;
     }
 
     &__title {
@@ -77,13 +75,10 @@ body {
         }
     }
 
-    &__container {
-        max-width: 1000px;
-        display: grid;
-        grid-template-columns: 60% 40%;
+    &__content {
         color: var(--text-black);
-        margin: 3rem auto;
         padding: 0 1rem;
+        margin: 2rem 0;
     }
 
     &__content-header {
@@ -92,9 +87,15 @@ body {
         font-size: 0.8rem;
     }
 
-    &__content {
+    &__lyrics {
         font-size: 1.2rem;
         line-height: 30px;
+    }
+
+    &__lyrics-header {
+        display: flex;
+        margin: 2rem 0;
+        font-size: 0.8rem;
     }
 
     &__annotate {
@@ -114,30 +115,46 @@ body {
     &__annotated {
         cursor: pointer;
         background-color: var(--highlight);
+
+        &--active {
+            background-color: var(--active-highlight);
+        }
     }
 }
 
 .footer {
     background-color: var(--text-black);
     height: 200px;
-    width: 100vw;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1239px) {
     .poem {
         &__avatar {
-            height: 200px;
-            width: 200px;
+            width: 300px;
         }
 
-        &__container {
-            margin: 0 auto;
+        &__avatar-container {
+            max-height: 260px;
         }
     }
 }
 
-@media (max-width: 767px) {
-    .poem__header-wrapper {
-        flex-direction: column;
+@media (max-width: 904px) {
+    .poem {
+        &__avatar {
+            width: 200px;
+        }
+
+        &__container {
+            margin: 0;
+        }
+    }
+}
+
+@media (max-width: 599px) {
+    .poem {
+        &__avatar-container {
+            justify-self: start;
+        }
     }
 }
