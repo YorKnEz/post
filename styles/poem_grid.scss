@@ -115,6 +115,10 @@ i {
     &__annotated {
         cursor: pointer;
         background-color: var(--highlight);
+
+        &--active {
+            background-color: var(--active-highlight);
+        }
     }
 }
 

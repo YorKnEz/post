@@ -1,11 +1,12 @@
 const root = document.querySelector('#lyrics')
 let range
+let region
 
 // realize the annotation on the selected text range
 const annotate = () => {
     // create the annotated element
-    let region = document.createElement('a')
-    region.classList.add('poem__annotated')
+    region = document.createElement('a')
+    region.classList.add('poem__annotated', 'poem__annotated--active')
 
     if (range.startContainer == range.endContainer) {
         let beforeRegion = document.createTextNode(

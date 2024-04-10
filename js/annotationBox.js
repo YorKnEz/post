@@ -3,6 +3,7 @@ let lastAnnotation
 
 const handleAnnotationBoxClose = (ev) => {
     annotationBox.classList.add('annotation--hidden')
+    lastAnnotation.classList.remove('poem__annotated--active')
 }
 
 const handleLike = (ev) => {
@@ -22,6 +23,7 @@ const alignAnnotationBox = () => {
     if (annotationBox.classList.contains('annotation--hidden')) {
         return
     }
+
     const bounds = annotationBox.getBoundingClientRect()
     const lyricsBounds = document.querySelector('#lyrics').getBoundingClientRect()
 
@@ -36,6 +38,7 @@ document.querySelectorAll('.poem__annotated').forEach((annotation) => {
     annotation.onclick = (ev) => {
         annotationBox.classList.remove('annotation--hidden')
         lastAnnotation = annotation
+        lastAnnotation.classList.add('poem__annotated--active')
         alignAnnotationBox()
     }
 })
