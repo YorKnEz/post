@@ -296,7 +296,7 @@
                 <header class="annotation__header">
                     <button
                         onclick="handleAnnotationBoxClose()"
-                        class="annotation__button"
+                        class="annotation__button annotation__button--left"
                     >
                         <i class="fa-solid fa-close"></i>
                     </button>
@@ -340,11 +340,38 @@
                     </div>
                 </footer>
             </aside>
+            <aside
+                id="annotate"
+                class="col-xs-4 col-sm-4 col-md-6 annotation annotation--hidden"
+            >
+                <header class="annotation__header">
+                    <div class="annotation__separator"></div>
+                    <span>Annotate</span>
+                </header>
+                <section>
+                    <textarea
+                        class="annotation__textarea"
+                        placeholder="Your annotation"
+                    ></textarea>
+                </section>
+                <footer class="annotation__footer">
+                    <button onclick="handleSave()" class="annotation__button">
+                        Save
+                    </button>
+                    <button
+                        onclick="hideAnnotateBox()"
+                        class="annotation__button"
+                    >
+                        Cancel
+                    </button>
+                </footer>
+            </aside>
         </main>
         <footer class="container footer"></footer>
     </body>
 
     <!-- put here so that the lyrics div is loaded -->
+    <script src="js/annotate.js"></script>
     <script src="js/poem.js"></script>
     <script src="js/dropdown.js"></script>
     <script src="js/annotationBox.js"></script>

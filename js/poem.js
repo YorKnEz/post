@@ -31,8 +31,6 @@ const annotate = () => {
         return
     }
 
-    // console.log('lets go')
-
     let beforeRegion = document.createTextNode(
         range.startContainer.nodeValue.substr(0, range.startOffset)
     )
@@ -43,7 +41,6 @@ const annotate = () => {
     let prev
 
     while (current != range.endContainer) {
-        // console.log(current)
         prev = current
         current = current.nextSibling
 
@@ -67,6 +64,8 @@ const annotate = () => {
 
     root.removeChild(range.startContainer)
     root.removeChild(range.endContainer)
+
+    showAnnotateBox()
 }
 
 // creates the button that supports annotation
@@ -171,4 +170,5 @@ window.onresize = (ev) => {
     console.log('salut')
     alignDropdown()
     alignAnnotationBox()
+    alignAnnotateBox()
 }

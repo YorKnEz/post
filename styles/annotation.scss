@@ -22,8 +22,11 @@
         color: var(--text-black);
         cursor: pointer;
         grid-column: 1 / span 3;
-        margin-left: auto;
         font-size: 1rem;
+
+        &--left {
+            margin-left: auto;
+        }
     }
 
     &__separator {
@@ -35,6 +38,22 @@
 
     &__contributors {
         margin-left: auto;
+    }
+
+    &__textarea {
+        width: calc(100% - 20px);
+        padding: 10px;
+
+        background-color: transparent;
+        border: 1px solid var(--text-black);
+        
+        font-family: 'Montserrat', sans-serif;
+        resize: vertical;
+        height: 200px;
+
+        &:focus-visible {
+            outline: none;
+        }
     }
 
     &__footer {
