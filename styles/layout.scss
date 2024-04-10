@@ -1,9 +1,5 @@
 @use 'sass:map';
 
-.container {
-    display: grid;
-}
-
 $layouts: (
     'xs': (
         'min-width': 0px,
@@ -11,7 +7,7 @@ $layouts: (
         'cols': 4,
         'body': calc(100vw - 32px),
         'gap': 16px,
-        'margin': 16px,
+        'padding': 16px,
     ),
     'sm': (
         'min-width': 600px,
@@ -19,7 +15,7 @@ $layouts: (
         'cols': 8,
         'body': calc(100vw - 64px),
         'gap': 16px,
-        'margin': 32px,
+        'padding': 32px,
     ),
     'md': (
         'min-width': 905px,
@@ -27,7 +23,7 @@ $layouts: (
         'cols': 12,
         'body': 840px,
         'gap': 24px,
-        'margin': calc((100vw - 840px) / 2),
+        'padding': calc((100vw - 840px) / 2),
     ),
     'lg': (
         'min-width': 1240px,
@@ -35,7 +31,7 @@ $layouts: (
         'cols': 12,
         'body': calc(100vw - 400px),
         'gap': 32px,
-        'margin': 200px,
+        'padding': 200px,
     ),
     'xl': (
         'min-width': 1440px,
@@ -43,7 +39,7 @@ $layouts: (
         'cols': 12,
         'body': 1040px,
         'gap': 32px,
-        'margin': calc((100vw - 1040px) / 2),
+        'padding': calc((100vw - 1040px) / 2),
     ),
 );
 
@@ -51,7 +47,12 @@ $layouts: (
     // @media only screen and (min-width: map.get($layout, 'min-width')) and (max-width: map.get($layout, 'max-width')) {
     @media only screen and (min-width: map.get($layout, 'min-width')) {
         .container {
-            padding: 0 map.get($layout, 'margin');
+            width: calc(100% - 2 * map.get($layout, 'padding'));
+            padding: 0 map.get($layout, 'padding');
+        }
+
+        .row {
+            display: grid;
             grid-template-columns: repeat(
                 map.get($layout, 'cols'),
                 calc(
@@ -65,9 +66,14 @@ $layouts: (
                 )
             );
             column-gap: map.get($layout, 'gap');
+            // grid-column: span map.get($layout, 'cols');
         }
 
         @for $i from 1 through map.get($layout, 'cols') {
+            .col-#{$i} {
+                grid-column-end: span $i;
+            }
+            
             .col-#{$breakpoint}-#{$i} {
                 grid-column-end: span $i;
             }
@@ -77,84 +83,10 @@ $layouts: (
             .off-#{$i} {
                 grid-column-start: $i;
             }
-            
+
             .off-#{$breakpoint}-#{$i} {
                 grid-column-start: $i;
             }
         }
-
-        .row {
-            grid-column: span map.get($layout, 'cols');
-        }
     }
 }
-
-// // xs - phone
-// @media only screen and (max-width: 599px) {
-//     .container {
-//         grid-template-columns: repeat(4, 1fr);
-//         column-gap: 16px;
-//     }
-
-//     @for $i from 1 through 4 {
-//         .col-xs-#{$i} {
-//             grid-column: span $i;
-//         }
-//     }
-// }
-
-// // sm - tablet
-// @media only screen and (min-width: 600px) and (max-width: 904px) {
-//     .container {
-//         grid-template-columns: repeat(8, 1fr);
-//         column-gap: 32px;
-//     }
-
-//     @for $i from 1 through 8 {
-//         .col-sm-#{$i} {
-//             grid-column: span $i;
-//         }
-//     }
-// }
-
-// // md - tablet
-// @media only screen and (min-width: 905px) and (max-width: 1239px) {
-//     .container {
-//         grid-template-columns: repeat(12, 840px);
-//         column-gap: auto;
-//     }
-
-//     @for $i from 1 through 12 {
-//         .col-md-#{$i} {
-//             grid-column: span $i;
-//         }
-//     }
-// }
-
-// // lg - laptop
-// @media only screen and (min-width: 1240px) and (max-width: 1439px) {
-//     .container {
-//         grid-template-columns: repeat(12, 1fr);
-//         column-gap: 200px;
-//     }
-
-//     @for $i from 1 through 12 {
-//         .col-lg-#{$i} {
-//             grid-column: span $i;
-//         }
-//     }
-// }
-
-// // xl - desktop
-// @media only screen and (min-width: 1440px) {
-//     .container {
-//         grid-template-columns: repeat(12, 1040px);
-//         column-gap: auto;
-//     }
-
-//     @for $i from 1 through 12 {
-//         .col-xl-#{$i} {
-//             grid-column: span $i;
-//         }
-//     }
-// }
