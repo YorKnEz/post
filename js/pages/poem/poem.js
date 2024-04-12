@@ -72,7 +72,7 @@ const annotate = () => {
 const createAnnotateButton = () => {
     let button = document.createElement('button')
     button.innerHTML = 'Annotate'
-    button.classList.add('poem__annotate')
+    button.classList.add('btn')
     button.onclick = annotate
 
     return button

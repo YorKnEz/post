@@ -1,5 +1,8 @@
-@import 'theme.scss';
-@import 'typography.scss';
+@import '../common.scss';
+
+@import '../components/annotation.scss';
+@import '../components/button.scss';
+@import '../components/dropdown.scss';
 
 body {
     margin: 0;
@@ -77,7 +80,6 @@ i {
 
     &__content {
         color: var(--text-black);
-        padding: 0 1rem;
         margin: 2rem 0;
     }
 
@@ -96,20 +98,6 @@ i {
         display: flex;
         margin: 2rem 0;
         font-size: 0.8rem;
-    }
-
-    &__annotate {
-        position: absolute;
-        border: 1px solid var(--text-black);
-        color: var(--text-black);
-        background-color: var(--text-white);
-        padding: 4px 16px;
-        font-size: 1rem;
-
-        &:hover {
-            color: var(--text-white);
-            background-color: var(--text-black);
-        }
     }
 
     &__annotated {

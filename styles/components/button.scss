@@ -1,0 +1,13 @@
+.btn {
+    position: absolute;
+    border: 1px solid var(--text-black);
+    color: var(--text-black);
+    background-color: var(--text-white);
+    padding: 4px 16px;
+    font-size: 1rem;
+
+    &:hover {
+        color: var(--text-white);
+        background-color: var(--text-black);
+    }
+}
