@@ -2,7 +2,7 @@ const annotationBox = document.getElementById('annotation')
 let lastAnnotation
 
 const handleAnnotationBoxClose = (ev) => {
-    annotationBox.classList.add('annotation--hidden')
+    annotationBox.classList.add('hidden')
     lastAnnotation.classList.remove('poem__annotated--active')
 }
 
@@ -20,7 +20,7 @@ const handleAnnotationShare = (ev) => {
 
 const alignAnnotationBox = () => {
     // dont align if element is hidden
-    if (annotationBox.classList.contains('annotation--hidden')) {
+    if (annotationBox.classList.contains('hidden')) {
         return
     }
 
@@ -36,7 +36,7 @@ const alignAnnotationBox = () => {
 
 document.querySelectorAll('.poem__annotated').forEach((annotation) => {
     annotation.onclick = (ev) => {
-        annotationBox.classList.remove('annotation--hidden')
+        annotationBox.classList.remove('hidden')
         lastAnnotation = annotation
         lastAnnotation.classList.add('poem__annotated--active')
         alignAnnotationBox()

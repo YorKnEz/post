@@ -1,7 +1,7 @@
 const annotateBox = document.getElementById('annotate')
 
 const hideAnnotateBox = (ev) => {
-    annotateBox.classList.add('annotation--hidden')
+    annotateBox.classList.add('hidden')
     location.reload()
     // region.classList.remove('poem__annotated--active')
 }
@@ -12,7 +12,7 @@ const handleSave = (ev) => {
 
 const alignAnnotateBox = () => {
     // dont align if element is hidden
-    if (annotateBox.classList.contains('annotation--hidden')) {
+    if (annotateBox.classList.contains('hidden')) {
         return
     }
     const bounds = annotateBox.getBoundingClientRect()
@@ -28,6 +28,6 @@ const alignAnnotateBox = () => {
 }
 
 const showAnnotateBox = (ev) => {
-    annotateBox.classList.remove('annotation--hidden')
+    annotateBox.classList.remove('hidden')
     alignAnnotateBox()
 }

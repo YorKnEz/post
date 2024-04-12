@@ -4,7 +4,7 @@ const dropdownContainer = dropdown.querySelector('.dropdown__container')
 // align dropdown to be centered under the icon + dropdown button
 const alignDropdown = () => {
     // dont align if element is hidden
-    if (dropdownContainer.classList.contains('dropdown__container--hidden')) {
+    if (dropdownContainer.classList.contains('hidden')) {
         return
     }
 
@@ -20,7 +20,7 @@ const alignDropdown = () => {
 
 // toggles whether the content of the dropdown is shown or not
 const toggleDropdown = () => {
-    dropdownContainer.classList.toggle('dropdown__container--hidden')
+    dropdownContainer.classList.toggle('hidden')
     alignDropdown()
 }
 
@@ -35,10 +35,10 @@ const handleDropdownOptionClick = (ev) => {
 // click the container so to make it disappear
 const handleDropdownDisappear = (ev) => {
     if (
-        !dropdownContainer.classList.contains('dropdown__container--hidden') &&
+        !dropdownContainer.classList.contains('hidden') &&
         !dropdown.contains(ev.target)
     ) {
-        dropdownContainer.classList.add('dropdown__container--hidden')
+        dropdownContainer.classList.add('hidden')
     }
 }
 
