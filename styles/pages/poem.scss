@@ -14,7 +14,7 @@ body {
 }
 
 i {
-    color: var(--text-black);
+    color: inherit;
 }
 
 .nav {
@@ -25,25 +25,24 @@ i {
     z-index: 999;
 }
 
-.poem {
-    &__header {
-        background: linear-gradient(var(--gradient-1), var(--gradient-2));
-        color: var(--text-white);
-        display: flex;
-        justify-content: center;
+.gradient {
+    padding-bottom: 1rem;
+    background: linear-gradient(var(--gradient-1), var(--gradient-2));
+    color: var(--text-white);
 
-        i {
-            color: var(--text--white);
-        }
+    i {
+        color: var(--text--white);
     }
+}
 
+.poem {
     &__avatar-container {
         justify-self: end;
         max-height: 300px;
     }
 
     &__avatar {
-        width: 340px;
+        width: 330px;
         aspect-ratio: 1;
     }
 
@@ -80,13 +79,29 @@ i {
 
     &__content {
         color: var(--text-black);
-        margin: 2rem 0;
     }
 
     &__content-header {
         display: flex;
         margin: 2rem 0;
         font-size: 0.8rem;
+    }
+
+    &__controls {
+        display: flex;
+        margin: 2rem 0;
+    }
+
+    &__control {
+        margin: 0 0.5rem;
+
+        &:first-child {
+            margin-left: 0;
+        }
+
+        &:last-child {
+            margin-right: 0;
+        }
     }
 
     &__lyrics {
@@ -98,6 +113,12 @@ i {
         display: flex;
         margin: 2rem 0;
         font-size: 0.8rem;
+    }
+
+    &__textarea {
+        font-size: 1rem;
+        line-height: 30px;
+        resize: none;
     }
 
     &__annotated {
@@ -118,7 +139,7 @@ i {
 @media (max-width: 1239px) {
     .poem {
         &__avatar {
-            width: 300px;
+            width: 290px;
         }
 
         &__avatar-container {

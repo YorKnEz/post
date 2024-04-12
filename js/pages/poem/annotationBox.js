@@ -14,7 +14,7 @@ const handleDislike = (ev) => {
     console.log('dislike')
 }
 
-const handleShare = (ev) => {
+const handleAnnotationShare = (ev) => {
     console.log('share')
 }
 

@@ -1,13 +1,58 @@
 .btn {
-    position: absolute;
-    border: 1px solid var(--text-black);
+    cursor: pointer;
+    
+    font-weight: inherit;
+    font-family: inherit;
+    font-size: inherit;
+
+    border: 1px solid;
     color: var(--text-black);
     background-color: var(--text-white);
     padding: 4px 16px;
-    font-size: 1rem;
+
+    &__icon {}
+
+    &__label {}
 
     &:hover {
         color: var(--text-white);
         background-color: var(--text-black);
+    }
+
+    &--round {
+        border-radius: 2rem;
+    }
+
+    &--span {
+        width: 100%;
+    }
+
+    &--transparent {
+        color: inherit;
+        background-color: transparent;
+
+        &:hover {
+            color: inherit;
+            background-color: transparent;
+        }
+    }
+
+    &--link {
+        border: none;
+        color: inherit;
+        background-color: transparent;
+        padding: 0;
+        
+        .btn__icon {}
+        
+        .btn__label {
+            text-decoration: underline;
+            text-underline-offset: 0.2rem;
+        }
+
+        &:hover {
+            color: inherit;
+            background-color: transparent;
+        }
     }
 }

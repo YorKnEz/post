@@ -1,51 +1,43 @@
 .annotation {
-    position: relative;
-    background-color: var(--highlight);
-    padding: 20px 16px;
-    height: fit-content;
+    padding: 2rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
-    &--hidden {
-        display: none;
+    &__title {
+        font-size: 3rem;
+        margin: 0;
+        margin-bottom: 1rem;
+    }
+
+    &__top-controls {
+        width: 100%;
+        display: flex;
+        justify-content: end;
+    }
+
+    hr {
+        margin: 16px 0;
+        width: 100%;
     }
 
     &__header {
-        display: grid;
-        grid-template-columns: 50% 50%;
-        margin-bottom: 16px;
-    }
-
-    &__button {
-        border: none;
-        background-color: transparent;
-        color: var(--text-black);
-        cursor: pointer;
-        grid-column: 1 / span 3;
-        font-size: 1rem;
-
-        &--left {
-            margin-left: auto;
-        }
-    }
-
-    &__separator {
-        grid-column: 1 / span 3;
-        height: 1px;
-        margin: 16px 0;
-        background-color: var(--text-black);
-    }
-
-    &__contributors {
-        margin-left: auto;
+        font-size: 0.8rem;
+        width: 100%;
+        display: flex;
+        margin-bottom: 1rem;
+        justify-content: space-between;
     }
 
     &__textarea {
         width: calc(100% - 20px);
         padding: 10px;
+        margin-bottom: 1rem;
 
         background-color: transparent;
         border: 1px solid var(--text-black);
-        
-        font-family: 'Montserrat', sans-serif;
+
+        font-family: inherit;
         resize: vertical;
 
         &:focus-visible {
@@ -54,8 +46,28 @@
     }
 
     &__footer {
+        width: 100%;
+    }
+
+    &__controls {
+        font-size: 0.8rem;
+        margin: 1rem 0;
+    }
+
+    &__buttons {
+        font-size: 0.8rem;
         display: flex;
         justify-content: space-between;
-        margin: 16px 0;
+    }
+
+    &--floating {
+        position: relative;
+        background-color: var(--highlight);
+        padding: 1.5rem;
+        height: fit-content;
+    }
+
+    &--hidden {
+        display: none;
     }
 }

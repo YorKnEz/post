@@ -72,6 +72,7 @@ const annotate = () => {
 const createAnnotateButton = () => {
     let button = document.createElement('button')
     button.innerHTML = 'Annotate'
+    button.style.position = 'absolute'
     button.classList.add('btn')
     button.onclick = annotate
 
@@ -158,6 +159,10 @@ const handleSelection = (ev) => {
         bounds.width / 2 -
         button.getBoundingClientRect().width / 2 +
         'px'
+}
+
+const handleShare = (to) => {
+    console.log(`share this on ${to}`)
 }
 
 document.onmouseup = document.onselectionchange = handleSelection
