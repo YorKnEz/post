@@ -1,402 +1,398 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <script
-            src="https://kit.fontawesome.com/1ea9bc0996.js"
-            crossorigin="anonymous"
-        ></script>
-        <script src="js/utils.js"></script>
-        <link rel="stylesheet" href="css/poem.css" />
-        <link rel="stylesheet" href="css/layout.css" />
-        <link rel="stylesheet" href="css/annotation.css" />
-        <link rel="stylesheet" href="css/dropdown.css" />
-        <title>Eminem - Rap God</title>
-    </head>
-    <body>
-        <nav class="container nav">
-            <div class="row">
-                <button class="col-xs-2" onclick="toggleTheme()">Theme</button>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/1ea9bc0996.js" crossorigin="anonymous"></script>
+    <script src="js/utils.js"></script>
+    <link rel="stylesheet" href="css/poem.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/annotation.css">
+    <link rel="stylesheet" href="css/dropdown.css">
+
+    <link rel="stylesheet" href="css/index.css">
+    <title>Eminem - Rap God</title>
+</head>
+
+<body>
+
+    <nav class="nav" id="navbar">
+        <div>
+            <button class="nav__button">
+                <i class="fa-solid fa-bars" onclick="toggleMenu()"></i>
+            </button>
+            <a href="index.html" class="nav__brand">PoST</a>
+        </div>
+
+        <div class="search" id="search">
+            <i class="fa-solid fa-magnifying-glass search__icon" onclick="search()"></i>
+            <input class="search__input" placeholder="Search" type="text" id="searchInput"
+                onkeydown="handleKeyDown(event)">
+        </div>
+
+        <div class="nav__buttons" id="buttons">
+            <button class="nav__button">
+                <i class="fa-solid fa-plus" onclick="addPoem()"></i>
+            </button>
+            <button class="nav__button">
+                <i class="fa-solid fa-rss" onclick="showRss()"></i>
+            </button>
+            <button class="nav__button">
+                <i class="fa-solid fa-sun" onclick="toggleTheme()"></i>
+            </button>
+        </div>
+    </nav>
+    <nav class="sidebar" id="sidebar">
+        <a class="sidebar__item sidebar__item--active" href="#">Log in</a>
+        <button class="sidebar__item sidebar__item--button">Sign up</button>
+    </nav>
+    
+    <header class="container poem__header">
+        <div class="row">
+            <div class="col-xs-4 col-sm-3 col-md-4 col-lg-5 poem__avatar-container">
+                <img class="poem__avatar" src="img/avatar.png">
             </div>
-        </nav>
-        <header class="container poem__header">
-            <div class="row">
-                <div
-                    class="col-xs-4 col-sm-3 col-md-4 col-lg-5 poem__avatar-container"
-                >
-                    <img class="poem__avatar" src="img/avatar.png" />
-                </div>
-                <div
-                    class="col-xs-4 off-sm-4 col-sm-5 off-md-5 col-md-8 off-lg-6 col-lg-12 poem__header-container"
-                >
-                    <h1 class="poem__title">Rap God</h1>
-                    <a class="poem__author" href="profile.html">Eminem</a>
-                    <p>
-                        “Rap God” is Eminem’s braggadocious ode to himself and
-                        his career. Over its six-minute run-time, he references
-                        comic books, throws back to his old songs, and raps
-                        crazily…
-                    </p>
-                    <div class="poem__info">
-                        <div class="poem__item">
-                            <i class="fa-solid fa-calendar"></i>
-                            <span>Oct. 14, 2013</span>
-                        </div>
-                        <div class="poem__item">
-                            <i class="fa-solid fa-eye"></i>
-                            <span>19M Views</span>
-                        </div>
+            <div class="col-xs-4 off-sm-4 col-sm-5 off-md-5 col-md-8 off-lg-6 col-lg-12 poem__header-container">
+                <h1 class="poem__title">Rap God</h1>
+                <a class="poem__author" href="profile.html">Eminem</a>
+                <p>
+                    “Rap God” is Eminem’s braggadocious ode to himself and
+                    his career. Over its six-minute run-time, he references
+                    comic books, throws back to his old songs, and raps
+                    crazily…
+                </p>
+                <div class="poem__info">
+                    <div class="poem__item">
+                        <i class="fa-solid fa-calendar"></i>
+                        <span>Oct. 14, 2013</span>
                     </div>
+                    <div class="poem__item">
+                        <i class="fa-solid fa-eye"></i>
+                        <span>19M Views</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main class="container poem__content">
+        <header class="row">
+            <div class="col-xs-4 col-sm-8 col-md-12 poem__content-header">
+                <div class="poem__item">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span>Rap God lyrics</span>
+                </div>
+                <div class="poem__item">
+                    <i class="fa-solid fa-language"></i>
+                    <button id="languages-dropdown" class="dropdown">
+                        <span class="dropdown__text">Languages</span>
+                        <div class="dropdown__container dropdown__container--hidden">
+                            <span class="dropdown__item">Romanian</span>
+                            <span class="dropdown__item">English</span>
+                            <span class="dropdown__item">Zulu</span>
+                        </div>
+                    </button>
+                </div>
+                <div class="poem__item">
+                    <i class="fa-solid fa-user-group"></i>
+                    <span>1940 contributors</span>
                 </div>
             </div>
         </header>
-        <main class="container poem__content">
-            <header class="row">
-                <div class="col-xs-4 col-sm-8 col-md-12 poem__content-header">
-                    <div class="poem__item">
-                        <i class="fa-solid fa-circle-info"></i>
-                        <span>Rap God lyrics</span>
-                    </div>
-                    <div class="poem__item">
-                        <i class="fa-solid fa-language"></i>
-                        <button id="languages-dropdown" class="dropdown">
-                            <span class="dropdown__text">Languages</span>
-                            <div
-                                class="dropdown__container dropdown__container--hidden"
-                            >
-                                <span class="dropdown__item">Romanian</span>
-                                <span class="dropdown__item">English</span>
-                                <span class="dropdown__item">Zulu</span>
-                            </div>
-                        </button>
-                    </div>
-                    <div class="poem__item">
-                        <i class="fa-solid fa-user-group"></i>
-                        <span>1940 contributors</span>
-                    </div>
-                </div>
-            </header>
-            <section class="row">
-                <section
-                    id="lyrics"
-                    class="col-xs-4 col-sm-4 col-md-6 poem__lyrics"
-                >
-                    [Intro]<br />
-                    "Look, I was gonna go easy on you not to hurt your
-                    feelings"<br />
-                    "But I'm only going to get this one chance" (Six minutes—,
-                    six minutes—)<br />
-                    "Something's wrong, I can feel it" (Six minutes, Slim Shady,
-                    you're on!)<br />
-                    "Just a feeling I've got, like something's about to happen,
-                    but I don't know what. <br />
-                    If that means what I think it means, we're in trouble, big
-                    trouble;
-                    <br />
-                    And if he is as bananas as you say, I'm not taking any
-                    chances"<br />
-                    "You are just what the doc ordered"<br />
-                    <br />
-                    [Chorus]<br />
-                    I'm beginnin' to feel like a Rap God, Rap God<br />
-                    All my people from the front to the back nod, back nod<br />
-                    Now, who thinks their arms are long enough to slap box, slap
-                    box?<br />
-                    They said I rap like a robot, so call me Rap-bot<br />
-                    <br />
-                    [Verse 1]<br />
-                    But for me to rap like a computer it must be in my genes<br />
-                    I got a laptop in my back pocket<br />
-                    My pen'll go off when I half-cock it<br />
-                    Got a fat knot from that rap profit<br />
-                    <a id="test-id" class="poem__annotated">
-                        Made a livin' and a killin' off it<br />
-                        Ever since Bill Clinton was still in office<br />
-                        With Monica Lewinsky feelin' on his nutsack<br />
-                        I'm an MC still as honest<br />
-                        But as rude and as
-                    </a>
-                    indecent as all hell<br />
-                    Syllables, skill-a-holic (Kill 'em all with)<br />
-                    This flippity dippity-hippity hip-hop<br />
-                    You don't really wanna get into a pissin' match<br />
-                    With this rappity brat, packin' a MAC in the back of the
-                    Ac'<br />
-                    Backpack rap crap, yap-yap, yackety-yack<br />
-                    And at the exact same time, I attempt these lyrical acrobat
-                    stunts while I'm practicin' <br />that I'll still be able to
-                    break a motherfuckin' table<br />
-                    Over the back of a couple of faggots and crack it in half<br />
-                    Only realized it was ironic, I was signed to Aftermath after
-                    the fact<br />
-                    How could I not blow? All I do is drop F-bombs<br />
-                    Feel my wrath of attack<br />
-                    Rappers are havin' a rough time period, here's a maxi pad<br />
-                    It's actually disastrously bad for the wack<br />
-                    While I'm masterfully constructing this masterpièce<br />
-                    <br />
-                    [Chorus]<br />
-                    <a id="test-id-2" class="poem__annotated">
-                        'Cause I'm beginnin' to feel like a Rap God, Rap God<br />
-                        All my people from the front to the back nod, back
-                        nod<br />
-                        Now, who thinks their arms are long enough to slap box,
-                        slap box?<br />
-                        Let me show you maintainin' this shit ain't that hard,
-                        that hard<br />
-                        Everybody want the key and the secret to rap immortality
-                        like Ι have got<br />
-                    </a>
-                    <br />
-                    [Verse 2]<br />
-                    Well, to be truthful the blueprint's<br />
-                    Simply rage and youthful exuberance<br />
-                    Everybody loves to root for a nuisance<br />
-                    Hit the Earth like an asteroid<br />
-                    Did nothing but shoot for the Moon since (Pew!)<br />
-                    MCs get taken to school with this music<br />
-                    'Cause I use it as a vehicle to "bus the rhyme"<br />
-                    Now I lead a new school full of students<br />
-                    Me? I'm a product of Rakim<br />
-                    Lakim Shabazz, 2Pac, N.W.A, Cube, hey Doc, Ren<br />
-                    Yella, Eazy, thank you, they got Slim<br />
-                    Inspired enough to one day grow up, blow up and be in a
-                    position<br />
-                    To meet Run–D.M.C., and induct them<br />
-                    Into the motherfuckin' Rock and Roll Hall of Fame<br />
-                    Even though I'll walk in the church and burst in a ball of
-                    flames<br />
-                    Only Hall of Fame I'll be inducted in is the alcohol of
-                    fame<br />
-                    On the wall of shame<br />
-                    You fags think it's all a game, 'til I walk a flock of
-                    flames<br />
-                    Off a plank and, tell me what in the fuck are you
-                    thinkin'?<br />
-                    Little gay-lookin' boy<br />
-                    So gay I can barely say it with a straight face, lookin' boy
-                    (Ha-ha!)<br />
-                    You're witnessin' a mass-occur<br />
-                    Like you're watching a church gathering take place, lookin'
-                    boy<br />
-                    "Oy vey, that boy's gay!"—that's all they say, lookin'
-                    boy<br />
-                    You get a thumbs up, pat on the back<br />
-                    And a "way to go" from your label every day, lookin' boy<br />
-                    Hey, lookin' boy! What you say, lookin' boy?<br />
-                    I get a "hell yeah" from Dre, lookin' boy<br />
-                    I'ma work for everything I have, never asked nobody for
-                    shit<br />
-                    Get outta my face, lookin' boy!<br />
-                    Basically, boy, you're never gonna be capable<br />
-                    Of keepin' up with the same pace, lookin' boy, 'cause—<br />
-                    <br />
-                    [Chorus]<br />
-                    I'm beginnin' to feel like a Rap God, Rap God<br />
-                    All my people from the front to the back nod, back nod<br />
-                    The way I'm racin' around the track, call me NASCAR,
-                    NASCAR<br />
-                    Dale Earnhardt of the trailer park, the White Trash God<br />
-                    Kneel before General Zod<br />
-                    This planet's Krypton—no, Asgard, Asgard<br />
-                    <br />
-                    [Verse 3]<br />
-                    So you'll be Thor and I'll be Odin<br />
-                    You rodent, I'm omnipotent<br />
-                    Let off, then I'm reloadin'<br />
-                    Immediately with these bombs I'm totin'<br />
-                    And I should not be woken<br />
-                    I'm the walkin' dead, but I'm just a talkin' head, a zombie
-                    floatin'<br />
-                    But I got your mom deep-throatin'<br />
-                    I'm out my Ramen Noodle<br />
-                    We have nothin' in common, poodle<br />
-                    I'm a Doberman, pinch yourself in the arm and pay homage,
-                    pupil<br />
-                    It's me, my honesty's brutal<br />
-                    But it's honestly futile if I don't utilize what I do
-                    though<br />
-                    For good at least once in a while<br />
-                    So I wanna make sure somewhere in this chicken scratch I
-                    scribble and doodle enough <br />rhymes To maybe try to help
-                    get some people through tough times<br />
-                    But I gotta keep a few punchlines<br />
-                    Just in case 'cause even you unsigned<br />
-                    Rappers are hungry lookin' at me like it's lunchtime<br />
-                    I know there was a time where once I<br />
-                    Was king of the underground<br />
-                    But I still rap like I'm on my Pharoahe Monch grind<br />
-                    So I crunch rhymes, but sometimes when you combine<br />
-                    Appeal with the skin color of mine<br />
-                    You get too big and here they come tryin'<br />
-                    To censor you like that one line<br />
-                    I said on "I'm Back" from The Mathers LP 1 when I<br />
-                    Tried to say I'll take seven kids from Columbine<br />
-                    Put 'em all in a line, add an AK-47, a revolver and a 9<br />
-                    See if I get away with it now that I ain't as big as I was,
-                    but I'm<br />
-                    Morphin' into an immortal, comin' through the portal<br />
-                    You're stuck in a time warp from 2004 though<br />
-                    And I don't know what the fuck that you rhyme for<br />
-                    You're pointless as Rapunzel with fuckin' cornrows<br />
-                    You write normal? Fuck being normal!<br />
-                    And I just bought a new raygun from the future<br />
-                    Just to come and shoot ya, like when Fabolous made Ray J
-                    mad<br />
-                    'Cause Fab said he looked like a fag at Mayweather's pad<br />
-                    Singin' to a man while he played piano<br />
-                    Man, oh man, that was a 24/7 special on the cable channel<br />
-                    So Ray J went straight to the radio station<br />
-                    The very next day, "Hey Fab, I'ma kill you!"<br />
-                    Lyrics comin' at you at supersonic speed (J.J. Fad)<br />
-                    Uh, summa-lumma, dooma-lumma, you assumin' I'm a human<br />
-                    What I gotta do to get it through to you? I'm superhuman<br />
-                    Innovative and I'm made of rubber so that anything you say
-                    is ricochetin' off of me and <br />it'll glue to you and I'm
-                    devastating, more than ever demonstrating<br />
-                    How to give a motherfuckin' audience a feeling like it's
-                    levitating<br />
-                    Never fading, and I know the haters are forever waiting<br />
-                    For the day that they can say I fell off, they'll be
-                    celebrating<br />
-                    'Cause I know the way to get 'em motivated<br />
-                    I make elevating music, you make elevator music<br />
-                    "Oh, he's too mainstream."<br />
-                    Well, that's what they do when they get jealous, they
-                    confuse it<br />
-                    "It's not hip-hop, it's pop,"—'cause I found a hella way to
-                    fuse it<br />
-                    With rock, shock rap with Doc<br />
-                    Throw on "Lose Yourself" and make 'em lose it<br />
-                    "I don't know how to make songs like that<br />
-                    I don't know what words to use."<br />
-                    Let me know when it occurs to you<br />
-                    While I'm rippin' any one of these verses that versus you<br />
-                    It's curtains, I'm inadvertently hurtin' you<br />
-                    How many verses I gotta murder to<br />
-                    Prove that if you were half as nice, your songs you could
-                    sacrifice virgins too?!<br />
-                    Ugh, school flunky, pill junkie<br />
-                    But look at the accolades these skills brung me<br />
-                    Full of myself, but still hungry<br />
-                    I bully myself 'cause I make me do what I put my mind to<br />
-                    And I'm a million leagues above you<br />
-                    Ill when I speak in tongues, but it's still tongue-in-cheek,
-                    fuck you<br />
-                    I'm drunk, so, Satan, take the fucking wheel<br />
-                    I'ma sleep in the front seat<br />
-                    Bumpin' Heavy D and the Boyz, still "Chunky but Funky"<br />
-                    But in my head there's something I can feel tugging and
-                    struggling<br />
-                    Angels fight with devils and here's what they want from
-                    me<br />
-                    They're askin' me to eliminate some of the women hate<br />
-                    But if you take into consideration the bitter hatred<br />
-                    I have, then you may be a little patient<br />
-                    And more sympathetic to the situation<br />
-                    And understand the discrimination<br />
-                    But fuck it, life's handin' you lemons? Make lemonade
-                    then!<br />
-                    But if I can't batter the women<br />
-                    How the fuck am I supposed to bake 'em a cake then?<br />
-                    Don't mistake him for Satan<br />
-                    It's a fatal mistake if you think I need to be overseas and
-                    take a vacation<br />
-                    To trip a broad, and make her fall on her face and<br />
-                    Don't be a retard—be a king? Think not<br />
-                    <a id="test-id-3" class="poem__annotated">
-                        Why be a king when you can be a god?
-                    </a>
-                    <br />
-                </section>
-                <aside
-                    id="annotation"
-                    class="col-xs-4 col-sm-4 col-md-6 annotation annotation--hidden"
-                >
-                    <header class="annotation__header">
-                        <button
-                            onclick="handleAnnotationBoxClose()"
-                            class="annotation__button annotation__button--left"
-                        >
-                            <i class="fa-solid fa-close"></i>
-                        </button>
-                        <div class="annotation__separator"></div>
-                        <span>Annotation</span>
-                        <span class="annotation__contributors">
-                            1 contributor
-                        </span>
-                    </header>
-                    <section>
-                        When this song was released, he had sold 49 million
-                        albums and 42 million tracks in the United States.<br />
-                        His worldwide albums sales stand at more than 115
-                        million, singles 120 million, and the estimated sale of
-                        over 220 million records worldwide.
-                    </section>
-                    <footer class="annotation__footer">
-                        <div>
-                            <button
-                                onclick="handleLike()"
-                                class="annotation__button"
-                            >
-                                <i class="fa-solid fa-thumbs-up"></i>
-                            </button>
-                            <span>+162</span>
-                            <button
-                                onclick="handleDislike()"
-                                class="annotation__button"
-                            >
-                                <i class="fa-solid fa-thumbs-down"></i>
-                            </button>
-                        </div>
-                        <div>
-                            <button
-                                onclick="handleShare()"
-                                class="annotation__button"
-                            >
-                                <i class="fa-solid fa-share"></i>
-                                <span>Share</span>
-                            </button>
-                        </div>
-                    </footer>
-                </aside>
-                <aside
-                    id="annotate"
-                    class="col-xs-4 col-sm-4 col-md-6 annotation annotation--hidden"
-                >
-                    <header class="annotation__header">
-                        <div class="annotation__separator"></div>
-                        <span>Annotate</span>
-                    </header>
-                    <section>
-                        <textarea
-                            class="annotation__textarea"
-                            placeholder="Your annotation"
-                        ></textarea>
-                    </section>
-                    <footer class="annotation__footer">
-                        <button
-                            onclick="handleSave()"
-                            class="annotation__button"
-                        >
-                            Save
-                        </button>
-                        <button
-                            onclick="hideAnnotateBox()"
-                            class="annotation__button"
-                        >
-                            Cancel
-                        </button>
-                    </footer>
-                </aside>
+        <section class="row">
+            <section id="lyrics" class="col-xs-4 col-sm-4 col-md-6 poem__lyrics">
+                [Intro]<br>
+                "Look, I was gonna go easy on you not to hurt your
+                feelings"<br>
+                "But I'm only going to get this one chance" (Six minutes—,
+                six minutes—)<br>
+                "Something's wrong, I can feel it" (Six minutes, Slim Shady,
+                you're on!)<br>
+                "Just a feeling I've got, like something's about to happen,
+                but I don't know what. <br>
+                If that means what I think it means, we're in trouble, big
+                trouble;
+                <br>
+                And if he is as bananas as you say, I'm not taking any
+                chances"<br>
+                "You are just what the doc ordered"<br>
+                <br>
+                [Chorus]<br>
+                I'm beginnin' to feel like a Rap God, Rap God<br>
+                All my people from the front to the back nod, back nod<br>
+                Now, who thinks their arms are long enough to slap box, slap
+                box?<br>
+                They said I rap like a robot, so call me Rap-bot<br>
+                <br>
+                [Verse 1]<br>
+                But for me to rap like a computer it must be in my genes<br>
+                I got a laptop in my back pocket<br>
+                My pen'll go off when I half-cock it<br>
+                Got a fat knot from that rap profit<br>
+                <a id="test-id" class="poem__annotated">
+                    Made a livin' and a killin' off it<br>
+                    Ever since Bill Clinton was still in office<br>
+                    With Monica Lewinsky feelin' on his nutsack<br>
+                    I'm an MC still as honest<br>
+                    But as rude and as
+                </a>
+                indecent as all hell<br>
+                Syllables, skill-a-holic (Kill 'em all with)<br>
+                This flippity dippity-hippity hip-hop<br>
+                You don't really wanna get into a pissin' match<br>
+                With this rappity brat, packin' a MAC in the back of the
+                Ac'<br>
+                Backpack rap crap, yap-yap, yackety-yack<br>
+                And at the exact same time, I attempt these lyrical acrobat
+                stunts while I'm practicin' <br>that I'll still be able to
+                break a motherfuckin' table<br>
+                Over the back of a couple of faggots and crack it in half<br>
+                Only realized it was ironic, I was signed to Aftermath after
+                the fact<br>
+                How could I not blow? All I do is drop F-bombs<br>
+                Feel my wrath of attack<br>
+                Rappers are havin' a rough time period, here's a maxi pad<br>
+                It's actually disastrously bad for the wack<br>
+                While I'm masterfully constructing this masterpièce<br>
+                <br>
+                [Chorus]<br>
+                <a id="test-id-2" class="poem__annotated">
+                    'Cause I'm beginnin' to feel like a Rap God, Rap God<br>
+                    All my people from the front to the back nod, back
+                    nod<br>
+                    Now, who thinks their arms are long enough to slap box,
+                    slap box?<br>
+                    Let me show you maintainin' this shit ain't that hard,
+                    that hard<br>
+                    Everybody want the key and the secret to rap immortality
+                    like Ι have got<br>
+                </a>
+                <br>
+                [Verse 2]<br>
+                Well, to be truthful the blueprint's<br>
+                Simply rage and youthful exuberance<br>
+                Everybody loves to root for a nuisance<br>
+                Hit the Earth like an asteroid<br>
+                Did nothing but shoot for the Moon since (Pew!)<br>
+                MCs get taken to school with this music<br>
+                'Cause I use it as a vehicle to "bus the rhyme"<br>
+                Now I lead a new school full of students<br>
+                Me? I'm a product of Rakim<br>
+                Lakim Shabazz, 2Pac, N.W.A, Cube, hey Doc, Ren<br>
+                Yella, Eazy, thank you, they got Slim<br>
+                Inspired enough to one day grow up, blow up and be in a
+                position<br>
+                To meet Run–D.M.C., and induct them<br>
+                Into the motherfuckin' Rock and Roll Hall of Fame<br>
+                Even though I'll walk in the church and burst in a ball of
+                flames<br>
+                Only Hall of Fame I'll be inducted in is the alcohol of
+                fame<br>
+                On the wall of shame<br>
+                You fags think it's all a game, 'til I walk a flock of
+                flames<br>
+                Off a plank and, tell me what in the fuck are you
+                thinkin'?<br>
+                Little gay-lookin' boy<br>
+                So gay I can barely say it with a straight face, lookin' boy
+                (Ha-ha!)<br>
+                You're witnessin' a mass-occur<br>
+                Like you're watching a church gathering take place, lookin'
+                boy<br>
+                "Oy vey, that boy's gay!"—that's all they say, lookin'
+                boy<br>
+                You get a thumbs up, pat on the back<br>
+                And a "way to go" from your label every day, lookin' boy<br>
+                Hey, lookin' boy! What you say, lookin' boy?<br>
+                I get a "hell yeah" from Dre, lookin' boy<br>
+                I'ma work for everything I have, never asked nobody for
+                shit<br>
+                Get outta my face, lookin' boy!<br>
+                Basically, boy, you're never gonna be capable<br>
+                Of keepin' up with the same pace, lookin' boy, 'cause—<br>
+                <br>
+                [Chorus]<br>
+                I'm beginnin' to feel like a Rap God, Rap God<br>
+                All my people from the front to the back nod, back nod<br>
+                The way I'm racin' around the track, call me NASCAR,
+                NASCAR<br>
+                Dale Earnhardt of the trailer park, the White Trash God<br>
+                Kneel before General Zod<br>
+                This planet's Krypton—no, Asgard, Asgard<br>
+                <br>
+                [Verse 3]<br>
+                So you'll be Thor and I'll be Odin<br>
+                You rodent, I'm omnipotent<br>
+                Let off, then I'm reloadin'<br>
+                Immediately with these bombs I'm totin'<br>
+                And I should not be woken<br>
+                I'm the walkin' dead, but I'm just a talkin' head, a zombie
+                floatin'<br>
+                But I got your mom deep-throatin'<br>
+                I'm out my Ramen Noodle<br>
+                We have nothin' in common, poodle<br>
+                I'm a Doberman, pinch yourself in the arm and pay homage,
+                pupil<br>
+                It's me, my honesty's brutal<br>
+                But it's honestly futile if I don't utilize what I do
+                though<br>
+                For good at least once in a while<br>
+                So I wanna make sure somewhere in this chicken scratch I
+                scribble and doodle enough <br>rhymes To maybe try to help
+                get some people through tough times<br>
+                But I gotta keep a few punchlines<br>
+                Just in case 'cause even you unsigned<br>
+                Rappers are hungry lookin' at me like it's lunchtime<br>
+                I know there was a time where once I<br>
+                Was king of the underground<br>
+                But I still rap like I'm on my Pharoahe Monch grind<br>
+                So I crunch rhymes, but sometimes when you combine<br>
+                Appeal with the skin color of mine<br>
+                You get too big and here they come tryin'<br>
+                To censor you like that one line<br>
+                I said on "I'm Back" from The Mathers LP 1 when I<br>
+                Tried to say I'll take seven kids from Columbine<br>
+                Put 'em all in a line, add an AK-47, a revolver and a 9<br>
+                See if I get away with it now that I ain't as big as I was,
+                but I'm<br>
+                Morphin' into an immortal, comin' through the portal<br>
+                You're stuck in a time warp from 2004 though<br>
+                And I don't know what the fuck that you rhyme for<br>
+                You're pointless as Rapunzel with fuckin' cornrows<br>
+                You write normal? Fuck being normal!<br>
+                And I just bought a new raygun from the future<br>
+                Just to come and shoot ya, like when Fabolous made Ray J
+                mad<br>
+                'Cause Fab said he looked like a fag at Mayweather's pad<br>
+                Singin' to a man while he played piano<br>
+                Man, oh man, that was a 24/7 special on the cable channel<br>
+                So Ray J went straight to the radio station<br>
+                The very next day, "Hey Fab, I'ma kill you!"<br>
+                Lyrics comin' at you at supersonic speed (J.J. Fad)<br>
+                Uh, summa-lumma, dooma-lumma, you assumin' I'm a human<br>
+                What I gotta do to get it through to you? I'm superhuman<br>
+                Innovative and I'm made of rubber so that anything you say
+                is ricochetin' off of me and <br>it'll glue to you and I'm
+                devastating, more than ever demonstrating<br>
+                How to give a motherfuckin' audience a feeling like it's
+                levitating<br>
+                Never fading, and I know the haters are forever waiting<br>
+                For the day that they can say I fell off, they'll be
+                celebrating<br>
+                'Cause I know the way to get 'em motivated<br>
+                I make elevating music, you make elevator music<br>
+                "Oh, he's too mainstream."<br>
+                Well, that's what they do when they get jealous, they
+                confuse it<br>
+                "It's not hip-hop, it's pop,"—'cause I found a hella way to
+                fuse it<br>
+                With rock, shock rap with Doc<br>
+                Throw on "Lose Yourself" and make 'em lose it<br>
+                "I don't know how to make songs like that<br>
+                I don't know what words to use."<br>
+                Let me know when it occurs to you<br>
+                While I'm rippin' any one of these verses that versus you<br>
+                It's curtains, I'm inadvertently hurtin' you<br>
+                How many verses I gotta murder to<br>
+                Prove that if you were half as nice, your songs you could
+                sacrifice virgins too?!<br>
+                Ugh, school flunky, pill junkie<br>
+                But look at the accolades these skills brung me<br>
+                Full of myself, but still hungry<br>
+                I bully myself 'cause I make me do what I put my mind to<br>
+                And I'm a million leagues above you<br>
+                Ill when I speak in tongues, but it's still tongue-in-cheek,
+                fuck you<br>
+                I'm drunk, so, Satan, take the fucking wheel<br>
+                I'ma sleep in the front seat<br>
+                Bumpin' Heavy D and the Boyz, still "Chunky but Funky"<br>
+                But in my head there's something I can feel tugging and
+                struggling<br>
+                Angels fight with devils and here's what they want from
+                me<br>
+                They're askin' me to eliminate some of the women hate<br>
+                But if you take into consideration the bitter hatred<br>
+                I have, then you may be a little patient<br>
+                And more sympathetic to the situation<br>
+                And understand the discrimination<br>
+                But fuck it, life's handin' you lemons? Make lemonade
+                then!<br>
+                But if I can't batter the women<br>
+                How the fuck am I supposed to bake 'em a cake then?<br>
+                Don't mistake him for Satan<br>
+                It's a fatal mistake if you think I need to be overseas and
+                take a vacation<br>
+                To trip a broad, and make her fall on her face and<br>
+                Don't be a retard—be a king? Think not<br>
+                <a id="test-id-3" class="poem__annotated">
+                    Why be a king when you can be a god?
+                </a>
+                <br>
             </section>
-        </main>
-        <footer class="container footer"></footer>
-    </body>
+            <aside id="annotation" class="col-xs-4 col-sm-4 col-md-6 annotation annotation--hidden">
+                <header class="annotation__header">
+                    <button onclick="handleAnnotationBoxClose()" class="annotation__button annotation__button--left">
+                        <i class="fa-solid fa-close"></i>
+                    </button>
+                    <div class="annotation__separator"></div>
+                    <span>Annotation</span>
+                    <span class="annotation__contributors">
+                        1 contributor
+                    </span>
+                </header>
+                <section>
+                    When this song was released, he had sold 49 million
+                    albums and 42 million tracks in the United States.<br>
+                    His worldwide albums sales stand at more than 115
+                    million, singles 120 million, and the estimated sale of
+                    over 220 million records worldwide.
+                </section>
+                <footer class="annotation__footer">
+                    <div>
+                        <button onclick="handleLike()" class="annotation__button">
+                            <i class="fa-solid fa-thumbs-up"></i>
+                        </button>
+                        <span>+162</span>
+                        <button onclick="handleDislike()" class="annotation__button">
+                            <i class="fa-solid fa-thumbs-down"></i>
+                        </button>
+                    </div>
+                    <div>
+                        <button onclick="handleShare()" class="annotation__button">
+                            <i class="fa-solid fa-share"></i>
+                            <span>Share</span>
+                        </button>
+                    </div>
+                </footer>
+            </aside>
+            <aside id="annotate" class="col-xs-4 col-sm-4 col-md-6 annotation annotation--hidden">
+                <header class="annotation__header">
+                    <div class="annotation__separator"></div>
+                    <span>Annotate</span>
+                </header>
+                <section>
+                    <textarea class="annotation__textarea" placeholder="Your annotation"></textarea>
+                </section>
+                <footer class="annotation__footer">
+                    <button onclick="handleSave()" class="annotation__button">
+                        Save
+                    </button>
+                    <button onclick="hideAnnotateBox()" class="annotation__button">
+                        Cancel
+                    </button>
+                </footer>
+            </aside>
+        </section>
+    </main>
+    <footer class="container footer"></footer>
+</body>
 
-    <script src="js/annotate.js"></script>
-    <script src="js/poem.js"></script>
-    <script src="js/dropdown.js"></script>
-    <script src="js/annotationBox.js"></script>
+<script src="js/annotate.js"></script>
+<script src="js/poem.js"></script>
+<script src="js/dropdown.js"></script>
+<script src="js/annotationBox.js"></script>
+<script src="js/nav.js"></script>
+<script src="js/search.js"></script>
+<script src="js/utils.js"></script>
+
 </html>

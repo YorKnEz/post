@@ -1,0 +1,26 @@
+@import 'theme.scss';
+@import 'typography.scss';
+
+@import 'nav.scss';
+@import 'news.scss';
+@import 'poemCard.scss';
+@import 'search.scss';
+@import 'sidebar.scss';
+@import 'layout.scss';
+
+body {
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 1rem;
+    background-color: var(--text-white);
+    color: var(--text-black);
+}
+
+i {
+    color: var(--text-black);
+}
+
+.hidden {
+    display: none;
+}
