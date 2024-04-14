@@ -1,4 +1,4 @@
-import { htmlToText } from '../../utils.js'
+import { autoGrow, htmlToText } from '../../utils.js'
 
 export class LyricsEdit {
     constructor() {
