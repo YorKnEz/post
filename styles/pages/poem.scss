@@ -3,37 +3,8 @@
 @import '../components/annotation.scss';
 @import '../components/button.scss';
 @import '../components/dropdown.scss';
-
-body {
-    margin: 0;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 500;
-    font-size: 1rem;
-    background-color: var(--text-white);
-    color: var(--text-black);
-}
-
-i {
-    color: inherit;
-}
-
-.nav {
-    background-color: var(--gradient-1);
-    height: 48px;
-    position: sticky;
-    top: 0px;
-    z-index: 999;
-}
-
-.gradient {
-    padding-bottom: 1rem;
-    background: linear-gradient(var(--gradient-1), var(--gradient-2));
-    color: var(--text-white);
-
-    i {
-        color: var(--text--white);
-    }
-}
+@import '../components/input.scss';
+@import '../components/share.scss';
 
 .poem {
     &__avatar-container {
@@ -42,7 +13,7 @@ i {
     }
 
     &__avatar {
-        width: 330px;
+        width: 320px;
         aspect-ratio: 1;
     }
 
@@ -63,6 +34,7 @@ i {
 
     &__info {
         display: flex;
+        margin-bottom: 1rem;
     }
 
     &__item {
@@ -116,9 +88,22 @@ i {
     }
 
     &__textarea {
-        font-size: 1rem;
-        line-height: 30px;
+        width: calc(100% - 20px);
+        max-height: 10rem;
+        padding: 10px;
+
+        color: inherit;
+        background-color: transparent;
+        border: 1px solid inherit;
+
+        font-family: inherit;
+        font-size: inherit;
+        font-weight: inherit;
         resize: none;
+
+        &:focus-visible {
+            outline: none;
+        }
     }
 
     &__annotated {
@@ -133,13 +118,13 @@ i {
 
 .footer {
     background-color: var(--text-black);
-    height: 200px;
+    height: 400px;
 }
 
 @media (max-width: 1239px) {
     .poem {
         &__avatar {
-            width: 290px;
+            width: 280px;
         }
 
         &__avatar-container {

@@ -2,6 +2,36 @@
 @import 'common/typography.scss';
 @import 'common/layout.scss';
 
+body {
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 1rem;
+    background-color: var(--text-white);
+    color: var(--text-black);
+}
+
+i {
+    color: inherit;
+}
+
 .hidden {
-    display: none;
+    display: none !important;
+}
+
+.nav {
+    background-color: var(--gradient-1);
+    height: 48px;
+    position: sticky;
+    top: 0px;
+    z-index: 999;
+}
+
+.gradient {
+    background: linear-gradient(var(--gradient-1), var(--gradient-2));
+    color: var(--text-white);
+
+    i {
+        color: var(--text--white);
+    }
 }
