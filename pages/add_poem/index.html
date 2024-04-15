@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/1ea9bc0996.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/css/pages/add_poem.css">
+    <title>Add poem</title>
+</head>
+
+<body>
+    <nav id="nav" class="container nav">
+        <div class="row">
+            <button class="col-xs-2 btn" onclick="toggleTheme()">
+                <span class="btn__label">Theme</span>
+            </button>
+            <a href="/pages/">Home</a>
+            <a href="/pages/login/">Log In</a>
+            <a href="/pages/register/">Register</a>
+            <a href="/pages/profile/">Profile</a>
+            <a href="/pages/poem/">Poem</a>
+        </div>
+    </nav>
+    <header class="container gradient"></header>
+    <main class="container">
+        <h1>Add a new poem</h1>
+        <form id="form" class="row">
+            <section class="col-xs-4 col-sm-4 col-md-6 form">
+                <div class="form__item">
+                    <label for="by" class="form__label form__label--uppercase">By</label>
+                    <input autocomplete="off" id="by" name="by" placeholder="By" class="form__input">
+                    <div id="by-suggestions" class="dropdown__container hidden"></div>
+                </div>
+                <div class="form__item">
+                    <label for="title" class="form__label form__label--uppercase">Title</label>
+                    <input id="title" name="title" placeholder="Title" class="form__input">
+                </div>
+                <div class="form__item">
+                    <label for="lyrics" class="form__label form__label--uppercase">Lyrics</label>
+                    <textarea id="lyrics" name="lyrics" placeholder="Lyrics" class="form__input form__textarea"></textarea>
+                </div>
+                <div class="form__item">
+                    <label for="date" class="form__label form__label--uppercase">Date</label>
+                    <input id="date" name="date" type="date" placeholder="Date" class="form__input">
+                </div>
+                <div class="form__item">
+                    <label for="album" class="form__label form__label--uppercase">Album</label>
+                    <input autocomplete="off" id="album" name="album" placeholder="Album" class="form__input">
+                    <div id="album-suggestions" class="dropdown__container hidden"></div>
+                </div>
+            </section>
+            <section class="col-xs-4 col-sm-4 col-md-6 guide">
+                <h3 class="guide__title">Guide</h3>
+                <p>Start completing the fields BY and ALBUM and use the auto-suggested names if they match the thing you're looking for.</p>
+                <p>You can expand the LYRICS box as much as you need.</p>
+            </section>
+            <span id="form-error" class="col-xs-4 col-sm-8 col-md-12 form__error hidden"></span>
+            <button class="col-xs-4 col-sm-8 col-md-12 btn form__submit">Create</button>
+        </form>
+    </main>
+    <footer class="container footer"></footer>
+
+    <script type="module" src="/js/pages/add_poem/index.js"></script>
+</body>
+
+</html>

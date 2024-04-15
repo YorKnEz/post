@@ -17,6 +17,7 @@
 
     &__container {
         position: absolute;
+        z-index: 998;
         display: flex;
         flex-direction: column;
         align-items: flex-start;

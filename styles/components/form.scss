@@ -1,6 +1,5 @@
 .form {
     display: grid;
-    // grid-template-columns: 50% 50%;
     gap: 0.8rem;
 
     &__item {
@@ -16,6 +15,8 @@
         font-size: 0.8rem;
         background-color: var(--text-white);
         padding: 0 0.6rem;
+
+        text-transform: uppercase;
     }
 
     &__input {
@@ -36,6 +37,10 @@
         &:focus-visible {
             outline: none;
         }
+    }
+
+    &__textarea {
+        resize: vertical;
     }
 
     &__icon {
