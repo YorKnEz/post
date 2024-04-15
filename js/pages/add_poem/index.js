@@ -12,6 +12,9 @@ document.onclick = (ev) => {
     albumInput.disappear(ev)
 }
 
-window.form = new Form(['by', 'title', 'lyrics', 'date', 'album'], (data, setError) => {
-    console.log(data)
-})
+window.form = new Form(
+    ['by', 'title', 'language', 'lyrics', 'date', 'album'],
+    (data, setError) => {
+        console.log(data)
+    }
+)
