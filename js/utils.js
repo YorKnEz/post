@@ -28,3 +28,16 @@ export const scrollToElem = (elem) => {
             document.getElementById('nav').getBoundingClientRect().height
     )
 }
+
+// removes the hash from location without switching page
+export const removeHashFromURL = () => {
+    const url = window.location.toString()
+
+    if (url.indexOf('#') > 0) {
+        window.history.replaceState(
+            {},
+            document.title,
+            url.substring(0, url.indexOf('#'))
+        )
+    }
+}

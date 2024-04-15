@@ -28,7 +28,7 @@ export class CreateAnnotation {
         if (this.shown()) {
             this.align(region) // align only if the element is shown
         } else {
-            location.reload()
+            location.reload() // reload is required because annotate modifies the DOM
         }
     }
 

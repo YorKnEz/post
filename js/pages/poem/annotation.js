@@ -1,5 +1,5 @@
 import { Share } from '../../components/share.js'
-import { autoGrow, htmlToText } from '../../utils.js'
+import { autoGrow, htmlToText, removeHashFromURL } from '../../utils.js'
 
 export class Annotation {
     constructor(id, shareUrl) {
@@ -62,6 +62,15 @@ export class AnnotationCard extends Annotation {
         this.annotation
     }
 
+    // updates the annotation, hiding the old one if needed
+    setAnnotation = (annotation) => {
+        if (this.shown()) {
+            this.toggle()
+        }
+
+        this.annotation = annotation
+    }
+
     // whether the element is present on screen or not
     shown = () => {
         return !this.card.classList.contains('hidden')
@@ -88,14 +97,15 @@ export class AnnotationCard extends Annotation {
         if (this.shown()) {
             this.align() // align only if shown
         } else {
-            location.replace(`${location.origin}/pages/poem/`)
+            removeHashFromURL()
         }
     }
 
     // when user clicks anywhere but on the annotation
     disappear = (ev) => {
-        if (this.shown() && !this.card.contains(ev.target)) {
-            location.replace(`${location.origin}/pages/poem/`)
+        if (this.shown() && !this.card.contains(ev.target) && !this.annotation.contains(ev.target)) {
+            this.toggle()
+            removeHashFromURL()
         }
     }
 

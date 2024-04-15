@@ -19,7 +19,7 @@ window.lyricsShare = new Share(
 
 window.annotation = new AnnotationSystem()
 
-window.about = new Annotation('about', `${location.origin}/pages/poem/#about`)
+window.about = new Annotation('about', `${location.origin}${location.pathname}/#about`)
 // scroll to about section taking into account the nav height
 window.scrollToAbout = () => {
     scrollToElem(document.getElementById('about'))
@@ -35,13 +35,28 @@ window.onresize = (ev) => {
     annotation.align()
 }
 
-// checks if the current path links to an annotation and scrolls to it
-;(() => {
-    let path = location.pathname.split('/').filter((s) => s.length > 0)
-    let annotation = document.getElementById(path[path.length - 1])
-    if (annotation && annotation.classList.contains('poem__annotated')) {
-        window.annotation.card.annotation = annotation
-        window.annotation.toggleAnnotation()
+const scrollToNewAnnotation = (annotation) => {
+    window.annotation.card.setAnnotation(annotation)
+    window.annotation.toggleAnnotation()
+
+    // if annotation appeared, update the location hash and scroll to annotation
+    if (window.annotation.card.shown()) {
+        location.hash = annotation.id
         scrollToElem(annotation)
     }
+}
+
+// checks if the current path links to an annotation and scrolls to it
+;(() => {
+    if (location.hash.length > 0) {
+        let annotation = document.getElementById(location.hash.substring(1))
+        if (annotation && annotation.classList.contains('poem__annotated')) {
+            scrollToNewAnnotation(annotation)
+        }
+    }
 })()
+
+// after each click on an annotation, scroll to it if possible
+window.addEventListener('annotation', ({ annotation }) =>
+    scrollToNewAnnotation(annotation)
+)

@@ -1,5 +1,6 @@
 import { CreateAnnotation } from './createAnnotation.js'
 import { AnnotationCard } from './annotation.js'
+import { AnnotationClickEvent } from './annotationClickEvent.js'
 
 class AnnotationButton {
     constructor(annotate) {
@@ -43,9 +44,7 @@ export class AnnotationSystem {
 
         document.querySelectorAll('.poem__annotated').forEach((annotated) => {
             annotated.onclick = (ev) => {
-                location.replace(
-                    `${location.origin}/pages/poem/${ev.target.id}`
-                )
+                window.dispatchEvent(new AnnotationClickEvent(annotated))
             }
         })
     }
@@ -215,6 +214,11 @@ export class AnnotationSystem {
     }
 
     toggleAnnotation = () => {
+        // make annotation appear only if the create card is closed
+        if (!this.card.shown() && this.createCard.shown()) {
+            return
+        }
+
         this.card.toggle()
     }
 
