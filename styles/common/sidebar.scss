@@ -16,6 +16,7 @@
 
     background: linear-gradient(var(--primary), var(--gradient-1));
     transition: left 0.4s ease;
+
     &__toggle {
         position: absolute;
         width: 20px;
@@ -87,7 +88,6 @@
     }
 
     &__username {
-        
     }
 
     &__role {
@@ -110,15 +110,8 @@
     }
 }
 
-@media only screen and (min-width: 600px) {
-    .search--sidebar {
-        display: none;
-    }
-    
-}
-
 @media only screen and (min-width: 300px) {
     .sidebar__item--nav {
         display: none;
-    }   
+    }
 }
