@@ -26,21 +26,23 @@
     <main class="container">
         <div class="row page">
             <section class="col-xs-4 col-sm-4 col-md-5">
-                <h1>Log In</h1>
+                <h1>Update your password</h1>
                 <form id="form" class="form">
                     <div class="form__item">
-                        <label for="nickname" class="form__label">Nickname</label>
-                        <input id="nickname" name="nickname" placeholder="Nickname" class="form__input">
+                        <label for="email" class="form__label">Email</label>
+                        <input id="email" name="email" type="email" placeholder="Email" class="form__input">
                     </div>
                     <div class="form__item">
                         <label for="password" class="form__label">Password</label>
-                        <input id="password" name="password" type="password" placeholder="Password"
-                            class="form__input">
+                        <input id="password" name="password" type="password" placeholder="Password" class="form__input">
                         <i id="password-toggler" class="fa-solid fa-eye form__icon" onclick="togglePassword()"></i>
                     </div>
+                    <div class="form__item">
+                        <label for="confirmPassword" class="form__label">Confirm password</label>
+                        <input id="confirmPassword" name="password" type="password" placeholder="Confirm password" class="form__input">
+                    </div>
                     <span id="form-error" class="form__error hidden"></span>
-                    <a href="/pages/reset-password/" class="form__link">Forgot password?</a>
-                    <button class="btn form__submit">Log In</button>
+                    <button class="btn form__submit">Change password</button>
                 </form>
             </section>
             <aside class="col-xs-4 col-sm-4 col-md-7">
@@ -50,7 +52,7 @@
     </main>
     <footer class="container footer"></footer>
 
-    <script type="module" src="/js/pages/login/index.js"></script>
+    <script type="module" src="/js/pages/reset-password/index.js"></script>
 </body>
 
 </html>
