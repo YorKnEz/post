@@ -2,383 +2,739 @@
 <html>
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Post Documentation</title>
-  <link rel="stylesheet" href="css/scholarly.min.css">
-  <script src="js/scholarly.min.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Post Documentation</title>
+    <link rel="stylesheet" href="css/scholarly.min.css">
+    <script src="js/scholarly.min.js"></script>
 </head>
 
 <body prefix="schema: http://schema.org">
-  <header>
-    <div class="banner">
-      <img src="scholarly-html.svg" width="227" height="50" alt="Scholarly HTML logo">
-      <div class="status">Post Documentation</div>
+    <header>
+        <div class="banner">
+            <img src="scholarly-html.svg" width="227" height="50" alt="Scholarly HTML logo">
+            <div class="status">Post Documentation</div>
+        </div>
+        <h1>PoST (Poem Smart Translator)</h1>
+    </header>
+    <div role="contentinfo">
+        <dl>
+            <dt>Authors</dt>
+            <dd>
+                Mitreanu Alexandru
+                &amp;
+                Rotariu George-Flavian
+            </dd>
+            <dt>Source</dt>
+            <dd>
+                <a href="https://github.com/YorKnEz/web">The repository of the project</a>
+            </dd>
+            <dt>License</dt>
+            <dd>
+                <a href="http://creativecommons.org/licenses/by/4.0/">CC-BY</a>
+            </dd>
+        </dl>
     </div>
-    <h1>PoST (Poem Smart Translator)</h1>
-  </header>
-  <div role="contentinfo">
-    <dl>
-      <dt>Authors</dt>
-      <dd>
-        Mitreanu Alexandru
-        &amp;
-        Rotariu George-Flavian
-      </dd>
-      <dt>Source</dt>
-      <dd>
-        <a href="https://github.com/YorKnEz/web">The repository of the project</a>
-      </dd>
-      <dt>License</dt>
-      <dd>
-        <a href="http://creativecommons.org/licenses/by/4.0/">CC-BY</a>
-      </dd>
-    </dl>
-  </div>
-  <section id="introduction" role="doc-introduction">
-    <h2>Introduction</h2>
-    <section id="purpose">
-      <h3>Purpose</h3>
-      <p>
-        Realize a Web application for translating poems commented by multiple users. Translation for the poem or a
-        fragment of it may be provided with the afferent annotation. The system will support lyric annotation with the
-        possibility of sharing on social platforms like Tumblr or WordPress, based on the public APIs. Statistics will
-        be provided regarding the activity on the platform (e.g. the most active translator, the most annotated poem,
-        ...). The new translations will be exposed on an RSS flux. The essential functionalities will be provided by our
-        own API, built based on the architectural styles of REST or GraphQL.
-      </p>
+    <section id="introduction" role="doc-introduction">
+        <h2>Introduction</h2>
+        <section id="purpose">
+            <h3>Purpose</h3>
+            <p>
+                Realize a Web application for translating poems commented by multiple users. Translation for the poem or
+                a
+                fragment of it may be provided with the afferent annotation. The system will support lyric annotation
+                with the
+                possibility of sharing on social platforms like Tumblr or WordPress, based on the public APIs.
+                Statistics will
+                be provided regarding the activity on the platform (e.g. the most active translator, the most annotated
+                poem,
+                ...). The new translations will be exposed on an RSS flux. The essential functionalities will be
+                provided by our
+                own API, built based on the architectural styles of REST or GraphQL.
+            </p>
+        </section>
+        <section id="audience">
+            <h3>Intended Audience and Reading Suggestions</h3>
+            <p>
+                This document is intended for those that want to take a look at our source code. This document provides
+                detailed
+                documentation for our product and is required to read before taking a look at the source code. The
+                document is
+                intended to be read in the given order.
+            </p>
+        </section>
+        <section id="scope">
+            <h3>Product Scope</h3>
+            <p>
+                Product that aims to provide internationalization of poems by the community and ease of sharing
+                knowledge about
+                said poems.
+            </p>
+        </section>
+        <section id="references">
+            <h3>References</h3>
+            <ol role="doc-bibliography">
+                <li typeof="schema:WebPage" role="doc-biblioentry"
+                    resource="https://m2.material.io/design/layout/responsive-layout-grid.html#columns-gutters-and-margins"
+                    property="schema:citation" id="ref-material-design">
+                    <cite property="schema:name">
+                        <a
+                            href="https://m2.material.io/design/layout/responsive-layout-grid.html#columns-gutters-and-margins">Responsive
+                            layout grid</a>
+                    </cite>,
+                    by <span property="schema:author" typeof="schema:Organization">
+                        <span property="schema:legalName">Material design</span>
+                    </span>
+                    <span property="schema:potentialAction" typeof="schema:ReadAction">
+                        <meta property="schema:actionStatus" content="CompletedActionStatus">
+                        (accessed on
+                        <time property="schema:endTime" datatype="xsd:date" datetime="2024-04-15">15 Apr 2024</time>)
+                    </span>.
+                </li>
+                <li typeof="schema:WebPage" role="doc-biblioentry" resource="https://genius.com"
+                    property="schema:citation" id="ref-genius">
+                    <cite property="schema:name">
+                        <a href="https://genius.com">Genius</a>
+                    </cite>,
+                    by <span property="schema:author" typeof="schema:Organization">
+                        <span property="schema:legalName">Genius</span>
+                    </span>
+                    <span property="schema:potentialAction" typeof="schema:ReadAction">
+                        <meta property="schema:actionStatus" content="CompletedActionStatus">
+                        (accessed on
+                        <time property="schema:endTime" datatype="xsd:date" datetime="2024-04-15">15 Apr 2024</time>)
+                    </span>.
+                </li>
+                <li typeof="schema:WebPage" role="doc-biblioentry"
+                    resource="https://github.com/rick4470/IEEE-SRS-Tempate#readme" property="schema:citation"
+                    id="ref-ieee">
+                    <cite property="schema:name">
+                        <a href="https://github.com/rick4470/IEEE-SRS-Tempate#readme">IEEE System Requirements
+                            Specification
+                            Template</a>
+                    </cite>,
+                    by <span property="schema:author" typeof="schema:Person">
+                        <a href="https://github.com/rick4470">
+                            <span property="schema:name">Rick</span>
+                        </a>
+                    </span>
+                    <span property="schema:potentialAction" typeof="schema:ReadAction">
+                        <meta property="schema:actionStatus" content="CompletedActionStatus">
+                        (accessed on
+                        <time property="schema:endTime" datatype="xsd:date" datetime="2024-04-15">15 Apr 2024</time>)
+                    </span>.
+                </li>
+            </ol>
+        </section>
     </section>
-    <section id="audience">
-      <h3>Intended Audience and Reading Suggestions</h3>
-      <p>
-        This document is intended for those that want to take a look at our source code. This document provides detailed
-        documentation for our product and is required to read before taking a look at the source code. The document is
-        intended to be read in the given order.
-      </p>
+    <section id="description">
+        <h2>Overall Description</h2>
+        <section id="perspective">
+            <h3>Product Perspective</h3>
+            <p>
+                This product originated as a <a href="https://tehnologii-web.vercel.app/proiecte">faculty project</a>
+                for the
+                Web Technologies subject.
+            </p>
+        </section>
+        <section id="functions">
+            <h3>Product Functions</h3>
+            <section id="regular-user-functions">
+                <h3>Regular user functions</h3>
+                <ul>
+                    <li>Create an account</li>
+                    <li>Log into an account</li>
+                    <li>Reset password</li>
+                    <li>See the latest lyrics/translations</li>
+                    <li>See global statistics</li>
+                    <li>See user profiles</li>
+                    <li>See lyrics/annotations</li>
+                    <li>Add lyrics/annotations</li>
+                    <li>Edit lyrics/annotations</li>
+                    <li>Share lyrics/annotations on social media</li>
+                    <li>Change the language on the lyrics page</li>
+                    <li>Become a poet</li>
+                </ul>
+            </section>
+            <section id="poet-user-functions">
+                <h3>Poet user (new) functions</h3>
+                <ul>
+                    <li>Can edit without requesting permission any of his lyrics and annotations on his lyrics</li>
+                </ul>
+            </section>
+            <section id="admin-user-functions">
+                <h3>Admin user (new) functions</h3>
+                <ul>
+                    <li>Approve/deny poets on the app</li>
+                    <li>Approve/deny new lyrics/annotations</li>
+                    <li>Approve/deny new edits of lyrics/annotations</li>
+                </ul>
+            </section>
+        </section>
+        <section id="classes-and-characteristics">
+            <h3>User Classes and Characteristics</h3>
+            <p>
+                There will be three types of users which were already sketched in the <a href="#functions">Product
+                    functions</a>
+                section:
+            </p>
+            <ul>
+                <li>Regular</li>
+                <li>Poet</li>
+                <li>Admin</li>
+            </ul>
+            <section id="regular-user">
+                <h4>Regular</h4>
+                <p>
+                    The regular user is the average user that uses the application. He can contribute to lyrics by
+                    editing them
+                    and annotationg them, but he requires the approval of an admin.
+                </p>
+            </section>
+            <section id="poet-user">
+                <h4>Poet</h4>
+                <p>
+                    The poet is a special kind of user that has the ability to do whatever he wants without requesting
+                    permission to any piece of content that is his own.
+                </p>
+            </section>
+            <section id="admin-user">
+                <h4>Admin</h4>
+                <p>
+                    The admin is the one that approves the requests of the regular users and, in general, handles
+                    moderation of
+                    the application. He can approve poets on the app, new poems, new annotations, edits, etc.
+                </p>
+            </section>
+        </section>
+        <section id="environment">
+            <h3>Operating Environment</h3>
+            <p>
+                The app has been extensively tested only on Firefox browser. It may be used on other browsers as well
+                but we do
+                not guarantee 100% compatibility.
+            </p>
+        </section>
+        <section id="constraints">
+            <h3>Design and Implementation Constraints</h3>
+            <p>
+                The main limitation of this product is the fact that we are not allowed to use any frameworks for this
+                project,
+                everything must be done from scratch. At the same time, there is no guarantee that the pages of the app
+                are 100%
+                compatbile with other browsers than Firefox.
+            </p>
+        </section>
+        <section id="user-docs">
+            <h3>User Documentation</h3>
+            <p>
+                We do not provide any kind of user documentation. Our application is designed to be easy to use and
+                intuitive
+                and, as such, we do not see the need for a user manual or any other document of that type.
+            </p>
+        </section>
+        <section id="dependencies">
+            <h3>Assumptions and Dependencies</h3>
+            <p>
+                We will use APIs of social media apps in order to provide the share feature.
+            </p>
+        </section>
     </section>
-    <section id="scope">
-      <h3>Product Scope</h3>
-      <p>
-        Product that aims to provide internationalization of poems by the community and ease of sharing knowledge about
-        said poems.
-      </p>
+    <section id="external-interface-requirements">
+        <h2>External Interface Requirements</h2>
+        <section id="user-interfaces">
+            <h3>User Interfaces</h3>
+            <p>
+                The user interfaces is built with responsiveness in mind, as such, it follows the guidelines of <a
+                    href="ref-material-design">Material Design</a> on responsive grid layout. Also, we take huge
+                inspiration from <a href="ref-genius">Genius</a>, which is a platform of similar scope as ours.
+            </p>
+        </section>
+        <section id="software-interfaces">
+            <h3>Software Interfaces</h3>
+            <p>
+                The applications communicates with our REST API.
+            </p>
+        </section>
+        <section id="comms-interfaces">
+            <h3>Communications Interfaces</h3>
+            <p>
+                The app will communicate with our API using the HTTP protocol.
+            </p>
+        </section>
     </section>
-    <section id="references">
-      <h3>References</h3>
-      <ol role="doc-bibliography">
-        <li typeof="schema:WebPage" role="doc-biblioentry"
-          resource="https://m2.material.io/design/layout/responsive-layout-grid.html#columns-gutters-and-margins"
-          property="schema:citation" id="ref-material-design">
-          <cite property="schema:name">
-            <a href="https://m2.material.io/design/layout/responsive-layout-grid.html#columns-gutters-and-margins">Responsive
-              layout grid</a>
-          </cite>,
-          by <span property="schema:author" typeof="schema:Organization">
-            <span property="schema:legalName">Material design</span>
-          </span>
-          <span property="schema:potentialAction" typeof="schema:ReadAction">
-            <meta property="schema:actionStatus" content="CompletedActionStatus">
-            (accessed on
-            <time property="schema:endTime" datatype="xsd:date" datetime="2024-04-15">15 Apr 2024</time>)
-          </span>.
-        </li>
-        <li typeof="schema:WebPage" role="doc-biblioentry" resource="https://genius.com" property="schema:citation"
-          id="ref-material-design">
-          <cite property="schema:name">
-            <a href="https://genius.com">Genius</a>
-          </cite>,
-          by <span property="schema:author" typeof="schema:Organization">
-            <span property="schema:legalName">Genius</span>
-          </span>
-          <span property="schema:potentialAction" typeof="schema:ReadAction">
-            <meta property="schema:actionStatus" content="CompletedActionStatus">
-            (accessed on
-            <time property="schema:endTime" datatype="xsd:date" datetime="2024-04-15">15 Apr 2024</time>)
-          </span>.
-        </li>
-        <li typeof="schema:WebPage" role="doc-biblioentry"
-          resource="https://github.com/rick4470/IEEE-SRS-Tempate#readme" property="schema:citation"
-          id="ref-material-design">
-          <cite property="schema:name">
-            <a href="https://github.com/rick4470/IEEE-SRS-Tempate#readme">IEEE System Requirements Specification
-              Template</a>
-          </cite>,
-          by <span property="schema:author" typeof="schema:Person">
-            <a href="https://github.com/rick4470">
-              <span property="schema:name">Rick</span>
-            </a>
-          </span>
-          <span property="schema:potentialAction" typeof="schema:ReadAction">
-            <meta property="schema:actionStatus" content="CompletedActionStatus">
-            (accessed on
-            <time property="schema:endTime" datatype="xsd:date" datetime="2024-04-15">15 Apr 2024</time>)
-          </span>.
-        </li>
-      </ol>
-    </section>
-  </section>
-  <section id="description">
-    <h2>Overall Description</h2>
-    <section id="perspective">
-      <h3>Product Perspective</h3>
-      <p>
-        This product originated as a <a href="https://tehnologii-web.vercel.app/proiecte">faculty project</a> for the
-        Web Technologies subject.
-      </p>
-    </section>
-    <section id="functions">
-      <h3>Product Functions</h3>
-      <section id="regular-user-functions">
-        <h3>Regular user functions</h3>
-        <ul>
-          <li>Create an account</li>
-          <li>Log into an account</li>
-          <li>Reset password</li>
-          <li>See the latest lyrics/translations</li>
-          <li>See global statistics</li>
-          <li>See user profiles</li>
-          <li>See lyrics/annotations</li>
-          <li>Add lyrics/annotations</li>
-          <li>Edit lyrics/annotations</li>
-          <li>Share lyrics/annotations on social media</li>
-          <li>Change the language on the lyrics page</li>
-          <li>Become a poet</li>
-        </ul>
-      </section>
-      <section id="poet-user-functions">
-        <h3>Poet user (new) functions</h3>
-        <ul>
-          <li>Can edit without requesting permission any of his lyrics and annotations on his lyrics</li>
-        </ul>
-      </section>
-      <section id="admin-user-functions">
-        <h3>Admin user (new) functions</h3>
-        <ul>
-          <li>Approve/deny poets on the app</li>
-          <li>Approve/deny new lyrics/annotations</li>
-          <li>Approve/deny new edits of lyrics/annotations</li>
-        </ul>
-      </section>
-    </section>
-    <section id="classes-and-characteristics">
-      <h3>User Classes and Characteristics</h3>
-      <p>
-        There will be three types of users which were already sketched in the <a href="#functions">Product functions</a>
-        section:
-      </p>
-      <ul>
-        <li>Regular</li>
-        <li>Poet</li>
-        <li>Admin</li>
-      </ul>
-      <section id="regular-user">
-        <h4>Regular</h4>
+    <section id="system-features">
+        <h2>TODO - System Features</h2>
         <p>
-          The regular user is the average user that uses the application. He can contribute to lyrics by editing them
-          and annotationg them, but he requires the approval of an admin.
+            In what follows, we will present features by pages (or components if needed)
         </p>
-      </section>
-      <section id="poet-user">
-        <h4>Poet</h4>
-        <p>
-          The poet is a special kind of user that has the abillity to do whatever he wants without requesting
-          permission to any piece of content that is his own.
-        </p>
-      </section>
-      <section id="admin-user">
-        <h4>Admin</h4>
-        <p>
-          The admin is the one that approves the requests of the regular users and, in general, handles moderation of
-          the application. He can approve poets on the app, new poems, new annotations, edits, etc.
-        </p>
-      </section>
+        <section id="navigation">
+            <h3>Navigation</h3>
+            <section id="description-priority">
+                <h4>Description and Priority</h4>
+                <h5>Priority: HIGH</h5>
+                <p>
+                    Since our application includes multiple pages, the need of a navigation tool is mandatory. As such,
+                    our app includes a navbar and a sidebar which contain a few useful links in order to make navigation
+                    easier. At the same time, they include a few buttons such as a theme changer and a link to our RSS
+                    flux.
+                    The sidebar contains the useful links and will include the search and icons from the navbar on lower
+                    screen widths. The navbar is for quicker search and access to some functionalities.
+                    The full list of features included in the navbar are:
+                </p>
+                <ul>
+                    <li>home page link</li>
+                    <li>search bar</li>
+                    <li>add poem page link</li>
+                    <li>rss feed link</li>
+                    <li>theme toggler button</li>
+                    <li>profile page link</li>
+                    <li>log in link (if not logged)</li>
+                    <li>register link (if not logged)</li>
+                    <li>log out button (if logged)</li>
+                </ul>
+                <figure>
+                    <img src="/docs/img/navbar.png" alt="Navbar illustration">
+                    <figcaption>The navbar on a big screen</figcaption>
+                </figure>
+                <figure>
+                    <img src="/docs/img/sidebar.png" alt="Sidebar illustration">
+                    <figcaption>The sidebar on a small screen</figcaption>
+                </figure>
+            </section>
+            <section id="stimulus">
+                <h4>Stimulus/Response Sequences</h4>
+                <p>
+                    The user will want to navigate to other pages. In order to do that, they must use the
+                    navbar/sidebar.
+                </p>
+            </section>
+            <section id="functional-requirements">
+                <h4>Functional Requirements</h4>
+                <section id="navigation-links">
+                    <h5>Links</h5>
+                    <p>
+                        When the user clicks a link, they will navigate to that page.
+                    </p>
+                </section>
+                <section id="navigation-search">
+                    <h5>Search</h5>
+                    <p>
+                        The user types something in the search bar and then he will receive a list of results based on
+                        the search, or a page with an error message if the search did not match anything.
+                    </p>
+                </section>
+                <section id="navigation-theme">
+                    <h5>Theme</h5>
+                    <p>
+                        User clicks theme toggler and theme changes from light to dark or vice-versa.
+                    </p>
+                </section>
+            </section>
+        </section>
+        <section id="register">
+            <h3>Register</h3>
+            <section id="description-priority">
+                <h4>Description and Priority</h4>
+                <h5>Priority: MEDIUM</h5>
+                <p>
+                    The register page allows users to create accounts on our application. Accounts are necessary for
+                    users that want to bring new content to the site, such as: new lyrics, new translations, new
+                    annotations etc.
+                    Registering is not necesasry to just view the content of the site and, as such, this feature is not
+                    of high importance.
+                </p>
+                <figure>
+                    <img src="/docs/img/register.png" alt="Register page">
+                    <figcaption>The registration page</figcaption>
+                </figure>
+            </section>
+            <section id="stimulus">
+                <h4>Stimulus/Response Sequences</h4>
+                <p>
+                    Accounts are necessary for users that want to bring new content to the site, such as: new lyrics,
+                    new translations, new annotations etc.
+                </p>
+            </section>
+            <section id="functional-requirements">
+                <h4>Functional Requirements</h4>
+                <section id="register-inputs">
+                    <h5>Inputs</h5>
+                    <p>
+                        In order to create an account users must give their first and last name, email, pick a
+                        nickname and
+                        pick a password.
+                    </p>
+                    <p>The nickname must be unique, otherwise an error is given.</p>
+                    <p>The email must be valid, otherwise an error is given.</p>
+                    <p>The passwords must match, otherwise an error is given.</p>
+                </section>
+                <section id="register-email">
+                    <h5>Email verification</h5>
+                    <p>
+                        The user will receive an email which they have to verify if they want their account to work.
+                    </p>
+                </section>
+            </section>
+        </section>
+        <section id="login">
+            <h3>Log In</h3>
+            <section id="description-priority">
+                <h4>Description and Priority</h4>
+                <h5>Priority: MEDIUM</h5>
+                <p>
+                    The login page allows a user to enter their account in order to benefit of the user related
+                    features.
+                </p>
+                <figure>
+                    <img src="/docs/img/login.png" alt="Login page">
+                    <figcaption>The login page</figcaption>
+                </figure>
+            </section>
+            <section id="stimulus">
+                <h4>Stimulus/Response Sequences</h4>
+                <p>
+                    An user that created an account must log in to their account if they want to use it.
+                </p>
+            </section>
+            <section id="functional-requirements">
+                <h4>Functional Requirements</h4>
+                <section id="login-inputs">
+                    <h5>Inputs</h5>
+                    <p>
+                        In order to log in, a user must provide their nickname and password.
+                    </p>
+                    <p>If the nickname or password don't match, an error is given.</p>
+                </section>
+            </section>
+        </section>
+        <section id="reset-password">
+            <h3>Reset password</h3>
+            <section id="description-priority">
+                <h4>Description and Priority</h4>
+                <h5>Priority: LOW</h5>
+                <p>
+                    If the user forgets their password, they can access this page in order to reset their password.
+                </p>
+                <figure>
+                    <img src="/docs/img/reset-password.png" alt="Reset password page">
+                    <figcaption>The reset password page</figcaption>
+                </figure>
+            </section>
+            <section id="stimulus">
+                <h4>Stimulus/Response Sequences</h4>
+                <p>
+                    The user forgets their password. They come to this page, fill out the email and new password. They
+                    get a confirmation mail, after which the password is updated.
+                </p>
+            </section>
+            <section id="functional-requirements">
+                <h4>Functional Requirements</h4>
+                <section id="reset-password-inputs">
+                    <h5>Inputs</h5>
+                    <p>
+                        The user must provide their email and new password.
+                    </p>
+                    <p>The email must be valid, otherwise an error is given.</p>
+                    <p>The passwords must match, otherwise an error is given.</p>
+                </section>
+            </section>
+        </section>
+        <section id="home">
+            <h3>Home</h3>
+            <section id="description-priority">
+                <h4>Description and Priority</h4>
+                <h5>Priority: HIGH</h5>
+                <p>
+                    The home page presents the first thing a new user sees when they use our app. This page includes:
+                </p>
+                <ul>
+                    <li>Section of trending poems/translations</li>
+                    <figure>
+                        <img src="/docs/img/home-trending.png" alt="Home page trending section">
+                        <figcaption>The home page's trending section</figcaption>
+                    </figure>
+                    <li>Section of the most popular poems of all time (or recently, TBD)</li>
+                    <figure>
+                        <img src="/docs/img/home-popular.png" alt="Home page most popular section">
+                        <figcaption>The home page's most popular poems section</figcaption>
+                    </figure>
+                    <li>Section of the most recent poems/translations</li>
+                    <figure>
+                        <img src="/docs/img/home-recent.png" alt="Home page most recent section">
+                        <figcaption>The home page's most recent poems section</figcaption>
+                    </figure>
+                    <li>Section of the most active users of our application</li>
+                    <figure>
+                        <img src="/docs/img/home-contributors.png" alt="Home page contributors section">
+                        <figcaption>The home page's contributors section</figcaption>
+                    </figure>
+                </ul>
+            </section>
+            <section id="stimulus">
+                <h4>Stimulus/Response Sequences</h4>
+                <p>
+                    The user must simply open the application and they will see this main page with the specified
+                    content.
+                </p>
+            </section>
+            <section id="functional-requirements">
+                <h4>Functional Requirements</h4>
+                <section id="register-inputs">
+                    <h5>Consuming content</h5>
+                    <p>
+                        The user can simply scroll down the page and click the cards shown on each section to learn more
+                        about the specific thing they are interested in (e.g. user may click on the card of a top
+                        contributor to see their profile and learn more about their contributions).
+                    </p>
+                </section>
+            </section>
+        </section>
+        <section id="add-poem">
+            <h3>Add poem</h3>
+            <section id="description-priority">
+                <h4>Description and Priority</h4>
+                <h5>Priority: HIGH</h5>
+                <p>
+                    The add poem page is the place where registered users can add new poems or translations for poems.
+                </p>
+                <figure>
+                    <img src="/docs/img/add-poem.png" alt="Add poem page">
+                    <figcaption>Add poem page</figcaption>
+                </figure>
+            </section>
+            <section id="stimulus">
+                <h4>Stimulus/Response Sequences</h4>
+                <p>
+                    If a user wants to add a new poem or translate an already existing one, they must go to this page.
+                </p>
+            </section>
+            <section id="functional-requirements">
+                <h4>Functional Requirements</h4>
+                <section id="add-poem-inputs">
+                    <h5>Inputs</h5>
+                    <p>
+                        In order to add a new poem/translation the user must give the following details: author, title,
+                        language, lyrics, date, album.
+                    </p>
+                    <p>For the author and album inputs, autocompletion is provided based on the existing data in the
+                        backend.</p>
+                    <p>The album field is optional.</p>
+                </section>
+            </section>
+        </section>
+        <section id="poem">
+            <h3>Poem</h3>
+            <section id="description-priority">
+                <h4>Description and Priority</h4>
+                <h5>Priority: HIGH</h5>
+                <p>
+                    This page allows users to view the lyrics of a poem, the annotations and the translations of it.
+                </p>
+                <figure>
+                    <img src="/docs/img/poem.png" alt="Poem page">
+                    <figcaption>Poem page</figcaption>
+                </figure>
+            </section>
+            <section id="stimulus">
+                <h4>Stimulus/Response Sequences</h4>
+                <p>
+                    Any user of our app that wants to view the content of poems must access this page.
+                </p>
+            </section>
+            <section id="functional-requirements">
+                <h4>Functional Requirements</h4>
+                <section id="poem-about">
+                    <h5>About</h5>
+                    <p>
+                        The first thing the user sees is the header of the page which provides a bit of insight into the
+                        poem's message. The user may click the read more button to navigate to the about section and
+                        find even more information about the poem, with the possibility to edit the said poem.
+                    </p>
+                    <figure>
+                        <img src="/docs/img/poem-about.png" alt="Poem page about section">
+                        <figcaption>Poem page about section</figcaption>
+                    </figure>
+                </section>
+                <section id="poem-languages">
+                    <h5>Languages</h5>
+                    <p>
+                        There is a dropdown called "Languages" right before the lyrics start which provides the user
+                        with the ability to change the language in which the lyrics and annotations are displayed.
+                    </p>
+                    <figure>
+                        <img src="/docs/img/poem-languages.png" alt="Poem page languages dropdown">
+                        <figcaption>Poem page languages dropdown</figcaption>
+                    </figure>
+                </section>
+                <section id="poem-view-annotations">
+                    <h5>Viewing annotations</h5>
+                    <p>
+                        User may click on highlighted text to see additional info (annotations) about said text.
+                    </p>
+                    <figure>
+                        <img src="/docs/img/poem-annotation.png" alt="Poem page annotation card">
+                        <figcaption>Poem page annotation card</figcaption>
+                    </figure>
+                </section>
+                <section id="poem-edit-annotations">
+                    <h5>Edit annotations/lyrics</h5>
+                    <p>
+                        User may click on the edit buttons in order to edit the content of the annotations or lyrics.
+                    </p>
+                    <figure>
+                        <img src="/docs/img/poem-edit-annotation-1.png" alt="Poem page edit about">
+                        <figcaption>Poem page editing about section</figcaption>
+                    </figure>
+                    <figure>
+                        <img src="/docs/img/poem-edit-annotation-2.png" alt="Poem page edit annotation card">
+                        <figcaption>Poem page editing an annotation</figcaption>
+                    </figure>
+                    <figure>
+                        <img src="/docs/img/poem-edit-lyrics.png" alt="Poem page edit lyrics">
+                        <figcaption>Poem page editing lyrics</figcaption>
+                    </figure>
+                </section>
+                <section id="poem-annotate">
+                    <h5>Annotating lyrics</h5>
+                    <p>
+                        User may select text that is not highlighted, a button with the text "Annotate" will appear.
+                        Upon clicking it, the text becomes highlighted and a card appears in which the user should input
+                        their commentary.
+                    </p>
+                    <figure>
+                        <img src="/docs/img/poem-annotate-1.png" alt="Poem page annotate button">
+                        <figcaption>Poem page annotate button</figcaption>
+                    </figure>
+                    <figure>
+                        <img src="/docs/img/poem-annotate-2.png" alt="Poem page annotate card">
+                        <figcaption>Poem page annotate card</figcaption>
+                    </figure>
+                </section>
+                <section id="poem-others">
+                    <h5>Other features</h5>
+                    <figure>
+                        <img src="/docs/img/poem-buttons.png"
+                            alt="Poem page like, dislike, share, contributors features">
+                        <figcaption>Liking, disliking, sharing annotation and viewing their contributors</figcaption>
+                    </figure>
+                    <figure>
+                        <img src="/docs/img/poem-share-lyrics.png" alt="Poem page sharing lyrics">
+                        <figcaption>Sharing lyrics</figcaption>
+                    </figure>
+                </section>
+            </section>
+        </section>
+        <section id="dashboard">
+            <h3>Dashboard</h3>
+            <section id="description-priority">
+                <h4>Description and Priority</h4>
+                <h5>Priority: HIGH</h5>
+                <p>
+                    The application needs moderation. As such we provide a dashboard page for our admins. This page
+                    includes:
+                </p>
+                <ul>
+                    <li>global statistics that are not avaliable to regular users</li>
+                    <li>a feed of poetic requests (i.e. users that want to become poets)</li>
+                    <li>a feed of approvals (i.e. requests to add/edit poems/translations/annotations)</li>
+                    <li>a feed of users</li>
+                    <li>a feed of poems</li>
+                    <li>a feed of annotations</li>
+                </ul>
+                <figure>
+                    <img src="/docs/img/dashboard.png" alt="Dashboard page">
+                    <figcaption>Dashboard page</figcaption>
+                </figure>
+            </section>
+            <section id="stimulus">
+                <h4>Stimulus/Response Sequences</h4>
+                <p>
+                    The admins want to moderate the site, they must use this page in order to do so.
+                </p>
+            </section>
+            <section id="functional-requirements">
+                <h4>Functional Requirements</h4>
+                <section id="dashboard-stats">
+                    <h5>Statistics</h5>
+                    <p>
+                        The statistics section provides a list of statistics that are useful in determining the state of
+                        the application. These statistics are not visible to other users.
+                    </p>
+                </section>
+                <section id="dashboard-poetic-request">
+                    <h5>Poetic requests</h5>
+                    <p>
+                        Regular users may want to be marked as poets in order to be favored by our algorithms and other
+                        features. An admin must review such a request and approve/deny it in the poetic requests feed.
+                    </p>
+                </section>
+                <section id="dashboard-approvals">
+                    <h5>Approvals</h5>
+                    <p>
+                        Regular users may want to add/edit poems/translations/annotations. After they do so, an admin
+                        must approve/deny their changes from the approvals feed.
+                    </p>
+                </section>
+                <section id="dashboard-stats">
+                    <h5>Users, poems, annotations</h5>
+                    <p>
+                        Feeds for managing the users, poems, annotations with the possibility to delete items from them.
+                    </p>
+                </section>
+            </section>
+        </section>
+        <!-- <section id="feature-1">
+            <h3>System Feature 1</h3>
+            <p>
+                Don’t really say “System Feature 1.” State the feature name in just a few words.
+            </p>
+            <section id="description-priority">
+                <h4>Description and Priority</h4>
+                <p>
+                    Provide a short description of the feature and indicate whether it is of High, Medium, or Low
+                    priority. You
+                    could
+                    also
+                    include specific priority component ratings, such as benefit, penalty, cost, and risk (each rated on
+                    a
+                    relative
+                    scale
+                    from a low of 1 to a high of 9).
+                </p>
+            </section>
+            <section id="stimulus">
+                <h4>Stimulus/Response Sequences</h4>
+                <p>
+                    List the sequences of user actions and system
+                    responses that stimulate the behavior defined for this feature. These will correspond to the dialog
+                    elements
+                    associated with use cases.
+                </p>
+            </section>
+            <section id="functional-requirements">
+                <h4>Functional Requirements</h4>
+                <p>
+                    Itemize the detailed functional requirements associated
+                    with
+                    this feature. These are the software capabilities that must be present in order for the user to
+                    carry out the
+                    services
+                    provided by the feature, or to execute the use case. Include how the product should respond to
+                    anticipated
+                    error
+                    conditions or invalid inputs. Requirements should be concise, complete, unambiguous, verifiable, and
+                    necessary.
+                    Use
+                    “TBD” as a placeholder to indicate when necessary information is not yet available.
+                </p>
+                <p>
+                    Each requirement should be uniquely identified with a sequence number or a meaningful tag of some
+                    kind.
+                </p>
+            </section>
+        </section> -->
     </section>
-    <section id="environment">
-      <h3>Operating Environment</h3>
-      <p>
-        The app has been extensively tested only on Firefox browser. It may be used on other browsers as well but we do
-        not guarantee 100% compatibility.
-      </p>
-    </section>
-    <section id="constraints">
-      <h3>Design and Implementation Constraints</h3>
-      <p>
-        The main limitation of this product is the fact that we are not allowed to use any frameworks for this project,
-        everything must be done from scratch. At the same time, there is no guarantee that the pages of the app are 100%
-        compatbile with other browsers than Firefox.
-      </p>
-    </section>
-    <section id="user-docs">
-      <h3>User Documentation</h3>
-      <p>
-        We do not provide any kind of user documentation. Our application is designed to be easy to use and intuitive
-        and, as such, we do not see the need for a user manual or any other document of that type.
-      </p>
-    </section>
-    <section id="dependencies">
-      <h3>Assumptions and Dependencies</h3>
-      <p>
-        We will use APIs of social media apps in order to provide the share feature.
-      </p>
-    </section>
-  </section>
-  <section id="external-interface-requirements">
-    <h2>External Interface Requirements</h2>
-    <section id="user-interfaces">
-      <h3>TODO - User Interfaces</h3>
-      <p>
-        Describe the logical characteristics of each interface between the software product and the users. This may
-        include
-        sample screen images, any GUI standards or product family style guides that are to be followed, screen layout
-        constraints, standard buttons and functions (e.g., help) that will appear on every screen, keyboard shortcuts,
-        error
-        message display standards, and so on. Define the software components for which a user interface is needed.
-        Details
-        of
-        the user interface design should be documented in a separate user interface specification.
-      </p>
-    </section>
-    <section id="software-interfaces">
-      <h3>Software Interfaces</h3>
-      <p>
-        The applications communicates with our REST API.
-      </p>
-    </section>
-    <section id="comms-interfaces">
-      <h3>Communications Interfaces</h3>
-      <p>
-        The app will communicate with our API using the HTTP protocol.
-      </p>
-    </section>
-  </section>
-  <section id="system-features">
-    <h2>TODO - System Features</h2>
-    <p>This template illustrates organizing the functional requirements for the product by system features, the major
-      services provided by the product. You may prefer to organize this section by use case, mode of operation, user
-      class,
-      object class, functional hierarchy, or combinations of these, whatever makes the most logical sense for your
-      product.
-    </p>
-    <section id="feature-1">
-      <h3>System Feature 1</h3>
-      <p>Don’t really say “System Feature 1.” State the feature name in just a few words.
-      </p>
-      <section id="description-priority">
-        <h4>Description and Priority</h4>
-        <p>Provide a short description of the feature and indicate whether it is of High, Medium, or Low priority. You
-          could
-          also
-          include specific priority component ratings, such as benefit, penalty, cost, and risk (each rated on a
-          relative
-          scale
-          from a low of 1 to a high of 9).</p>
-      </section>
-      <section id="stimulus">
-        <h4>Stimulus/Response Sequences</h4>
-        <p>List the sequences of user actions and system
-          responses that stimulate the behavior defined for this feature. These will correspond to the dialog elements
-          associated with use cases.</p>
-      </section>
-      <section id="functional-requirements">
-        <h4>Functional Requirements</h4>
-        <p>Itemize the detailed functional requirements associated
-          with
-          this feature. These are the software capabilities that must be present in order for the user to carry out the
-          services
-          provided by the feature, or to execute the use case. Include how the product should respond to anticipated
-          error
-          conditions or invalid inputs. Requirements should be concise, complete, unambiguous, verifiable, and
-          necessary.
-          Use
-          “TBD” as a placeholder to indicate when necessary information is not yet available.
-        </p>
-        <p>Each requirement should be uniquely identified with a sequence number or a meaningful tag of some kind.</p>
-      </section>
-    </section>
-    <section id="feature-1">
-      <h3>System Feature 1</h3>
-      <p>Don’t really say “System Feature 1.” State the feature name in just a few words.
-      </p>
-      <section id="description-priority">
-        <h4>Description and Priority</h4>
-        <p>Provide a short description of the feature and indicate whether it is of High, Medium, or Low priority. You
-          could
-          also
-          include specific priority component ratings, such as benefit, penalty, cost, and risk (each rated on a
-          relative
-          scale
-          from a low of 1 to a high of 9).</p>
-      </section>
-      <section id="stimulus">
-        <h4>Stimulus/Response Sequences</h4>
-        <p>List the sequences of user actions and system
-          responses that stimulate the behavior defined for this feature. These will correspond to the dialog elements
-          associated with use cases.</p>
-      </section>
-      <section id="functional-requirements">
-        <h4>Functional Requirements</h4>
-        <p>Itemize the detailed functional requirements associated
-          with
-          this feature. These are the software capabilities that must be present in order for the user to carry out the
-          services
-          provided by the feature, or to execute the use case. Include how the product should respond to anticipated
-          error
-          conditions or invalid inputs. Requirements should be concise, complete, unambiguous, verifiable, and
-          necessary.
-          Use
-          “TBD” as a placeholder to indicate when necessary information is not yet available.
-        </p>
-        <p>Each requirement should be uniquely identified with a sequence number or a meaningful tag of some kind.</p>
-      </section>
-    </section>
-  </section>
-  <section id="other-nonfunctional-requirements">
-    <h2>Other Nonfunctional Requirements</h2>
-    <section id="security">
-      <h3>Security Requirements</h3>
-      <p>
-        The app will use a secure communication protocol implemented by us over HTTP using the REST API in order to
-        provide secure authentication and encrypted passwords.
-      </p>
-    </section>
-    <section id="business-rules">
-      <h3>Business Rules</h3>
-      <p>
-        See <a href="#classes-and-characteristics">User Classes and Characteristics</a>.
-      </p>
-    </section>
-  </section>
-  <section id="other-requirements">
-    <h2>TODO - Other Requirements</h2>
-    <p>Define any other requirements not covered elsewhere in the SRS. This might include database requirements,
-      internationalization requirements, legal requirements, reuse objectives for the project, and so on. Add any new
-      sections that are pertinent to the project.
-    </p>
-    <section id="appenidx-a">
-      <h3>Appendix A: Glossary</h3>
-      <p>Define all the terms necessary to properly interpret the SRS, including acronyms and abbreviations. You may
-        wish
-        to
-        build a separate glossary that spans multiple projects or the entire organization, and just include terms
-        specific
-        to
-        a single project in each SRS.
-      </p>
-    </section>
-    <section id="appendix-b">
-      <h3>Appendix B: Analysis Models</h3>
-      <p>Optionally, include any pertinent analysis models, such as data flow diagrams, class diagrams, state-transition
-        diagrams, or entity-relationship diagrams.
-      </p>
-    </section>
-    <section id="appendix-c">
-      <h3>Appendix C: To Be Determined List</h3>
-      <p>Collect a numbered list of the TBD (to be determined) references that remain in the SRS so they can be tracked
-        to
-        closure.
-      </p>
-    </section>
-  </section>
 </body>
 
 </html>
