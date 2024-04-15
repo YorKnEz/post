@@ -1,0 +1,40 @@
+.userRow {
+    width: 100%;
+    float: left;
+
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+        > div {
+            h3, h4 {
+                margin: 0;
+            }
+        }
+
+    &__image {
+        width: 10%;
+        aspect-ratio: 1;
+        margin-right: 1rem;
+    }
+
+    &__score {
+        //justify-self: flex-end;
+        margin-left: auto;
+    }
+
+    &__name {
+    }
+
+    &__role {
+        font-size: 0.8rem;
+        font-weight: 400;
+        color: grey;
+    }
+}
+
+@media only screen and (max-width: 300px) {
+    .userRow__image {
+        display: none;
+    }
+}

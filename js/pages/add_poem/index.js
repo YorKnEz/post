@@ -1,0 +1,26 @@
+import { Form } from '../../components/form.js'
+import { SuggestionInput } from '../../components/suggestionInput.js'
+import { Navbar } from '../../components/nav.js'
+import { Search } from '../../components/search.js'
+
+window.navbar = new Navbar()
+window.searchBar = new Search()
+
+window.onresize = () => {
+    navbar.copySearchInput()
+}
+
+window.byInput = new SuggestionInput('by', 'by-suggestions')
+window.albumInput = new SuggestionInput('album', 'album-suggestions')
+
+document.onclick = (ev) => {
+    byInput.disappear(ev)
+    albumInput.disappear(ev)
+}
+
+window.form = new Form(
+    ['by', 'title', 'language', 'lyrics', 'date', 'album'],
+    (data, setError) => {
+        console.log(data)
+    }
+)
