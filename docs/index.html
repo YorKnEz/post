@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Post Documentation</title>
+  <link rel="stylesheet" href="css/scholarly.min.css">
+  <script src="js/scholarly.min.js"></script>
+</head>
+
+<body prefix="schema: http://schema.org">
+  <header>
+    <div class="banner">
+      <img src="scholarly-html.svg" width="227" height="50" alt="Scholarly HTML logo">
+      <div class="status">Post Documentation</div>
+    </div>
+    <h1>PoST (Poem Smart Translator)</h1>
+  </header>
+  <div role="contentinfo">
+    <dl>
+      <dt>Authors</dt>
+      <dd>
+        Mitreanu Alexandru
+        &amp;
+        Rotariu George-Flavian
+      </dd>
+      <dt>Source</dt>
+      <dd>
+        <a href="https://github.com/YorKnEz/web">The repository of the project</a>
+      </dd>
+      <dt>License</dt>
+      <dd>
+        <a href="http://creativecommons.org/licenses/by/4.0/">CC-BY</a>
+      </dd>
+    </dl>
+  </div>
+  <section id="introduction" role="doc-introduction">
+    <h2>Introduction</h2>
+    <section id="purpose">
+      <h3>Purpose</h3>
+      <p>
+        Realize a Web application for translating poems commented by multiple users. Translation for the poem or a
+        fragment of it may be provided with the afferent annotation. The system will support lyric annotation with the
+        possibility of sharing on social platforms like Tumblr or WordPress, based on the public APIs. Statistics will
+        be provided regarding the activity on the platform (e.g. the most active translator, the most annotated poem,
+        ...). The new translations will be exposed on an RSS flux. The essential functionalities will be provided by our
+        own API, built based on the architectural styles of REST or GraphQL.
+      </p>
+    </section>
+    <section id="audience">
+      <h3>Intended Audience and Reading Suggestions</h3>
+      <p>
+        This document is intended for those that want to take a look at our source code. This document provides detailed
+        documentation for our product and is required to read before taking a look at the source code. The document is
+        intended to be read in the given order.
+      </p>
+    </section>
+    <section id="scope">
+      <h3>Product Scope</h3>
+      <p>
+        Product that aims to provide internationalization of poems by the community and ease of sharing knowledge about
+        said poems.
+      </p>
+    </section>
+    <section id="references">
+      <h3>References</h3>
+      <ol role="doc-bibliography">
+        <li typeof="schema:WebPage" role="doc-biblioentry"
+          resource="https://m2.material.io/design/layout/responsive-layout-grid.html#columns-gutters-and-margins"
+          property="schema:citation" id="ref-material-design">
+          <cite property="schema:name">
+            <a href="https://m2.material.io/design/layout/responsive-layout-grid.html#columns-gutters-and-margins">Responsive
+              layout grid</a>
+          </cite>,
+          by <span property="schema:author" typeof="schema:Organization">
+            <span property="schema:legalName">Material design</span>
+          </span>
+          <span property="schema:potentialAction" typeof="schema:ReadAction">
+            <meta property="schema:actionStatus" content="CompletedActionStatus">
+            (accessed on
+            <time property="schema:endTime" datatype="xsd:date" datetime="2024-04-15">15 Apr 2024</time>)
+          </span>.
+        </li>
+        <li typeof="schema:WebPage" role="doc-biblioentry" resource="https://genius.com" property="schema:citation"
+          id="ref-material-design">
+          <cite property="schema:name">
+            <a href="https://genius.com">Genius</a>
+          </cite>,
+          by <span property="schema:author" typeof="schema:Organization">
+            <span property="schema:legalName">Genius</span>
+          </span>
+          <span property="schema:potentialAction" typeof="schema:ReadAction">
+            <meta property="schema:actionStatus" content="CompletedActionStatus">
+            (accessed on
+            <time property="schema:endTime" datatype="xsd:date" datetime="2024-04-15">15 Apr 2024</time>)
+          </span>.
+        </li>
+        <li typeof="schema:WebPage" role="doc-biblioentry"
+          resource="https://github.com/rick4470/IEEE-SRS-Tempate#readme" property="schema:citation"
+          id="ref-material-design">
+          <cite property="schema:name">
+            <a href="https://github.com/rick4470/IEEE-SRS-Tempate#readme">IEEE System Requirements Specification
+              Template</a>
+          </cite>,
+          by <span property="schema:author" typeof="schema:Person">
+            <a href="https://github.com/rick4470">
+              <span property="schema:name">Rick</span>
+            </a>
+          </span>
+          <span property="schema:potentialAction" typeof="schema:ReadAction">
+            <meta property="schema:actionStatus" content="CompletedActionStatus">
+            (accessed on
+            <time property="schema:endTime" datatype="xsd:date" datetime="2024-04-15">15 Apr 2024</time>)
+          </span>.
+        </li>
+      </ol>
+    </section>
+  </section>
+  <section id="description">
+    <h2>Overall Description</h2>
+    <section id="perspective">
+      <h3>Product Perspective</h3>
+      <p>
+        This product originated as a <a href="https://tehnologii-web.vercel.app/proiecte">faculty project</a> for the
+        Web Technologies subject.
+      </p>
+    </section>
+    <section id="functions">
+      <h3>Product Functions</h3>
+      <section id="regular-user-functions">
+        <h3>Regular user functions</h3>
+        <ul>
+          <li>Create an account</li>
+          <li>Log into an account</li>
+          <li>Reset password</li>
+          <li>See the latest lyrics/translations</li>
+          <li>See global statistics</li>
+          <li>See user profiles</li>
+          <li>See lyrics/annotations</li>
+          <li>Add lyrics/annotations</li>
+          <li>Edit lyrics/annotations</li>
+          <li>Share lyrics/annotations on social media</li>
+          <li>Change the language on the lyrics page</li>
+          <li>Become a poet</li>
+        </ul>
+      </section>
+      <section id="poet-user-functions">
+        <h3>Poet user (new) functions</h3>
+        <ul>
+          <li>Can edit without requesting permission any of his lyrics and annotations on his lyrics</li>
+        </ul>
+      </section>
+      <section id="admin-user-functions">
+        <h3>Admin user (new) functions</h3>
+        <ul>
+          <li>Approve/deny poets on the app</li>
+          <li>Approve/deny new lyrics/annotations</li>
+          <li>Approve/deny new edits of lyrics/annotations</li>
+        </ul>
+      </section>
+    </section>
+    <section id="classes-and-characteristics">
+      <h3>User Classes and Characteristics</h3>
+      <p>
+        There will be three types of users which were already sketched in the <a href="#functions">Product functions</a>
+        section:
+      </p>
+      <ul>
+        <li>Regular</li>
+        <li>Poet</li>
+        <li>Admin</li>
+      </ul>
+      <section id="regular-user">
+        <h4>Regular</h4>
+        <p>
+          The regular user is the average user that uses the application. He can contribute to lyrics by editing them
+          and annotationg them, but he requires the approval of an admin.
+        </p>
+      </section>
+      <section id="poet-user">
+        <h4>Poet</h4>
+        <p>
+          The poet is a special kind of user that has the abillity to do whatever he wants without requesting
+          permission to any piece of content that is his own.
+        </p>
+      </section>
+      <section id="admin-user">
+        <h4>Admin</h4>
+        <p>
+          The admin is the one that approves the requests of the regular users and, in general, handles moderation of
+          the application. He can approve poets on the app, new poems, new annotations, edits, etc.
+        </p>
+      </section>
+    </section>
+    <section id="environment">
+      <h3>Operating Environment</h3>
+      <p>
+        The app has been extensively tested only on Firefox browser. It may be used on other browsers as well but we do
+        not guarantee 100% compatibility.
+      </p>
+    </section>
+    <section id="constraints">
+      <h3>Design and Implementation Constraints</h3>
+      <p>
+        The main limitation of this product is the fact that we are not allowed to use any frameworks for this project,
+        everything must be done from scratch. At the same time, there is no guarantee that the pages of the app are 100%
+        compatbile with other browsers than Firefox.
+      </p>
+    </section>
+    <section id="user-docs">
+      <h3>User Documentation</h3>
+      <p>
+        We do not provide any kind of user documentation. Our application is designed to be easy to use and intuitive
+        and, as such, we do not see the need for a user manual or any other document of that type.
+      </p>
+    </section>
+    <section id="dependencies">
+      <h3>Assumptions and Dependencies</h3>
+      <p>
+        We will use APIs of social media apps in order to provide the share feature.
+      </p>
+    </section>
+  </section>
+  <section id="external-interface-requirements">
+    <h2>External Interface Requirements</h2>
+    <section id="user-interfaces">
+      <h3>TODO - User Interfaces</h3>
+      <p>
+        Describe the logical characteristics of each interface between the software product and the users. This may
+        include
+        sample screen images, any GUI standards or product family style guides that are to be followed, screen layout
+        constraints, standard buttons and functions (e.g., help) that will appear on every screen, keyboard shortcuts,
+        error
+        message display standards, and so on. Define the software components for which a user interface is needed.
+        Details
+        of
+        the user interface design should be documented in a separate user interface specification.
+      </p>
+    </section>
+    <section id="software-interfaces">
+      <h3>Software Interfaces</h3>
+      <p>
+        The applications communicates with our REST API.
+      </p>
+    </section>
+    <section id="comms-interfaces">
+      <h3>Communications Interfaces</h3>
+      <p>
+        The app will communicate with our API using the HTTP protocol.
+      </p>
+    </section>
+  </section>
+  <section id="system-features">
+    <h2>TODO - System Features</h2>
+    <p>This template illustrates organizing the functional requirements for the product by system features, the major
+      services provided by the product. You may prefer to organize this section by use case, mode of operation, user
+      class,
+      object class, functional hierarchy, or combinations of these, whatever makes the most logical sense for your
+      product.
+    </p>
+    <section id="feature-1">
+      <h3>System Feature 1</h3>
+      <p>Don’t really say “System Feature 1.” State the feature name in just a few words.
+      </p>
+      <section id="description-priority">
+        <h4>Description and Priority</h4>
+        <p>Provide a short description of the feature and indicate whether it is of High, Medium, or Low priority. You
+          could
+          also
+          include specific priority component ratings, such as benefit, penalty, cost, and risk (each rated on a
+          relative
+          scale
+          from a low of 1 to a high of 9).</p>
+      </section>
+      <section id="stimulus">
+        <h4>Stimulus/Response Sequences</h4>
+        <p>List the sequences of user actions and system
+          responses that stimulate the behavior defined for this feature. These will correspond to the dialog elements
+          associated with use cases.</p>
+      </section>
+      <section id="functional-requirements">
+        <h4>Functional Requirements</h4>
+        <p>Itemize the detailed functional requirements associated
+          with
+          this feature. These are the software capabilities that must be present in order for the user to carry out the
+          services
+          provided by the feature, or to execute the use case. Include how the product should respond to anticipated
+          error
+          conditions or invalid inputs. Requirements should be concise, complete, unambiguous, verifiable, and
+          necessary.
+          Use
+          “TBD” as a placeholder to indicate when necessary information is not yet available.
+        </p>
+        <p>Each requirement should be uniquely identified with a sequence number or a meaningful tag of some kind.</p>
+      </section>
+    </section>
+    <section id="feature-1">
+      <h3>System Feature 1</h3>
+      <p>Don’t really say “System Feature 1.” State the feature name in just a few words.
+      </p>
+      <section id="description-priority">
+        <h4>Description and Priority</h4>
+        <p>Provide a short description of the feature and indicate whether it is of High, Medium, or Low priority. You
+          could
+          also
+          include specific priority component ratings, such as benefit, penalty, cost, and risk (each rated on a
+          relative
+          scale
+          from a low of 1 to a high of 9).</p>
+      </section>
+      <section id="stimulus">
+        <h4>Stimulus/Response Sequences</h4>
+        <p>List the sequences of user actions and system
+          responses that stimulate the behavior defined for this feature. These will correspond to the dialog elements
+          associated with use cases.</p>
+      </section>
+      <section id="functional-requirements">
+        <h4>Functional Requirements</h4>
+        <p>Itemize the detailed functional requirements associated
+          with
+          this feature. These are the software capabilities that must be present in order for the user to carry out the
+          services
+          provided by the feature, or to execute the use case. Include how the product should respond to anticipated
+          error
+          conditions or invalid inputs. Requirements should be concise, complete, unambiguous, verifiable, and
+          necessary.
+          Use
+          “TBD” as a placeholder to indicate when necessary information is not yet available.
+        </p>
+        <p>Each requirement should be uniquely identified with a sequence number or a meaningful tag of some kind.</p>
+      </section>
+    </section>
+  </section>
+  <section id="other-nonfunctional-requirements">
+    <h2>Other Nonfunctional Requirements</h2>
+    <section id="security">
+      <h3>Security Requirements</h3>
+      <p>
+        The app will use a secure communication protocol implemented by us over HTTP using the REST API in order to
+        provide secure authentication and encrypted passwords.
+      </p>
+    </section>
+    <section id="business-rules">
+      <h3>Business Rules</h3>
+      <p>
+        See <a href="#classes-and-characteristics">User Classes and Characteristics</a>.
+      </p>
+    </section>
+  </section>
+  <section id="other-requirements">
+    <h2>TODO - Other Requirements</h2>
+    <p>Define any other requirements not covered elsewhere in the SRS. This might include database requirements,
+      internationalization requirements, legal requirements, reuse objectives for the project, and so on. Add any new
+      sections that are pertinent to the project.
+    </p>
+    <section id="appenidx-a">
+      <h3>Appendix A: Glossary</h3>
+      <p>Define all the terms necessary to properly interpret the SRS, including acronyms and abbreviations. You may
+        wish
+        to
+        build a separate glossary that spans multiple projects or the entire organization, and just include terms
+        specific
+        to
+        a single project in each SRS.
+      </p>
+    </section>
+    <section id="appendix-b">
+      <h3>Appendix B: Analysis Models</h3>
+      <p>Optionally, include any pertinent analysis models, such as data flow diagrams, class diagrams, state-transition
+        diagrams, or entity-relationship diagrams.
+      </p>
+    </section>
+    <section id="appendix-c">
+      <h3>Appendix C: To Be Determined List</h3>
+      <p>Collect a numbered list of the TBD (to be determined) references that remain in the SRS so they can be tracked
+        to
+        closure.
+      </p>
+    </section>
+  </section>
+</body>
+
+</html>
