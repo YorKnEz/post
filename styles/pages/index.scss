@@ -2,61 +2,12 @@
 
 @import '../components/poemCard.scss';
 @import '../components/userRow.scss';
+@import '../components/listing.scss';
 
 .news {
     margin-top: 2rem;
 }
 
-.listing {
-    display: flex;
-    flex-direction: column;
-    margin: 0 0 5rem 0;
-    //padding: 0 1rem;
+// .chart {
 
-    ol {
-        padding: 0 1rem;
-        line-gap-override: 0;
-
-        a {
-            text-decoration: none;
-            color: var(--text-black)
-        }
-    }
-
-    &__item {
-        width: 100%;
-        //margin: 1rem 0;
-        display: flex;
-        justify-content: space-between;
-        padding: 0.5rem 0;
-        border-bottom: 1px solid var(--text-black);
-
-        &:nth-child(2) {
-            margin-top: 0;
-        }
-    
-        &:last-child {
-            margin-bottom: 0;
-        }
-
-        &--heading {
-            font-size: 0.7rem;
-        }
-    }
-
-    &__position {
-        width: 15%;
-        align-self: center;
-    }
-
-}
-
-.chart {
-
-}
-
-@media only screen and (max-width: 600px) {
-    .listing__item--heading {
-        display: none;
-    }
-}
+// }
