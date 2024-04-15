@@ -7,6 +7,11 @@
     <title>Post Documentation</title>
     <link rel="stylesheet" href="css/scholarly.min.css">
     <script src="js/scholarly.min.js"></script>
+    <style>
+        figure img {
+            width: 100%;
+        }
+    </style>
 </head>
 
 <body prefix="schema: http://schema.org">
@@ -264,7 +269,7 @@
         </section>
     </section>
     <section id="system-features">
-        <h2>TODO - System Features</h2>
+        <h2>System Features</h2>
         <p>
             In what follows, we will present features by pages (or components if needed)
         </p>
@@ -486,6 +491,55 @@
                         The user can simply scroll down the page and click the cards shown on each section to learn more
                         about the specific thing they are interested in (e.g. user may click on the card of a top
                         contributor to see their profile and learn more about their contributions).
+                    </p>
+                </section>
+            </section>
+        </section>
+        <section id="profile">
+            <h3>Profile</h3>
+            <section id="description-priority">
+                <h4>Description and Priority</h4>
+                <h5>Priority: MEDIUM</h5>
+                <p>
+                    The profile page of the user. Here the user can see their name, role and email and their personal
+                    statistics, such as number of
+                    translations and annotations. Besides, the user may see the poets to which they contributed the most
+                    and the history of their activity: annotations, translations and the annotations and translations
+                    that are still pending. Lastly, the user has a "Become a poet" button which they might want to press
+                    if they want to become a poet.
+                </p>
+                <figure>
+                    <img src="/docs/img/profile.png" alt="Profile page">
+                    <figcaption>Profile page</figcaption>
+                </figure>
+            </section>
+            <section id="stimulus">
+                <h4>Stimulus/Response Sequences</h4>
+                <p>
+                    The user wants to see their personal statistics or their history. They can access the profile page
+                    through the navbar/sidebar.
+                </p>
+            </section>
+            <section id="functional-requirements">
+                <h4>Functional Requirements</h4>
+                <section id="profile-stats">
+                    <h5>Stats</h5>
+                    <p>
+                        The user can see their number of annotations and translations
+                    </p>
+                </section>
+                <section id="profile-history">
+                    <h5>History</h5>
+                    <p>
+                        The user can see their past annotations and translations and the ones that are still pending by
+                        selecting which of those categories to view.
+                    </p>
+                </section>
+                <section id="profile-become-a-poet">
+                    <h5>Becoming a poet</h5>
+                    <p>
+                        If the user wants to become a poet they will press this button and will receive an email with
+                        further details regarding the transition to a poet account.
                     </p>
                 </section>
             </section>
