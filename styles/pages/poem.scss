@@ -1,26 +1,10 @@
-@import 'theme.scss';
-@import 'typography.scss';
-
-body {
-    margin: 0;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 500;
-    font-size: 1rem;
-    background-color: var(--text-white);
-    color: var(--text-black);
-}
-
-i {
-    color: var(--text-black);
-}
-
-.nav {
-    background-color: var(--gradient-1);
-    height: 48px;
-    position: sticky;
-    top: 0px;
-    z-index: 999;
-}
+// .nav {
+//     background-color: var(--gradient-1);
+//     height: 48px;
+//     position: sticky;
+//     top: 0px;
+//     z-index: 999;
+// }
 
 .poem {
     &__header {

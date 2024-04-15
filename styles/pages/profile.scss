@@ -1,0 +1,34 @@
+@import '../common.scss';
+
+.profile {
+    &__header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #7fffd450;
+
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+
+        margin-bottom: 4rem;
+    }
+
+    &__avatar {
+        border-radius: 100%;
+        width: 100%;
+        aspect-ratio: 1;
+    }
+
+    &__info {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__contact {
+        margin: 0.5rem 0;
+    }
+
+
+
+}

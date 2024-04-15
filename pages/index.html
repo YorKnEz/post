@@ -6,9 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://kit.fontawesome.com/1ea9bc0996.js" crossorigin="anonymous"></script>
 
-    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/pages/index.css">
 
-    <title>PoST</title>
+    <title>Profile</title>
 </head>
 
 <body>
@@ -40,7 +41,7 @@
     </nav>
     <nav class="sidebar" id="sidebar">
         <div class="sidebar__user">
-            <img class="sidebar__pfp" src="img/avatar.png">
+            <img class="sidebar__pfp" src="/img/avatar.png">
             <div class="sidebar__info">
                 <span class="sidebar__username">Eminem</span>
                 <span class="sidebar__role">Poet</span>
@@ -57,7 +58,7 @@
         </a>
         <a class="sidebar__item">
             <i class="fa-solid fa-user-plus sidebar__icon"></i>
-            <span>Sign up</span>
+            <span>Register</span>
         </a>
         <a class="sidebar__item sidebar__item--nav" onclick="addPoem()">
             <i class="fa-solid fa-plus sidebar__icon"></i>
@@ -103,7 +104,7 @@
                                 <br> -->
                     </span>
                 </section>
-                <img class="poemCard__image" src="img/avatar.png" alt="Picture Cover of Rap God by Eminem">
+                <img class="poemCard__image" src="/img/avatar.png" alt="Picture Cover of Rap God by Eminem">
             </div>
             <div class="poemCard poemCard--small col-xs-2 col-sm-2 col-md-3 ">
                 <div class="poemCard__text">
@@ -129,7 +130,7 @@
                         <br> -->
                     </span>
                 </div>
-                <img class="poemCard__image" src="img/avatar.png" alt="Picture Cover of Rap God by Eminem">
+                <img class="poemCard__image" src="/img/avatar.png" alt="Picture Cover of Rap God by Eminem">
             </div>
             <div class="poemCard poemCard--small col-xs-2 col-sm-2 col-md-3 ">
                 <div class="poemCard__text">
@@ -155,7 +156,7 @@
                         <br>
                     </span>
                 </div>
-                <img class="poemCard__image" src="img/avatar.png" alt="Picture Cover of Rap God by Eminem">
+                <img class="poemCard__image" src="/img/avatar.png" alt="Picture Cover of Rap God by Eminem">
             </div>
             <div class="poemCard poemCard--small col-xs-2 col-sm-2 col-md-3 ">
                 <div class="poemCard__text">
@@ -181,7 +182,7 @@
                         <br> -->
                     </span>
                 </div>
-                <img class="poemCard__image" src="img/avatar.png" alt="Picture Cover of Rap God by Eminem">
+                <img class="poemCard__image" src="/img/avatar.png" alt="Picture Cover of Rap God by Eminem">
             </div>
             <div class="poemCard poemCard--small col-xs-2 col-sm-2 col-md-3 ">
                 <div class="poemCard__text">
@@ -207,14 +208,15 @@
                         <br> -->
                     </span>
                 </div>
-                <img class="poemCard__image" src="img/avatar.png" alt="Picture Cover of Rap God by Eminem">
+                <img class="poemCard__image" src="/img/avatar.png" alt="Picture Cover of Rap God by Eminem">
             </div>
         </section>
         <hr>
         <section class="row listing col-xs-4 col-sm-8 col-md-12">
             <h1>Poem Chart</h1>
             <ol>
-                <li class="listing__item listing__item--heading">
+                <a href="/pages/poem/">
+                    <li class="listing__item listing__item--heading">
                     <span class="listing__position">Position</span>
                     <span class="poemRow">
                         <span class="poemRow__image poemRow__image--heading"></span>
@@ -222,52 +224,63 @@
                         <span class="poemRow__author">Author</span>
                         <span class="poemRow__views">Views</span>
                     </span>
-                </li>
-                <li class="listing__item">
-                    <span class="listing__position">1</span>
-                    <span class="poemRow">
-                        <img class="poemRow__image" src="img/avatar.png" alt="Poem2 Cover Picture">
-                        <h3 class="poemRow__title">Poem2</h3>
-                        <h4 class="poemRow__author">Auth2</h4>
-                        <span class="poemRow__views">100450</span>
-                    </span>
-                </li>
-                <li class="listing__item">
-                    <span class="listing__position">3</span>
-                    <span class="poemRow">
-                        <img class="poemRow__image" src="img/avatar.png" alt="Poem3 Cover Picture">
-                        <h3 class="poemRow__title">Poem3</h3>
-                        <h4 class="poemRow__author">Auth3</h4>
-                        <span class="poemRow__views">100024</span>
-                    </span>
-                </li>
-                <li class="listing__item">
-                    <span class="listing__position">2</span>
-                    <span class="poemRow">
-                        <img class="poemRow__image" src="img/avatar.png" alt="Poem4 Cover Picture">
-                        <h3 class="poemRow__title">Poem4</h3>
-                        <h4 class="poemRow__author">Auth4</h4>
-                        <span class="poemRow__views">85400</span>
-                    </span>
-                </li>
-                <li class="listing__item">
-                    <span class="listing__position">5</span>
-                    <span class="poemRow">
-                        <img class="poemRow__image" src="img/avatar.png" alt="Poem5 Cover Picture">
-                        <h3 class="poemRow__title">Poem5</h3>
-                        <h4 class="poemRow__author">Auth5</h4>
-                        <span class="poemRow__views">75004</span>
-                    </span>
-                </li>
-                <li class="listing__item">
-                    <span class="listing__position">6</span>
-                    <span class="poemRow">
-                        <img class="poemRow__image" src="img/avatar.png" alt="Poem6 Cover Picture">
-                        <h3 class="poemRow__title">Poem6</h3>
-                        <h4 class="poemRow__author">Auth6</h4>
-                        <span class="poemRow__views">73500</span>
-                    </span>
-                </li>
+                    </li>
+                </a>
+                <a href="/pages/poem/">
+                    <li class="listing__item">
+                        <span class="listing__position">1</span>
+                        <span class="poemRow">
+                            <img class="poemRow__image" src="/img/avatar.png" alt="Poem1 Cover Picture">
+                            <h3 class="poemRow__title">Poem1</h3>
+                            <h4 class="poemRow__author">Auth1</h4>
+                            <span class="poemRow__views">100450</span>
+                        </span>
+                    </li>
+                </a>
+                <a href="/pages/poem/">
+                    <li class="listing__item">
+                        <span class="listing__position">1</span>
+                        <span class="poemRow">
+                            <img class="poemRow__image" src="/img/avatar.png" alt="Poem1 Cover Picture">
+                            <h3 class="poemRow__title">Poem1</h3>
+                            <h4 class="poemRow__author">Auth1</h4>
+                            <span class="poemRow__views">100450</span>
+                        </span>
+                    </li>
+                </a>
+                <a href="/pages/poem/">
+                    <li class="listing__item">
+                        <span class="listing__position">1</span>
+                        <span class="poemRow">
+                            <img class="poemRow__image" src="/img/avatar.png" alt="Poem1 Cover Picture">
+                            <h3 class="poemRow__title">Poem1</h3>
+                            <h4 class="poemRow__author">Auth1</h4>
+                            <span class="poemRow__views">100450</span>
+                        </span>
+                    </li>
+                </a>
+                <a href="/pages/poem/">
+                    <li class="listing__item">
+                        <span class="listing__position">1</span>
+                        <span class="poemRow">
+                            <img class="poemRow__image" src="/img/avatar.png" alt="Poem1 Cover Picture">
+                            <h3 class="poemRow__title">Poem1</h3>
+                            <h4 class="poemRow__author">Auth1</h4>
+                            <span class="poemRow__views">100450</span>
+                        </span>
+                    </li>
+                </a>
+                <a href="/pages/poem/">
+                    <li class="listing__item">
+                        <span class="listing__position">1</span>
+                        <span class="poemRow">
+                            <img class="poemRow__image" src="/img/avatar.png" alt="Poem1 Cover Picture">
+                            <h3 class="poemRow__title">Poem1</h3>
+                            <h4 class="poemRow__author">Auth1</h4>
+                            <span class="poemRow__views">100450</span>
+                        </span>
+                    </li>
+                </a>
             </ol>
         </section>
         <hr>
@@ -296,7 +309,7 @@
                         <br> -->
                     </span>
                 </div>
-                <img class="poemCard__image" src="img/avatar.png" alt="Picture Cover of Rap God by Eminem">
+                <img class="poemCard__image" src="/img/avatar.png" alt="Picture Cover of Rap God by Eminem">
             </div>
             <div class="poemCard poemCard--small col-xs-2 col-sm-2 col-md-3 ">
                 <div class="poemCard__text">
@@ -322,7 +335,7 @@
                         <br>
                     </span>
                 </div>
-                <img class="poemCard__image" src="img/avatar.png" alt="Picture Cover of Rap God by Eminem">
+                <img class="poemCard__image" src="/img/avatar.png" alt="Picture Cover of Rap God by Eminem">
             </div>
             <div class="poemCard poemCard--small col-xs-2 col-sm-2 col-md-3 ">
                 <div class="poemCard__text">
@@ -348,7 +361,7 @@
                         <br> -->
                     </span>
                 </div>
-                <img class="poemCard__image" src="img/avatar.png" alt="Picture Cover of Rap God by Eminem">
+                <img class="poemCard__image" src="/img/avatar.png" alt="Picture Cover of Rap God by Eminem">
             </div>
             <div class="poemCard poemCard--small col-xs-2 col-sm-2 col-md-3 ">
                 <div class="poemCard__text">
@@ -374,7 +387,7 @@
                         <br> -->
                     </span>
                 </div>
-                <img class="poemCard__image" src="img/avatar.png" alt="Picture Cover of Rap God by Eminem">
+                <img class="poemCard__image" src="/img/avatar.png" alt="Picture Cover of Rap God by Eminem">
             </div>
             <div class="poemCard poemCard--small col-xs-2 col-sm-2 col-md-3 ">
                 <div class="poemCard__text">
@@ -400,7 +413,7 @@
                         <br> -->
                     </span>
                 </div>
-                <img class="poemCard__image" src="img/avatar.png" alt="Picture Cover of Rap God by Eminem">
+                <img class="poemCard__image" src="/img/avatar.png" alt="Picture Cover of Rap God by Eminem">
             </div>
             <div class="poemCard poemCard--small col-xs-2 col-sm-2 col-md-3 ">
                 <div class="poemCard__text">
@@ -426,7 +439,7 @@
                         <br>
                     </span>
                 </div>
-                <img class="poemCard__image" src="img/avatar.png" alt="Picture Cover of Rap God by Eminem">
+                <img class="poemCard__image" src="/img/avatar.png" alt="Picture Cover of Rap God by Eminem">
             </div>
             <div class="poemCard poemCard--small col-xs-2 col-sm-2 col-md-3 ">
                 <div class="poemCard__text">
@@ -452,7 +465,7 @@
                         <br> -->
                     </span>
                 </div>
-                <img class="poemCard__image" src="img/avatar.png" alt="Picture Cover of Rap God by Eminem">
+                <img class="poemCard__image" src="/img/avatar.png" alt="Picture Cover of Rap God by Eminem">
             </div>
             <div class="poemCard poemCard--small col-xs-2 col-sm-2 col-md-3 ">
                 <div class="poemCard__text">
@@ -478,7 +491,7 @@
                         <br> -->
                     </span>
                 </div>
-                <img class="poemCard__image" src="img/avatar.png" alt="Picture Cover of Rap God by Eminem">
+                <img class="poemCard__image" src="/img/avatar.png" alt="Picture Cover of Rap God by Eminem">
             </div>
         </section>
         <hr>
@@ -492,116 +505,136 @@
                         <span class="userRow__score">Score</span>
                     </article>
                 </li>
-                <li class="listing__item">
-                    <span class="listing__position">1</span>
-                    <article class="userRow">
-                        <img class="userRow__image" src="img/avatar.png" alt="User1 Profile Picture">
-                        <div>
-                            <h3 class="userRow__name">User1</h3>
-                            <h4 class="userRow__role">Moderator</h4>
-                        </div>
-                        <span class="userRow__score">1004</span>
-                    </article>
-                </li>
-                <li class="listing__item">
-                    <span class="listing__position">2</span>
-                    <article class="userRow">
-                        <img class="userRow__image" src="img/avatar.png" alt="User1 Profile Picture">
-                        <div>
-                            <h3 class="userRow__name">User2</h3>
-                            <h4 class="userRow__role">Poet</h4>
-                        </div>
-                        <span class="userRow__score">930</span>
-                    </article>
-                </li>
-                <li class="listing__item">
-                    <span class="listing__position">3</span>
-                    <article class="userRow">
-                        <img class="userRow__image" src="img/avatar.png" alt="User1 Profile Picture">
-                        <div>
-                            <h3 class="userRow__name">User3</h3>
-                            <h4 class="userRow__role">Editor</h4>
-                        </div>
-                        <span class="userRow__score">760</span>
-                    </article>
-                </li>
-                <li class="listing__item">
-                    <span class="listing__position">4</span>
-                    <article class="userRow">
-                        <img class="userRow__image" src="img/avatar.png" alt="User1 Profile Picture">
-                        <div>
-                            <h3 class="userRow__name">User4</h3>
-                            <h4 class="userRow__role">Editor</h4>
-                        </div>
-                        <span class="userRow__score">600</span>
-                    </article>
-                </li>
-                <li class="listing__item">
-                    <span class="listing__position">5</span>
-                    <article class="userRow">
-                        <img class="userRow__image" src="img/avatar.png" alt="User1 Profile Picture">
-                        <div>
-                            <h3 class="userRow__name">User5</h3>
-                            <h4 class="userRow__role">Editor</h4>
-                        </div>
-                        <span class="userRow__score">560</span>
-                    </article>
-                </li>
-                <li class="listing__item">
-                    <span class="listing__position">6</span>
-                    <article class="userRow">
-                        <img class="userRow__image" src="img/avatar.png" alt="User1 Profile Picture">
-                        <div>
-                            <h3 class="userRow__name">User6</h3>
-                            <h4 class="userRow__role">Editor</h4>
-                        </div>
-                        <span class="userRow__score">540</span>
-                    </article>
-                </li>
-                <li class="listing__item">
-                    <span class="listing__position">7</span>
-                    <article class="userRow">
-                        <img class="userRow__image" src="img/avatar.png" alt="User1 Profile Picture">
-                        <div>
-                            <h3 class="userRow__name">User7</h3>
-                            <h4 class="userRow__role">Editor</h4>
-                        </div>
-                        <span class="userRow__score">510</span>
-                    </article>
-                </li>
-                <li class="listing__item">
-                    <span class="listing__position">8</span>
-                    <article class="userRow">
-                        <img class="userRow__image" src="img/avatar.png" alt="User1 Profile Picture">
-                        <div>
-                            <h3 class="userRow__name">User8</h3>
-                            <h4 class="userRow__role">Editor</h4>
-                        </div>
-                        <span class="userRow__score">480</span>
-                    </article>
-                </li>
-                <li class="listing__item">
-                    <span class="listing__position">9</span>
-                    <article class="userRow">
-                        <img class="userRow__image" src="img/avatar.png" alt="User1 Profile Picture">
-                        <div>
-                            <h3 class="userRow__name">User9</h3>
-                            <h4 class="userRow__role">Editor</h4>
-                        </div>
-                        <span class="userRow__score">400</span>
-                    </article>
-                </li>
-                <li class="listing__item">
-                    <span class="listing__position">10</span>
-                    <article class="userRow">
-                        <img class="userRow__image" src="img/avatar.png" alt="User1 Profile Picture">
-                        <div>
-                            <h3 class="userRow__name">User10</h3>
-                            <h4 class="userRow__role">Editor</h4>
-                        </div>
-                        <span class="userRow__score">280</span>
-                    </article>
-                </li>
+                <a href="/pages/profile/">
+                    <li class="listing__item" href="profile.html">
+                        <span class="listing__position">1</span>
+                        <article class="userRow">
+                            <img class="userRow__image" src="/img/avatar.png" alt="User1 Profile Picture">
+                            <div>
+                                <h3 class="userRow__name">User1</h3>
+                                <h4 class="userRow__role">Moderator</h4>
+                            </div>
+                            <span class="userRow__score">1004</span>
+                        </article>
+                    </li>
+                </a>
+                <a href="/pages/profile/">
+                    <li class="listing__item" href="profile.html">
+                        <span class="listing__position">2</span>
+                        <article class="userRow">
+                            <img class="userRow__image" src="/img/avatar.png" alt="User1 Profile Picture">
+                            <div>
+                                <h3 class="userRow__name">User2</h3>
+                                <h4 class="userRow__role">Poet</h4>
+                            </div>
+                            <span class="userRow__score">930</span>
+                        </article>
+                    </li>
+                </a>
+                <a href="/pages/profile/">
+                    <li class="listing__item" href="profile.html">
+                        <span class="listing__position">3</span>
+                        <article class="userRow">
+                            <img class="userRow__image" src="/img/avatar.png" alt="User1 Profile Picture">
+                            <div>
+                                <h3 class="userRow__name">User3</h3>
+                                <h4 class="userRow__role">Editor</h4>
+                            </div>
+                            <span class="userRow__score">760</span>
+                        </article>
+                    </li>
+                </a>
+                <a href="/pages/profile/">
+                    <li class="listing__item" href="profile.html">
+                        <span class="listing__position">4</span>
+                        <article class="userRow">
+                            <img class="userRow__image" src="/img/avatar.png" alt="User1 Profile Picture">
+                            <div>
+                                <h3 class="userRow__name">User4</h3>
+                                <h4 class="userRow__role">Editor</h4>
+                            </div>
+                            <span class="userRow__score">600</span>
+                        </article>
+                    </li>
+                </a>
+                <a href="/pages/profile/">
+                    <li class="listing__item" href="profile.html">
+                        <span class="listing__position">5</span>
+                        <article class="userRow">
+                            <img class="userRow__image" src="/img/avatar.png" alt="User1 Profile Picture">
+                            <div>
+                                <h3 class="userRow__name">User5</h3>
+                                <h4 class="userRow__role">Editor</h4>
+                            </div>
+                            <span class="userRow__score">560</span>
+                        </article>
+                    </li>
+                </a>
+                <a href="/pages/profile/">
+                    <li class="listing__item" href="profile.html">
+                        <span class="listing__position">6</span>
+                        <article class="userRow">
+                            <img class="userRow__image" src="/img/avatar.png" alt="User1 Profile Picture">
+                            <div>
+                                <h3 class="userRow__name">User6</h3>
+                                <h4 class="userRow__role">Editor</h4>
+                            </div>
+                            <span class="userRow__score">540</span>
+                        </article>
+                    </li>
+                </a>
+                <a href="/pages/profile/">
+                    <li class="listing__item" href="profile.html">
+                        <span class="listing__position">7</span>
+                        <article class="userRow">
+                            <img class="userRow__image" src="/img/avatar.png" alt="User1 Profile Picture">
+                            <div>
+                                <h3 class="userRow__name">User7</h3>
+                                <h4 class="userRow__role">Editor</h4>
+                            </div>
+                            <span class="userRow__score">510</span>
+                        </article>
+                    </li>
+                </a>
+                <a href="/pages/profile/">
+                    <li class="listing__item" href="profile.html">
+                        <span class="listing__position">8</span>
+                        <article class="userRow">
+                            <img class="userRow__image" src="/img/avatar.png" alt="User1 Profile Picture">
+                            <div>
+                                <h3 class="userRow__name">User8</h3>
+                                <h4 class="userRow__role">Editor</h4>
+                            </div>
+                            <span class="userRow__score">480</span>
+                        </article>
+                    </li>
+                </a>
+                <a href="/pages/profile/">
+                    <li class="listing__item" href="profile.html">
+                        <span class="listing__position">9</span>
+                        <article class="userRow">
+                            <img class="userRow__image" src="/img/avatar.png" alt="User1 Profile Picture">
+                            <div>
+                                <h3 class="userRow__name">User9</h3>
+                                <h4 class="userRow__role">Editor</h4>
+                            </div>
+                            <span class="userRow__score">400</span>
+                        </article>
+                    </li>
+                </a>
+                <a href="/pages/profile/">
+                    <li class="listing__item" href="profile.html">
+                        <span class="listing__position">10</span>
+                        <article class="userRow">
+                            <img class="userRow__image" src="/img/avatar.png" alt="User1 Profile Picture">
+                            <div>
+                                <h3 class="userRow__name">User10</h3>
+                                <h4 class="userRow__role">Editor</h4>
+                            </div>
+                            <span class="userRow__score">280</span>
+                        </article>
+                    </li>
+                </a>
                 <!-- <div class="userRow listing__item">User2</div>
                     <div class="userRow listing__item">User3</div>
                     <div class="userRow listing__item">User4</div>
@@ -610,9 +643,9 @@
         </section>
     </main>
 
-    <script src="js/nav.js"></script>
-    <script src="js/search.js"></script>
-    <script src="js/utils.js"></script>
+    <script src="/js/components/nav.js"></script>
+    <script src="/js/components/search.js"></script>
+    <script src="/js/utils.js"></script>
 </body>
 
 </html>

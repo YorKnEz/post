@@ -1,33 +1,5 @@
-@import 'theme.scss';
-@import 'typography.scss';
-
-@import 'nav.scss';
-@import 'poemCard.scss';
-@import 'search.scss';
-@import 'sidebar.scss';
-@import 'layout.scss';
-@import 'userRow.scss';
-
-body {
-    margin: 0;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 500;
-    font-size: 1rem;
-    background-color: var(--text-white);
-    color: var(--text-black);
-
-    hr {
-        margin: 10rem 0;    
-    }
-}
-
-i {
-    color: var(--text-black);
-}
-
-.hidden {
-    display: none;
-}
+@import '../components/poemCard.scss';
+@import '../components/userRow.scss';
 
 .news {
     margin-top: 2rem;
@@ -42,6 +14,11 @@ i {
     ol {
         padding: 0 1rem;
         line-gap-override: 0;
+
+        a {
+            text-decoration: none;
+            color: var(--text-black)
+        }
     }
 
     &__item {
