@@ -4,10 +4,17 @@ export class Form {
         this.error = document.getElementById('form-error')
 
         if (this.fields.includes('password')) {
+            const password = document.getElementById('password')
+            const confirmPassword = document.getElementById('confirmPassword')
             document.getElementById('password-toggler').onclick = (ev) => {
-                const input = ev.target.previousElementSibling
+                password.type =
+                    password.type == 'password' ? 'text' : 'password'
+                
+                    if (confirmPassword) {
+                    confirmPassword.type =
+                        confirmPassword.type == 'password' ? 'text' : 'password'
+                }
 
-                input.type = input.type == 'password' ? 'text' : 'password'
                 ev.target.classList.toggle('fa-eye')
                 ev.target.classList.toggle('fa-eye-slash')
             }
