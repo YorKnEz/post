@@ -25,7 +25,7 @@
     }
 
     &--span {
-        width: 100%;
+        width: calc(100% - 32px - 2px);
     }
 
     &--transparent {
