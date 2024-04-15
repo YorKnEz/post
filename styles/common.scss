@@ -1,6 +1,9 @@
+@import 'common/layout.scss';
+@import 'common/nav.scss';
 @import 'common/theme.scss';
 @import 'common/typography.scss';
-@import 'common/layout.scss';
+@import 'common/sidebar.scss';
+@import 'common/search.scss';
 
 body {
     margin: 0;
@@ -9,6 +12,10 @@ body {
     font-size: 1rem;
     background-color: var(--text-white);
     color: var(--text-black);
+
+    hr {
+        margin: 10rem 0;
+    }
 }
 
 i {
