@@ -1,32 +1,19 @@
 @import '../common.scss';
 
-// .nav {
-//     background-color: var(--gradient-1);
-//     height: 48px;
-//     position: sticky;
-//     top: 0px;
-//     z-index: 999;
-// }
+@import '../components/annotation.scss';
+@import '../components/button.scss';
+@import '../components/dropdown.scss';
+@import '../components/input.scss';
+@import '../components/share.scss';
 
 .poem {
-    &__header {
-        background: linear-gradient(var(--primary), var(--gradient-1));
-        color: var(--text-white);
-        display: flex;
-        justify-content: center;
-
-        i {
-            color: var(--text--white);
-        }
-    }
-
     &__avatar-container {
         justify-self: end;
         max-height: 300px;
     }
 
     &__avatar {
-        width: 340px;
+        width: 320px;
         aspect-ratio: 1;
     }
 
@@ -47,6 +34,7 @@
 
     &__info {
         display: flex;
+        margin-bottom: 1rem;
     }
 
     &__item {
@@ -63,14 +51,29 @@
 
     &__content {
         color: var(--text-black);
-        padding: 0 1rem;
-        margin: 2rem 0;
     }
 
     &__content-header {
         display: flex;
         margin: 2rem 0;
         font-size: 0.8rem;
+    }
+
+    &__controls {
+        display: flex;
+        margin: 2rem 0;
+    }
+
+    &__control {
+        margin: 0 0.5rem;
+
+        &:first-child {
+            margin-left: 0;
+        }
+
+        &:last-child {
+            margin-right: 0;
+        }
     }
 
     &__lyrics {
@@ -84,17 +87,22 @@
         font-size: 0.8rem;
     }
 
-    &__annotate {
-        position: absolute;
-        border: 1px solid var(--text-black);
-        color: var(--text-black);
-        background-color: var(--text-white);
-        padding: 4px 16px;
-        font-size: 1rem;
+    &__textarea {
+        width: calc(100% - 20px - 2px);
+        height: 10rem;
+        padding: 10px;
 
-        &:hover {
-            color: var(--text-white);
-            background-color: var(--text-black);
+        color: inherit;
+        background-color: transparent;
+        border: 1px solid inherit;
+
+        font-family: inherit;
+        font-size: inherit;
+        font-weight: inherit;
+        resize: none;
+
+        &:focus-visible {
+            outline: none;
         }
     }
 
@@ -110,13 +118,13 @@
 
 .footer {
     background-color: var(--text-black);
-    height: 200px;
+    height: 400px;
 }
 
 @media (max-width: 1239px) {
     .poem {
         &__avatar {
-            width: 300px;
+            width: 280px;
         }
 
         &__avatar-container {
