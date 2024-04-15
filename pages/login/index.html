@@ -10,17 +10,70 @@
 </head>
 
 <body>
-    <nav id="nav" class="container nav">
-        <div class="row">
-            <button class="col-xs-2 btn" onclick="toggleTheme()">
-                <span class="btn__label">Theme</span>
+    <nav class="nav" id="nav">
+        <div class="nav__item">
+            <button class="nav__button">
+                <i class="fa-solid fa-bars" onclick="navbar.toggleMenu()"></i>
             </button>
-            <a href="/pages/">Home</a>
-            <a href="/pages/login/">Log In</a>
-            <a href="/pages/register/">Register</a>
-            <a href="/pages/profile/">Profile</a>
-            <a href="/pages/poem/">Poem</a>
+            <a href="/pages/" class="nav__brand">PoST</a>
         </div>
+
+        <div class="search nav__item" id="search">
+            <i class="fa-solid fa-magnifying-glass search__icon" onclick="searchBar.search()"></i>
+            <input class="search__input" placeholder="Search" type="text" id="searchInput"
+                onkeydown="searchBar.handleKeyDown(event)">
+        </div>
+
+        <div class="nav__buttons nav__item" id="buttons">
+            <a class="nav__button" href="/pages/add_poem">
+                <i class="fa-solid fa-plus"></i>
+            </a>
+            <a class="nav__button" href="/pages/rss">
+                <i class="fa-solid fa-rss"></i>
+            </a>
+            <button class="nav__button">
+                <i class="fa-solid fa-sun" onclick="navbar.changeTheme()"></i>
+            </button>
+        </div>
+    </nav>
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar__user">
+            <img class="sidebar__pfp" src="/img/avatar.png">
+            <div class="sidebar__info">
+                <span class="sidebar__username">Eminem</span>
+                <span class="sidebar__role">Poet</span>
+            </div>
+        </div>
+        <div class="search search--sidebar" id="search">
+            <i class="fa-solid fa-magnifying-glass sidebar__icon" onclick="searchBar.search()"></i>
+            <input class="search__input" placeholder="Search" type="text" id="searchInput"
+                onkeydown="searchBar.handleKeyDown(event)">
+        </div>
+        <!-- <div class="sidebar__toggle"></div> -->
+        <a class="sidebar__item sidebar__item--active" href="/pages/login">
+            <i class="fa-solid fa-right-to-bracket sidebar__icon"></i><span>Log in</span>
+        </a>
+        <a class="sidebar__item" href="/pages/register">
+            <i class="fa-solid fa-user-plus sidebar__icon"></i>
+            <span>Register</span>
+        </a>
+        <a class="sidebar__item sidebar__item--nav" href="/pages/add_poem">
+            <i class="fa-solid fa-plus sidebar__icon"></i>
+            <span>Add Poem</span>
+        </a>
+        <a class="sidebar__item sidebar__item--nav" href="/pages/rss" onclick="navbar.showRss()">
+            <i class="fa-solid fa-rss sidebar__icon"></i>
+            <span>RSS</span>
+        </a>
+        <div class="sidebar__separator"></div>
+        <button class="sidebar__item sidebar__item--button">
+            <i class="fa-solid fa-right-from-bracket sidebar__icon"></i>
+            <span>Log Out</span>
+        </button>
+        <button class="sidebar__item sidebar__item--button sidebar__item--nav" onclick="navbar.changeTheme()">
+            <i class="fa-solid fa-sun sidebar__icon"></i>
+            <span>Toggle Theme</span>
+        </button>
     </nav>
     <header class="container gradient"></header>
     <main class="container">

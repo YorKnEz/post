@@ -12,7 +12,7 @@
 </head>
 
 <body>
-    <nav class="nav" id="navbar">
+    <nav class="nav" id="nav">
         <div class="nav__item">
             <button class="nav__button">
                 <i class="fa-solid fa-bars" onclick="navbar.toggleMenu()"></i>
@@ -27,14 +27,12 @@
         </div>
 
         <div class="nav__buttons nav__item" id="buttons">
-            <button class="nav__button">
-                <a href="/pages/add_poem">
-                    <i class="fa-solid fa-plus"></i>
-                </a>
-            </button>
-            <button class="nav__button">
-                <i class="fa-solid fa-rss" onclick="navbar.showRss()"></i>
-            </button>
+            <a class="nav__button" href="/pages/add_poem">
+                <i class="fa-solid fa-plus"></i>
+            </a>
+            <a class="nav__button" href="/pages/rss">
+                <i class="fa-solid fa-rss"></i>
+            </a>
             <button class="nav__button">
                 <i class="fa-solid fa-sun" onclick="navbar.changeTheme()"></i>
             </button>
@@ -54,18 +52,18 @@
                 onkeydown="searchBar.handleKeyDown(event)">
         </div>
         <!-- <div class="sidebar__toggle"></div> -->
-        <a class="sidebar__item sidebar__item--active" href="#">
+        <a class="sidebar__item" href="/pages/login">
             <i class="fa-solid fa-right-to-bracket sidebar__icon"></i><span>Log in</span>
         </a>
-        <a class="sidebar__item">
+        <a class="sidebar__item" href="/pages/register">
             <i class="fa-solid fa-user-plus sidebar__icon"></i>
             <span>Register</span>
         </a>
-        <a class="sidebar__item sidebar__item--nav">
+        <a class="sidebar__item sidebar__item--nav" href="/pages/add_poem">
             <i class="fa-solid fa-plus sidebar__icon"></i>
             <span>Add Poem</span>
         </a>
-        <a class="sidebar__item sidebar__item--nav" onclick="navbar.showRss()">
+        <a class="sidebar__item sidebar__item--nav" href="/pages/rss" onclick="navbar.showRss()">
             <i class="fa-solid fa-rss sidebar__icon"></i>
             <span>RSS</span>
         </a>
@@ -288,7 +286,7 @@
         <section class="row">
             <div class="poemCard poemCard--small col-xs-2 col-sm-2 col-md-3 ">
                 <div class="poemCard__text">
-                    <span class="poemCard__type">Trending</span>
+                    <span class="poemCard__type">News</span>
                     <h2 class="poemCard__title">Rap God</h2>
                     <span class="poemCard__author">
                         Eminem /
@@ -314,7 +312,7 @@
             </div>
             <div class="poemCard poemCard--small col-xs-2 col-sm-2 col-md-3 ">
                 <div class="poemCard__text">
-                    <span class="poemCard__type">Trending</span>
+                    <span class="poemCard__type">News</span>
                     <h2 class="poemCard__title">Rap God</h2>
                     <span class="poemCard__author">
                         Eminem /
@@ -340,7 +338,7 @@
             </div>
             <div class="poemCard poemCard--small col-xs-2 col-sm-2 col-md-3 ">
                 <div class="poemCard__text">
-                    <span class="poemCard__type">Trending</span>
+                    <span class="poemCard__type">News</span>
                     <h2 class="poemCard__title">Rap God</h2>
                     <span class="poemCard__author">
                         Eminem /
@@ -366,7 +364,7 @@
             </div>
             <div class="poemCard poemCard--small col-xs-2 col-sm-2 col-md-3 ">
                 <div class="poemCard__text">
-                    <span class="poemCard__type">Trending</span>
+                    <span class="poemCard__type">News</span>
                     <h2 class="poemCard__title">Rap God</h2>
                     <span class="poemCard__author">
                         Eminem /
@@ -392,7 +390,7 @@
             </div>
             <div class="poemCard poemCard--small col-xs-2 col-sm-2 col-md-3 ">
                 <div class="poemCard__text">
-                    <span class="poemCard__type">Trending</span>
+                    <span class="poemCard__type">News</span>
                     <h2 class="poemCard__title">Rap God</h2>
                     <span class="poemCard__author">
                         Eminem /
@@ -418,7 +416,7 @@
             </div>
             <div class="poemCard poemCard--small col-xs-2 col-sm-2 col-md-3 ">
                 <div class="poemCard__text">
-                    <span class="poemCard__type">Trending</span>
+                    <span class="poemCard__type">News</span>
                     <h2 class="poemCard__title">Rap God</h2>
                     <span class="poemCard__author">
                         Eminem /
@@ -444,7 +442,7 @@
             </div>
             <div class="poemCard poemCard--small col-xs-2 col-sm-2 col-md-3 ">
                 <div class="poemCard__text">
-                    <span class="poemCard__type">Trending</span>
+                    <span class="poemCard__type">News</span>
                     <h2 class="poemCard__title">Rap God</h2>
                     <span class="poemCard__author">
                         Eminem /
@@ -470,7 +468,7 @@
             </div>
             <div class="poemCard poemCard--small col-xs-2 col-sm-2 col-md-3 ">
                 <div class="poemCard__text">
-                    <span class="poemCard__type">Trending</span>
+                    <span class="poemCard__type">News</span>
                     <h2 class="poemCard__title">Rap God</h2>
                     <span class="poemCard__author">
                         Eminem /

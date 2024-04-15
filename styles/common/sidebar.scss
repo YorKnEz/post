@@ -66,6 +66,7 @@
         width: 100%;
         margin-bottom: 1rem;
         display: flex;
+        border-radius: 100px;
     }
 
     &__info {
@@ -85,6 +86,7 @@
 
     &__icon {
         width: 10%;
+        cursor: pointer;
     }
 
     &__username {

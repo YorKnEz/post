@@ -13,9 +13,9 @@ body {
     background-color: var(--text-white);
     color: var(--text-black);
 
-    hr {
-        margin: 10rem 0;
-    }
+    // hr {
+    //     margin: 10rem 0;
+    // }
 }
 
 i {
@@ -26,16 +26,8 @@ i {
     display: none !important;
 }
 
-.nav {
-    background-color: var(--gradient-1);
-    height: 48px;
-    position: sticky;
-    top: 0px;
-    z-index: 999;
-}
-
 .gradient {
-    background: linear-gradient(var(--gradient-1), var(--gradient-2));
+    background: linear-gradient(var(--primary), var(--gradient-1));
     color: var(--text-white);
 
     i {

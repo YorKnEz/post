@@ -1,11 +1,14 @@
-import { autoGrow, scrollToElem, toggleTheme } from '../../utils.js'
+import { autoGrow, scrollToElem } from '../../utils.js'
 import { Dropdown } from '../../components/dropdown.js'
 import { LyricsEdit } from './lyricsEdit.js'
 import { AnnotationSystem } from './annotationSystem.js'
 import { Annotation } from './annotation.js'
 import { Share } from '../../components/share.js'
+import { Navbar } from '../../components/nav.js'
+import { Search } from '../../components/search.js'
 
-window.toggleTheme = toggleTheme
+window.navbar = new Navbar()
+window.searchBar = new Search()
 
 window.lyricsEdit = new LyricsEdit()
 window.autoGrow = autoGrow
@@ -19,7 +22,10 @@ window.lyricsShare = new Share(
 
 window.annotation = new AnnotationSystem()
 
-window.about = new Annotation('about', `${location.origin}${location.pathname}/#about`)
+window.about = new Annotation(
+    'about',
+    `${location.origin}${location.pathname}/#about`
+)
 // scroll to about section taking into account the nav height
 window.scrollToAbout = () => {
     scrollToElem(document.getElementById('about'))
@@ -33,6 +39,7 @@ document.onclick = (ev) => {
 window.onresize = (ev) => {
     dropdown.align()
     annotation.align()
+    navbar.copySearchInput()
 }
 
 const scrollToNewAnnotation = (annotation) => {

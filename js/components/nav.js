@@ -23,10 +23,6 @@ export class Navbar {
         }
     }
 
-    showRss = () => {
-        console.log('Pressed rss')
-    }
-
     changeTheme = () => {
         toggleTheme()
     }

@@ -1,8 +1,14 @@
 import { Form } from '../../components/form.js'
 import { SuggestionInput } from '../../components/suggestionInput.js'
-import { toggleTheme } from '../../utils.js'
+import { Navbar } from '../../components/nav.js'
+import { Search } from '../../components/search.js'
 
-window.toggleTheme = toggleTheme
+window.navbar = new Navbar()
+window.searchBar = new Search()
+
+window.onresize = () => {
+    navbar.copySearchInput()
+}
 
 window.byInput = new SuggestionInput('by', 'by-suggestions')
 window.albumInput = new SuggestionInput('album', 'album-suggestions')

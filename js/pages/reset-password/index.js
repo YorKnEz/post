@@ -1,13 +1,22 @@
 import { Form } from '../../components/form.js'
-import { toggleTheme } from '../../utils.js'
+import { Navbar } from '../../components/nav.js'
+import { Search } from '../../components/search.js'
 
-window.toggleTheme = toggleTheme
+window.navbar = new Navbar()
+window.searchBar = new Search()
 
-window.form = new Form(['email', 'password', 'confirmPassword'], (data, setError) => {
-    if (data.password == 'test') {
-        setError('Your password is too weak')
-        return
+window.onresize = () => {
+    navbar.copySearchInput()
+}
+
+window.form = new Form(
+    ['email', 'password', 'confirmPassword'],
+    (data, setError) => {
+        if (data.password == 'test') {
+            setError('Your password is too weak')
+            return
+        }
+
+        console.log(data)
     }
-
-    console.log(data)
-})
+)
