@@ -9,7 +9,7 @@ export class SuggestionInput {
                 this.toggleSuggestions()
                 return
             }
-            
+
             if (this.input.value.length >= 3 && !this.shown()) {
                 this.toggleSuggestions()
             }
@@ -62,7 +62,11 @@ export class SuggestionInput {
     }
 
     disappear = (ev) => {
-        if (this.suggestions.contains(ev.target) || this.input.contains(ev.target) || !this.shown()) {
+        if (
+            this.suggestions.contains(ev.target) ||
+            this.input.contains(ev.target) ||
+            !this.shown()
+        ) {
             return
         }
 

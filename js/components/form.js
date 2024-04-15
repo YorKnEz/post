@@ -9,8 +9,8 @@ export class Form {
             document.getElementById('password-toggler').onclick = (ev) => {
                 password.type =
                     password.type == 'password' ? 'text' : 'password'
-                
-                    if (confirmPassword) {
+
+                if (confirmPassword) {
                     confirmPassword.type =
                         confirmPassword.type == 'password' ? 'text' : 'password'
                 }
