@@ -18,20 +18,20 @@
 <body>
 
     <nav class="nav" id="navbar">
-        <div>
+        <div class="nav__item">
             <button class="nav__button">
                 <i class="fa-solid fa-bars" onclick="toggleMenu()"></i>
             </button>
             <a href="index.html" class="nav__brand">PoST</a>
         </div>
 
-        <div class="search" id="search">
+        <div class="search nav__item" id="search">
             <i class="fa-solid fa-magnifying-glass search__icon" onclick="search()"></i>
             <input class="search__input" placeholder="Search" type="text" id="searchInput"
                 onkeydown="handleKeyDown(event)">
         </div>
 
-        <div class="nav__buttons" id="buttons">
+        <div class="nav__buttons nav__item" id="buttons">
             <button class="nav__button">
                 <i class="fa-solid fa-plus" onclick="addPoem()"></i>
             </button>
@@ -44,8 +44,43 @@
         </div>
     </nav>
     <nav class="sidebar" id="sidebar">
-        <a class="sidebar__item sidebar__item--active" href="#">Log in</a>
-        <button class="sidebar__item sidebar__item--button">Sign up</button>
+        <div class="sidebar__user">
+            <img class="sidebar__pfp" src="img/avatar.png">
+            <div class="sidebar__info">
+                <span class="sidebar__username">Eminem</span>
+                <span class="sidebar__role">Poet</span>
+            </div>
+        </div>
+        <div class="search search--sidebar" id="search">
+            <i class="fa-solid fa-magnifying-glass sidebar__icon" onclick="search()"></i>
+            <input class="search__input" placeholder="Search" type="text" id="searchInput"
+                onkeydown="handleKeyDown(event)">
+        </div>
+        <!-- <div class="sidebar__toggle"></div> -->
+        <a class="sidebar__item sidebar__item--active" href="#">
+            <i class="fa-solid fa-right-to-bracket sidebar__icon"></i><span>Log in</span>
+        </a>
+        <a class="sidebar__item">
+            <i class="fa-solid fa-user-plus sidebar__icon"></i>
+            <span>Sign up</span>
+        </a>
+        <a class="sidebar__item sidebar__item--nav" onclick="addPoem()">
+            <i class="fa-solid fa-plus sidebar__icon"></i>
+            <span>Add Poem</span>
+        </a>
+        <a class="sidebar__item sidebar__item--nav" onclick="showRss()">
+            <i class="fa-solid fa-rss sidebar__icon"></i>
+            <span>RSS</span>
+        </a>
+        <div class="sidebar__separator"></div>
+        <button class="sidebar__item sidebar__item--button">
+            <i class="fa-solid fa-user-plus sidebar__icon"></i>
+            <span>Log Out</span>
+        </button>
+        <button class="sidebar__item sidebar__item--button sidebar__item--nav" onclick="toggleTheme()">
+            <i class="fa-solid fa-sun sidebar__icon"></i>
+            <span>Toggle Theme</span>
+        </button>
     </nav>
     
     <header class="container poem__header">

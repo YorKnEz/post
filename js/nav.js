@@ -21,6 +21,30 @@ const changeTheme = () => {
     console.log('Pressed change theme')
 }
 
+let previousWindowWidth = window.innerWidth
+
+const copySearchInput = () => {
+    const navSearchInput = document.getElementsByClassName('search__input')[0]
+    const sideSearchInput = document.getElementsByClassName('search__input')[1]
+
+    if (window.innerWidth <= 599 && 599 < previousWindowWidth) {
+        console.log(navSearchInput.value)
+        sideSearchInput.value = navSearchInput.value
+    }
+    
+    if (previousWindowWidth <= 599 && 599 < window.innerWidth) {
+        navSearchInput.value = sideSearchInput.value;
+    }
+
+    previousWindowWidth = window.innerWidth
+}
+
+const forResize = () => {
+    copySearchInput();
+}
+
+window.onresize = forResize
+
 // const moveElement = (id, newGridCol, oldGridCol, navPoz, sidePoz, limit) => {
 //     const mvElement = document.getElementById(id)
 //     const navbar = document.getElementById('navbar')
