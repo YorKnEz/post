@@ -1,0 +1,47 @@
+.btn {
+  cursor: pointer;
+  font-weight: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  border: 1px solid;
+  color: var(--text-black);
+  background-color: var(--text-white);
+  padding: 4px 16px;
+}
+.btn:hover {
+  border-color: var(--text-black);
+  color: var(--text-white);
+  background-color: var(--text-black);
+}
+.btn--round {
+  border-radius: 2rem;
+}
+.btn--span {
+  width: calc(100% - 32px - 2px);
+}
+.btn--transparent {
+  color: inherit;
+  background-color: transparent;
+}
+.btn--transparent:hover {
+  border-color: inherit;
+  color: inherit;
+  background-color: transparent;
+}
+.btn--link {
+  border: none;
+  color: inherit;
+  background-color: transparent;
+  padding: 0;
+}
+.btn--link .btn__label {
+  text-decoration: underline;
+  text-underline-offset: 0.2rem;
+}
+.btn--link:hover {
+  border-color: inherit;
+  color: inherit;
+  background-color: transparent;
+}
+
+/*# sourceMappingURL=button.css.map */
