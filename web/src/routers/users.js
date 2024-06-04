@@ -36,7 +36,23 @@ router.get('/', async (req, res) => {
 })
 
 router.post('/', async (req, res) => {
+    const client = await db.getClient()
 
+    try {
+        const result = await client.query('select insert_user($1)', [
+            req.body
+        ])
+        
+        res.statusCode = 201
+        res.setHeader('Content-Type', 'application/json')
+        res.end(JSON.stringify(result.rows))
+    } catch (e) {
+        console.error(e)
+
+        res.statusCode = 500
+        res.setHeader('Content-Type', 'text/plain')
+        res.end('Internal server error')
+    }
 })
 
 router.get('/:id', async (req, res) => {
@@ -62,7 +78,23 @@ router.get('/:id', async (req, res) => {
 })
 
 router.patch('/:id', async (req, res) => {
+    // const client = await db.getClient()
 
+    // try {
+    //     const result = await client.query('select insert_user($1)', [
+    //         req.body
+    //     ])
+        
+    //     res.statusCode = 201
+    //     res.setHeader('Content-Type', 'application/json')
+    //     res.end(JSON.stringify(result.rows))
+    // } catch (e) {
+    //     console.error(e)
+
+    //     res.statusCode = 500
+    //     res.setHeader('Content-Type', 'text/plain')
+    //     res.end('Internal server error')
+    // }
 })
 
 router.delete('/:id', async (req, res) => {
