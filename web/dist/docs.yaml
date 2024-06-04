@@ -645,7 +645,7 @@ paths:
 
 components:
     schemas:
-        Response:
+        Message:
             type: object
             properties:
                 code:

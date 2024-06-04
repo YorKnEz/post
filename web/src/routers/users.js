@@ -2,7 +2,7 @@ import { Router } from '../routing/index.js'
 import * as db from '../db/index.js'
 import { ErrorCodes, SuccessCodes } from '../codes.js'
 
-export const router = new Router('Users Router', '/users')
+export const router = new Router('Users Router', '/api/users')
 
 router.get('/', async (req, res) => {
     // TODO: add some form of safe conversion to router
@@ -13,11 +13,10 @@ router.get('/', async (req, res) => {
 
     try {
         await client.query('begin')
-        const test = await client.query('select find_users($1, $2)', [
+        await client.query('select find_users($1, $2)', [
             req.query,
             'users_cursor',
         ])
-        console.log(test)
 
         const result = await client.query('fetch all from "users_cursor"')
 
@@ -67,8 +66,7 @@ router.patch('/:id', async (req, res) => {
 })
 
 router.delete('/:id', async (req, res) => {
-    const result = await db.query('call delete_user($1)', [req.params.id])
-    console.log(result)
+    await db.query('call delete_user($1)', [req.params.id])
 
     res.statusCode = 200
     res.setHeader('Content-Type', 'application/json')

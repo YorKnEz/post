@@ -31,7 +31,7 @@ const web_routes = {
     '/add_poem': '../../pages/add_poem/index.html',
 }
 
-const app = new App('/api')
+const app = new App()
 
 // app.add(albums_router)
 // app.add(annotations_router)
@@ -39,9 +39,7 @@ const app = new App('/api')
 // app.add(poems_router)
 // app.add(posts_router)
 app.add(users_router)
-users_router.test()
 app.add(test_router)
-test_router.test()
 
 app.add(new WebServer(__dirname, web_routes))
 

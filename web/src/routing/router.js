@@ -43,6 +43,7 @@ export default class Router extends Handler {
         if (!pathname.startsWith(this.prefix)) {
             return false
         }
+
         pathname = pathname.replace(this.prefix, '')
 
         // get router by method
