@@ -69,7 +69,7 @@ export default class Router extends Handler {
                 const values = pathname.match(pathRegex) // match the regex on the pathname
 
                 // if no matches are found, the pathname was invalid, go to the next route
-                if (values == null) {
+                if (values == null || pathname.length != values[0].length) {
                     continue
                 }
 
