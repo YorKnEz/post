@@ -13,12 +13,11 @@ router.get('/', async (req, res) => {
 
     try {
         await client.query('begin')
-        await client.query('select find_users($1, $2)', [
-            req.query,
-            'users_cursor',
-        ])
+        let result = await client.query('select find_users($1)', [req.query])
 
-        const result = await client.query('fetch all from "users_cursor"')
+        result = await client.query(
+            `fetch all from "${result.rows[0].find_users}"`
+        )
 
         await client.query('commit')
 
@@ -97,11 +96,72 @@ router.patch('/:id', async (req, res) => {
     // }
 })
 
+// TODO: check if deletion actually took place
 router.delete('/:id', async (req, res) => {
     await db.query('call delete_user($1)', [req.params.id])
 
     res.statusCode = 200
     res.setHeader('Content-Type', 'application/json')
-    res.end(JSON.stringify({ code: SuccessCodes.USER_DELETED, message: 'User deleted successfully' }))
+    res.end(
+        JSON.stringify({
+            code: SuccessCodes.USER_DELETED,
+            message: 'User deleted successfully',
+        })
+    )
 })
 
+router.get('/:id/albums', async (req, res) => {
+    const client = await db.getClient()
+
+    try {
+        await client.query('begin')
+        let result = await client.query('select find_albums_by_user_id($1)', [
+            req.params.id,
+        ])
+
+        result = await client.query(
+            `fetch all from "${result.rows[0].find_albums_by_user_id}"`
+        )
+
+        await client.query('commit')
+
+        res.statusCode = 200
+        res.setHeader('Content-Type', 'application/json')
+        res.end(JSON.stringify(result.rows))
+    } catch (e) {
+        console.error(e)
+        await client.query('rollback')
+
+        res.statusCode = 500
+        res.setHeader('Content-Type', 'text/plain')
+        res.end('Internal server error')
+    }
+})
+
+router.get('/:id/poems', async (req, res) => {
+    const client = await db.getClient()
+
+    try {
+        await client.query('begin')
+        let result = await client.query('select find_poems_by_user_id($1)', [
+            req.params.id,
+        ])
+
+        result = await client.query(
+            `fetch all from "${result.rows[0].find_poems_by_user_id}"`
+        )
+
+        await client.query('commit')
+
+        res.statusCode = 200
+        res.setHeader('Content-Type', 'application/json')
+        res.end(JSON.stringify(result.rows))
+    } catch (e) {
+        console.error(e)
+        await client.query('rollback')
+
+        res.statusCode = 500
+        res.setHeader('Content-Type', 'text/plain')
+        res.end('Internal server error')
+    }
+})

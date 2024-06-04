@@ -5,20 +5,20 @@ info:
     description: A simple API example
 
 paths:
-    /api/test:
-        get:
-            summary: Example route
-            description: An example POST route with path and query parameters, and a JSON body.
-            tags:
-                - test
-            responses:
-                '200':
-                    description: Successful response
-                    content:
-                        text/plain:
-                            schema:
-                                type: string
-                                example: Successfully processed the request
+    # /api/test:
+    #     get:
+    #         summary: Example route
+    #         description: An example POST route with path and query parameters, and a JSON body.
+    #         tags:
+    #             - test
+    #         responses:
+    #             '200':
+    #                 description: Successful response
+    #                 content:
+    #                     text/plain:
+    #                         schema:
+    #                             type: string
+    #                             example: Successfully processed the request
 
     /api/users:
         get:
@@ -228,13 +228,60 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/Message'
 
+    /api/users/{id}/albums:
+        get:
+            summary: Get the albums of this user
+            description: Fetches all the albums for which this user is the poster or the author
+            tags:
+                - users
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                  description: Id of the user
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/Album'
+                                description: List of matched albums
+
+    /api/users/{id}/poems:
+        get:
+            summary: Get the poems of this user
+            description: Fetches all the poems for which this user is the poster or the author
+            tags:
+                - users
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                  description: Id of the user
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/Poem'
+                                description: List of matched poems
+
     /api/albums:
         get:
             summary: Get paginated albums by specified filters
             description: This route returns a paginated list of albums, based on some filtering criteria
             tags:
                 - albums
-                - TODO
             parameters:
                 - name: query
                   in: query
@@ -294,7 +341,6 @@ paths:
             summary: Get album by id
             tags:
                 - albums
-                - TODO
             parameters:
                 - name: id
                   in: path
@@ -345,7 +391,6 @@ paths:
             summary: Delete an album and it's related content by id
             tags:
                 - albums
-                - TODO
             parameters:
                 - name: id
                   in: path
@@ -640,80 +685,80 @@ paths:
     #                             $ref: '#/components/schemas/Message'
 
 
-    /api/example/{id}/test:
-        post:
-            summary: Example route
-            description: An example POST route with path and query parameters, and a JSON body.
-            tags:
-                - test
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                      type: string
-                  description: The ID path parameter
-                - name: a
-                  in: query
-                  required: false
-                  schema:
-                      type: string
-                  description: Optional query parameter a
-                - name: b
-                  in: query
-                  required: false
-                  schema:
-                      type: string
-                  description: Optional query parameter b
-                - name: c
-                  in: query
-                  required: true
-                  schema:
-                      type: string
-                  description: Required query parameter c
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            type: object
-                            required:
-                                - name
-                                - preferences
-                                - age
-                            properties:
-                                name:
-                                    type: string
-                                    description: The name of the user
-                                preferences:
-                                    type: array
-                                    items:
-                                        type: string
-                                    description: A list of preferences
-                                age:
-                                    type: integer
-                                    description: The age of the user
-            responses:
-                '200':
-                    description: Successful response
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    message:
-                                        type: string
-                                        example: Successfully processed the request
-                '400':
-                    description: Bad request
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    error:
-                                        type: string
-                                        example: Invalid input
+    # /api/example/{id}/test:
+    #     post:
+    #         summary: Example route
+    #         description: An example POST route with path and query parameters, and a JSON body.
+    #         tags:
+    #             - test
+    #         parameters:
+    #             - name: id
+    #               in: path
+    #               required: true
+    #               schema:
+    #                   type: string
+    #               description: The ID path parameter
+    #             - name: a
+    #               in: query
+    #               required: false
+    #               schema:
+    #                   type: string
+    #               description: Optional query parameter a
+    #             - name: b
+    #               in: query
+    #               required: false
+    #               schema:
+    #                   type: string
+    #               description: Optional query parameter b
+    #             - name: c
+    #               in: query
+    #               required: true
+    #               schema:
+    #                   type: string
+    #               description: Required query parameter c
+    #         requestBody:
+    #             required: true
+    #             content:
+    #                 application/json:
+    #                     schema:
+    #                         type: object
+    #                         required:
+    #                             - name
+    #                             - preferences
+    #                             - age
+    #                         properties:
+    #                             name:
+    #                                 type: string
+    #                                 description: The name of the user
+    #                             preferences:
+    #                                 type: array
+    #                                 items:
+    #                                     type: string
+    #                                 description: A list of preferences
+    #                             age:
+    #                                 type: integer
+    #                                 description: The age of the user
+    #         responses:
+    #             '200':
+    #                 description: Successful response
+    #                 content:
+    #                     application/json:
+    #                         schema:
+    #                             type: object
+    #                             properties:
+    #                                 message:
+    #                                     type: string
+    #                                     example: Successfully processed the request
+    #             '400':
+    #                 description: Bad request
+    #                 content:
+    #                     application/json:
+    #                         schema:
+    #                             type: object
+    #                             properties:
+    #                                 error:
+    #                                     type: string
+    #                                     example: Invalid input
 
 components:
     schemas:
