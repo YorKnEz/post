@@ -7,7 +7,7 @@ import { Server } from 'http'
 export default class App extends Server {
     constructor(prefix = '') {
         super(async (req, res) => {
-            for (const { name, prefix, handler } of this.handlers) {
+            for (const handler of this.handlers) {
                 req.url = req.url.replace(this.prefix, '')
                 const matched = await handler.handle(req, res)
                 if (matched) {
@@ -25,7 +25,7 @@ export default class App extends Server {
         this.handlers = []
     }
 
-    add = (handler, name = '', prefix = '') => {
-        this.handlers.push({ name, prefix, handler })
+    add = (handler) => {
+        this.handlers.push(handler)
     }
 }

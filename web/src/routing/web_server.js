@@ -12,14 +12,16 @@ import { Handler } from './index.js'
 // - '/path': tree - if path matches `/path`, it recursively parses `tree` until a match is found
 // If no match is found, 404 is returned to the user
 export default class WebServer extends Handler {
-    constructor(path, routes) {
+    constructor(path, routes, name = 'WebServer', prefix = '') {
         super()
         this.routes = routes
         this.path = path
+        this.name = name
     }
 
     handle = async (req, res) => {
         let filePath = this.parsePath(this.routes, req.url)
+        req.url = req.url.replace(this.prefix, '')
 
         if (filePath.length == 0) {
             return false

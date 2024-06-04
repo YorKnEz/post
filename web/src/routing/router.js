@@ -10,16 +10,23 @@ import { parse } from 'node:url'
 export default class Router extends Handler {
     static methods = ['get', 'post', 'put', 'patch', 'delete']
 
-    constructor() {
+    constructor(name = 'Router', prefix = '') {
         super()
+        this.name = name
+        this.prefix = prefix
         this.router = new Map()
 
         for (const method of Router.methods) {
             this.router.set(method, new Map())
 
             this[method] = (url, handler) => {
+                // remove trailing slash
+                if (url.slice(-1) == '/') {
+                    url = url.slice(0, -1)
+                }
+
                 // validate that the route is of format /some/:param/thing/:param2
-                if (url.match(/(\/:?\w+)+/) == null) {
+                if (url.match(/(\/:?\w+)*/) == null) {
                     throw Error('Invalid url format')
                 }
 
@@ -29,14 +36,19 @@ export default class Router extends Handler {
     }
 
     handle = async (req, res) => {
-        const router = this.router.get(req.method.toLowerCase())
-
-        const { pathname, query } = parse(req.url, true)
-
+        let { pathname, query } = parse(req.url, true)
         req.query = query
 
-        for (const route of router) {
+        // if route doesn't begin with prefix, we can stop here
+        if (!pathname.startsWith(this.prefix)) {
+            return false
+        }
+        pathname = pathname.replace(this.prefix, '')
 
+        // get router by method
+        const router = this.router.get(req.method.toLowerCase())
+
+        for (const route of router) {
             // try to exact match the route first
             if (route[0] != pathname) {
                 // else try with path params
