@@ -23,7 +23,7 @@ const web_routes = {
     '/add_poem': '../../pages/add_poem/index.html',
 }
 
-const app = new App()
+const app = new App('/api')
 
 app.add(test_router, 'API Router', '/api')
 
