@@ -34,7 +34,25 @@ router.get('/', async (req, res) => {
     }
 })
 
-router.post('/', async (req, res) => {})
+router.post('/', async (req, res) => {
+    const client = await db.getClient()
+
+    try {
+        const result = await client.query('select insert_user($1)', [
+            req.body
+        ])
+        
+        res.statusCode = 201
+        res.setHeader('Content-Type', 'application/json')
+        res.end(JSON.stringify(result.rows))
+    } catch (e) {
+        console.error(e)
+
+        res.statusCode = 500
+        res.setHeader('Content-Type', 'text/plain')
+        res.end('Internal server error')
+    }
+})
 
 router.get('/:id', async (req, res) => {
     const result = await db.query('select find_user_by_id($1)', [req.params.id])
@@ -58,7 +76,25 @@ router.get('/:id', async (req, res) => {
     res.end(JSON.stringify(result.rows[0].find_user_by_id))
 })
 
-router.patch('/:id', async (req, res) => {})
+router.patch('/:id', async (req, res) => {
+    // const client = await db.getClient()
+
+    // try {
+    //     const result = await client.query('select insert_user($1)', [
+    //         req.body
+    //     ])
+        
+    //     res.statusCode = 201
+    //     res.setHeader('Content-Type', 'application/json')
+    //     res.end(JSON.stringify(result.rows))
+    // } catch (e) {
+    //     console.error(e)
+
+    //     res.statusCode = 500
+    //     res.setHeader('Content-Type', 'text/plain')
+    //     res.end('Internal server error')
+    // }
+})
 
 // TODO: check if deletion actually took place
 router.delete('/:id', async (req, res) => {

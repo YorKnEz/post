@@ -72,6 +72,65 @@ paths:
             tags:
                 - users
                 - TODO
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - nickname
+                                - email
+                                - roles
+                                - verified
+                            properties:
+                                first_name:
+                                    type: string
+                                    description: The first name of the user
+                                last_name:
+                                    type: string
+                                    description: The last name of the user
+                                nickname:
+                                    type: string
+                                    description: The nickname of the user
+                                email:
+                                    type: string
+                                    description: The email of the user
+                                verified:
+                                    type: integer
+                                    description: Verified = 1 if the user is verified, 0 otherwise
+                                roles:
+                                    type: integer
+                                    description: A bitfield representing 0b1 - poet, 0b10 - admin
+                                albums_count:
+                                    type: integer
+                                    description: Number of created albums
+                                albums_contributions:
+                                    type: integer
+                                    description: Number of albums contributed to
+                                poems_count:
+                                    type: integer
+                                    description: Number of created poems
+                                poems_contributions:
+                                    type: integer
+                                    description: Number of poems contributed to
+                                annotations_count:
+                                    type: integer
+                                    description: Number of created annotations
+                                annotations_contributions:
+                                    type: integer
+                                    description: Number of annotations contributed to
+                                created_lyrics_count:
+                                    type: integer
+                                    description: Number of created lyrics
+                                translated_lyrics_count:
+                                    type: integer
+                                    description: Number of translated lyrics
+                                lyrics_contributions:
+                                    type: integer
+                                    description: Number of lyrics contributed to
+                  
+
             responses:
                 '201':
                     description: Successful response
@@ -118,6 +177,19 @@ paths:
                   schema:
                       type: string
                   description: Id of the user
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                first_name:
+                                    type: string
+                                    description: The first name of the user
+                                last_name:
+                                    type: string
+                                    description: The last name of the user
             responses:
                 '200':
                     description: Successful response
