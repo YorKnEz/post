@@ -16,5 +16,7 @@ export const query = async (query, params) => {
 }
 
 export const getClient = async () => {
-    return await pool.connect()
+    const client = await pool.connect()
+    await client.query('set search_path to post')
+    return client
 }
