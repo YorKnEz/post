@@ -33,10 +33,10 @@ const web_routes = {
 
 const app = new App()
 
-// app.add(albums_router)
+app.add(albums_router)
 // app.add(annotations_router)
 // app.add(lyrics_router)
-// app.add(poems_router)
+app.add(poems_router)
 // app.add(posts_router)
 app.add(users_router)
 app.add(test_router)
