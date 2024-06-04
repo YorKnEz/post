@@ -83,10 +83,14 @@ export default class Router extends Handler {
 
             try {
                 await route[1](req, res)
-                return true // end matching
             } catch (e) {
-                console.error('Uncaught exception: ', e)
+                console.error(`Uncaught exception in ${this.name}: ${e}`)
+                res.statusCode = 500
+                res.setHeader('Content-Type', 'text/plain')
+                res.end('Internal server error')
             }
+
+            return true // end matching regardless of error
         }
 
         // if we get here it means no route matched the given req.url
