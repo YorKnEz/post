@@ -1,8 +1,8 @@
 import { Router } from '../routing/index.js'
 
-export const router = new Router('Test Router', '/test')
+export const router = new Router('Test Router', '/api/test')
 
-router.get('/', async (_, res) => {
+router.post('/', async (req, res) => {
     res.statusCode = 200
     res.setHeader('Content-Type', 'text/plain')
     res.end('Hello World')
