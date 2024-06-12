@@ -1,0 +1,19 @@
+{
+    "name": "web-lib",
+    "type": "module",
+    "version": "1.0.0",
+    "description": "A vanilla Javascript library",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "lint": "eslint_d .",
+        "lint:fix": "eslint_d --fix ."
+    },
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "@eslint/js": "^9.4.0",
+        "eslint": "^9.4.0",
+        "eslint_d": "^13.1.2",
+        "globals": "^15.3.0"
+    }
+}
