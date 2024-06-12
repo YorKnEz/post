@@ -1,7 +1,7 @@
 import { fileURLToPath } from 'url'
 import { dirname } from 'path'
 
-import { App, WebServer } from './routing/index.js'
+import { App, WebServer } from '../../lib/routing/index.js'
 import {
     albums_router,
     annotations_router,

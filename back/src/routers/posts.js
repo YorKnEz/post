@@ -1,4 +1,4 @@
-import { Router } from '../routing/index.js'
+import { Router } from '../../../lib/routing/index.js'
 import * as db from '../db/index.js'
 import { ErrorCodes, SuccessCodes } from '../codes.js'
 

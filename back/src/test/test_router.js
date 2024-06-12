@@ -1,4 +1,4 @@
-import { Router } from '../routing/index.js'
+import { Router } from '../../../lib/routing/index.js'
 
 export const router = new Router('Test Router', '/api/test')
 
