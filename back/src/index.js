@@ -1,5 +1,4 @@
-import { fileURLToPath } from 'url'
-import { dirname } from 'path'
+import dotenv from 'dotenv'
 
 import { App, WebServer } from '../../lib/routing/index.js'
 import {
@@ -12,23 +11,17 @@ import {
 } from './routers/index.js'
 import { router as test_router } from './test/test_router.js'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
+dotenv.config()
 
-const hostname = 'localhost'
-const port = 3000
+const hostname = process.env.HOST
+const port = process.env.PORT
 
 const web_routes = {
-    '/css': { '*': '../../css' },
-    '/fonts': { '*': '../../fonts' },
-    '/img': { '*': '../../img' },
-    '/js': { '*': '../../js' },
     '/docs': {
-        '': '../dist/index.html',
-        '*': '../dist',
+        '': 'index.html',
+        '*': '',
     },
-    '/': '../../pages/index.html',
-    '/add_poem': '../../pages/add_poem/index.html',
+    '/favicon.ico': 'dist/favicon-32x32.png',
 }
 
 const app = new App()
@@ -41,7 +34,7 @@ app.add(poems_router)
 app.add(users_router)
 app.add(test_router)
 
-app.add(new WebServer(__dirname, web_routes))
+app.add(new WebServer(process.env.DOCS_LOCATION, web_routes))
 
 app.listen(port, hostname, () => {
     console.log(`Server running at http://${hostname}:${port}/`)
