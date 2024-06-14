@@ -1,4 +1,4 @@
-import { JSONResponse } from "../../../lib/routing/index.js"
+import { JSONResponse } from '../../../lib/routing/index.js'
 
 // Error codes to use in API responses
 export const ErrorCodes = Object.freeze({
@@ -17,8 +17,26 @@ export const SuccessCodes = Object.freeze({
     REGISTERED: 4,
 })
 
+export class ErrorMessage extends Error {
+    constructor(code, message) {
+        super(message)
+        this.code = code
+        this.message = message
+    }
+
+    obj() {
+        return { code: this.code, message: this.message }
+    }
+}
+
+export class InternalErrorMessage extends ErrorMessage {
+    constructor() {
+        super(ErrorCodes.UNKNOWN, 'Internal server error')
+    }
+}
+
 export class InternalError extends JSONResponse {
     constructor() {
-        super(500, { code: ErrorCodes.UNKNOWN, message: 'Internal server error' })
+        super(500, new InternalErrorMessage().obj())
     }
 }
