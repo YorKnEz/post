@@ -18,13 +18,14 @@ const web_routes = {
     },
     '/favicon.ico': 'assets/favicon.ico',
     '': 'src/pages/home/index.html',
-    '/add_poem': 'src/pages/add_poem/index.html',
+    '/add-poem': 'src/pages/add_poem/index.html',
     '/dashboard': 'src/pages/dashboard/index.html',
     '/login': 'src/pages/login/index.html',
     '/poem': 'src/pages/poem/index.html',
     '/profile': 'src/pages/profile/index.html',
     '/register': 'src/pages/register/index.html',
-    '/reset-password': 'src/pages/reset-password/index.html',
+    '/reset-password': 'src/pages/reset_password/index.html',
+    '/verify' : 'src/pages/verify/index.html',
     '/src': { '*': 'src' },
 }
 
