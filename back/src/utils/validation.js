@@ -4,9 +4,9 @@ import { ErrorCodes, ErrorMessage } from './index.js'
 export const validate = (obj, schema) => {
     for (const key in schema) {
         // check that all keys are present
-        if ((!key) in obj) {
+        if (!(key in obj)) {
             throw new ErrorMessage(
-                ErrorCodes.REGISTER_VALIDATION,
+                ErrorCodes.VALIDATION,
                 `Missing field ${key}`
             )
         }
@@ -14,13 +14,13 @@ export const validate = (obj, schema) => {
         // check the requirements for each field
         if ('min' in schema[key] && obj[key].length < schema[key].min) {
             throw new ErrorMessage(
-                ErrorCodes.REGISTER_VALIDATION,
+                ErrorCodes.VALIDATION,
                 `Length of field ${key} should be at least ${schema[key].min}`
             )
         }
         if ('max' in schema[key] && obj[key].length > schema[key].max) {
             throw new ErrorMessage(
-                ErrorCodes.REGISTER_VALIDATION,
+                ErrorCodes.VALIDATION,
                 `Length of field ${key} should be at most ${schema[key].max}`
             )
         }
@@ -29,7 +29,7 @@ export const validate = (obj, schema) => {
                 // regex provided as plain RegExp
                 if (!schema[key].regex.test(obj[key])) {
                     throw new ErrorMessage(
-                        ErrorCodes.REGISTER_VALIDATION,
+                        ErrorCodes.VALIDATION,
                         `Field ${key} does not match ${schema[key].regex}`
                     )
                 }
@@ -37,7 +37,7 @@ export const validate = (obj, schema) => {
                 // regex provided as (pattern, message) pair
                 if (!schema[key].regex.pattern.test(obj[key])) {
                     throw new ErrorMessage(
-                        ErrorCodes.REGISTER_VALIDATION,
+                        ErrorCodes.VALIDATION,
                         schema[key].regex.message
                     )
                 }
@@ -78,20 +78,7 @@ export const registerSchema = {
 }
 
 export const loginSchema = {
-    nickname: {
-        min: 4,
-        max: 32,
-        regex: /^[a-zA-Z0-9]*$/,
-    },
-    email: {
-        min: 4,
-        max: 256,
-        regex: {
-            pattern:
-                /^((([!#$%&'*+\-/=?^_`{|}~\w])|([!#$%&'*+\-/=?^_`{|}~\w][!#$%&'*+\-/=?^_`{|}~\.\w]{0,}[!#$%&'*+\-/=?^_`{|}~\w]))[@]\w+([-.]\w+)*\.\w+([-.]\w+)*)$/,
-            message: 'This is not a valid email',
-        },
-    },
+    identifier: {},
     password: {
         min: 8,
         max: 64,

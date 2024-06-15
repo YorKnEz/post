@@ -11,6 +11,7 @@ import {
     InternalError,
     ErrorMessage,
     loginSchema,
+    FAIL_TIMEOUT,
 } from '../utils/index.js'
 
 export const router = new Router('Auth Router')
@@ -21,26 +22,21 @@ router.post('/register', async (req, res) => {
     try {
         // validate the user data
         validate(req.body, registerSchema)
-
-        // check if the nickname exists
-        let res = await client.query(
-            'select nickname from users where nickname = $1',
-            [req.body.nickname]
-        )
-
-        if (res.rows.length > 0) {
-            throw new ErrorMessage(
-                ErrorCodes.REGISTER_DUPLICATE_NICKNAME,
-                'Nickname already used'
-            )
-        }
     } catch (e) {
-        if (e instanceof ErrorMessage) {
-            return new JSONResponse(400, e.obj())
-        }
+        return new JSONResponse(400, e.obj())
+    }
 
-        console.log(e)
-        return new InternalError()
+    // check if the nickname exists
+    let result = await client.query(
+        'select nickname from users where nickname = $1',
+        [req.body.nickname]
+    )
+
+    if (res.rows.length > 0) {
+        return new JSONResponse(400, {
+            code: ErrorCodes.REGISTER_DUPLICATE_NICKNAME,
+            message: 'Nickname already used',
+        })
     }
 
     // start another async task for: user creation + token creation + sending email to avoid timing attacks
@@ -50,7 +46,7 @@ router.post('/register', async (req, res) => {
             const pass = hash(req.body.password)
 
             // TODO: maybe call user service to do this step
-            let res = await client.query(
+            let result = await client.query(
                 'insert into users(first_name, last_name, nickname, email, password_hash, password_salt) values($1, $2, $3, $4, $5, $6) returning *',
                 [
                     req.body.firstName,
@@ -62,11 +58,11 @@ router.post('/register', async (req, res) => {
                 ]
             )
 
-            const user = res.rows[0]
+            const user = result.rows[0]
             const token = base36token()
 
             await client.query(
-                "insert into tokens values($1, $2, 'emailConfirm')",
+                "insert into tokens(value, user_id, type) values($1, $2, 'emailConfirm')",
                 [token, user.id]
             )
 
@@ -84,7 +80,7 @@ router.post('/register', async (req, res) => {
             }
 
             // other errors, ignore as well
-            console.log(e)
+            console.error(e)
         }
     }
 
@@ -102,19 +98,19 @@ router.post('/verify', async (req, res) => {
     const client = await db.getClient()
 
     try {
-        let res = await client.query(
+        let result = await client.query(
             "delete from tokens where value = $1 and type = 'emailConfirm' returning *",
             [req.query.token]
         )
 
-        if (res.rows.length == 0) {
-            throw new ErrorMessage(
-                ErrorCodes.VERIFY_INVALID_TOKEN,
-                'The given token is invalid'
-            )
+        if (result.rows.length == 0) {
+            return new JSONResponse(400, {
+                code: ErrorCodes.VERIFY_INVALID_TOKEN,
+                message: 'The given token is invalid',
+            })
         }
 
-        const user = res.rows[0]
+        const user = result.rows[0]
 
         await client.query('update users set verified = true where id = $1', [
             user.user_id,
@@ -125,31 +121,78 @@ router.post('/verify', async (req, res) => {
             message: 'Verified successfully, you may now log in',
         })
     } catch (e) {
-        if (e instanceof ErrorMessage) {
-            return new JSONResponse(404, e.obj())
-        }
         console.error(e)
         return new InternalError()
     }
 })
 
 router.post('/login', async (req, res) => {
+    // in order to mitigate timing attacks, any failure except validation will cause the handler to
+    // wait 5 seconds before sending the response
+    //
+    // if the login is successful, a response is immediately returned
+    const start = performance.now()
     const client = await db.getClient()
 
     try {
-        // // validate the user data
-        // validate(req.body, login_schema)
+        // validate the user data
+        validate(req.body, loginSchema)
+    } catch (e) {
+        return new JSONResponse(400, e.obj())
+    }
 
-        res.setCookie({ test: 'test' }, { domain: '/', secure: true })
+    let response
+
+    try {
+        // search the user by nickname or email
+        let result = await client.query(
+            'select * from users where nickname = $1 or email = $1',
+            [req.body.identifier]
+        )
+
+        // no user found -> invalid identifier
+        if (result.rows.length == 0) {
+            throw new JSONResponse(401, {
+                code: ErrorCodes.LOGIN_UNAUTHORIZED,
+                message: 'Invalid credentials',
+            })
+        }
+
+        const user = result.rows[0]
+
+        // check password
+        let pass = hash(req.body.password, user.password_salt)
+
+        if (pass.hash != user.password_hash) {
+            throw new JSONResponse(401, 'Invalid credentials')
+        }
+
+        // generate session token
+        const token = base36token()
+        await client.query("insert into tokens(value, user_id, type) values($1, $2, 'session')", [
+            token,
+            user.id,
+        ])
+
+        res.setCookie({ token }, { domain: 'http://localhost', secure: true })
         return new JSONResponse(200, {
             code: SuccessCodes.LOGGED_IN,
             message: 'Logged in successfully',
         })
     } catch (e) {
-        if (e instanceof ErrorMessage) {
-            return new JSONResponse(404, e.obj())
+        if (e instanceof JSONResponse) {
+            response = e
+        } else {
+            console.error(e)
+            response = new InternalError()
         }
     }
+
+    const end = performance.now()
+
+    await new Promise((res) => setTimeout(res, FAIL_TIMEOUT - (end - start)))
+
+    return response
 })
 
 router.post('/request-change', async (req, res) => { })

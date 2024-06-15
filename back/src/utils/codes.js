@@ -6,10 +6,11 @@ export const ErrorCodes = Object.freeze({
     USER_NOT_FOUND: 1010,
     ALBUM_NOT_FOUND: 1011,
     POEM_NOT_FOUND: 1012,
-    REGISTER_VALIDATION: 1020,
+    VALIDATION: 1020,
     REGISTER_DUPLICATE_NICKNAME: 1021,
     VERIFY_INVALID_TOKEN: 1025,
     LOGIN_VALIDATION: 1026,
+    LOGIN_UNAUTHORIZED: 1027,
 })
 
 // Success codes to use in API responses
