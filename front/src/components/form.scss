@@ -58,6 +58,11 @@
         background-image: linear-gradient(315deg, var(--primary) 0%, var(--gradient-1) 74%);
         color: var(--text-white);
         padding: 0.8rem;
+
+        &[disabled] {
+            background-image: none;
+            background-color: var(--highlight);
+        }
     }
 
     &__error {

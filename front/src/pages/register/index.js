@@ -1,6 +1,6 @@
 import { Form, Modal, Navbar, Search } from '../../components/index.js'
 import env from '../../env.js'
-import { getErrorMessage, success } from '../../utils/api.js'
+import { getErrorMessage, success } from '../../utils/index.js'
 
 window.navbar = new Navbar()
 window.searchBar = new Search()
@@ -14,6 +14,7 @@ window.onresize = () => {
 }
 
 window.form = new Form(
+    'form',
     [
         'firstName',
         'lastName',

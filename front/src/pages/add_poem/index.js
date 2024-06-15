@@ -21,6 +21,7 @@ document.onclick = (ev) => {
 }
 
 window.form = new Form(
+    'form',
     ['by', 'title', 'language', 'lyrics', 'date', 'album'],
     (data, setError) => {
         console.log(data)

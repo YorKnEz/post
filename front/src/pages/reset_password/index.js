@@ -8,6 +8,7 @@ window.onresize = () => {
 }
 
 window.form = new Form(
+    'form',
     ['email', 'password', 'confirmPassword'],
     (data, setError) => {
         if (data.password == 'test') {

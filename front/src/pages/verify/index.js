@@ -1,6 +1,6 @@
 import { Loader, Navbar, Search } from '../../components/index.js'
 import env from '../../env.js'
-import { getErrorMessage, success } from '../../utils/api.js'
+import { getErrorMessage, success } from '../../utils/index.js'
 
 window.navbar = new Navbar()
 window.searchBar = new Search()
