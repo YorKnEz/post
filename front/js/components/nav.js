@@ -1,4 +1,4 @@
-import { toggleTheme } from '../utils.js'
+import { toggleTheme } from '../utils/index.js'
 
 export class Navbar {
     constructor() {

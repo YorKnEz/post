@@ -1,5 +1,5 @@
 import { Share } from '../../components/share.js'
-import { autoGrow, htmlToText, removeHashFromURL } from '../../utils.js'
+import { autoGrow, htmlToText, removeHashFromURL } from '../../utils/index.js'
 
 export class Annotation {
     constructor(id, shareUrl) {

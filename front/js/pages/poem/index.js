@@ -1,4 +1,4 @@
-import { autoGrow, scrollToElem } from '../../utils.js'
+import { autoGrow, scrollToElem } from '../../utils/index.js'
 import { Dropdown } from '../../components/dropdown.js'
 import { LyricsEdit } from './lyricsEdit.js'
 import { AnnotationSystem } from './annotationSystem.js'
