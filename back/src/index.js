@@ -17,6 +17,11 @@ const port = process.env.PORT
 
 const app = new App()
 
+app.middleware((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*')
+    next()
+})
+
 app.use('/api/albums', albums_router)
 app.use('/api/annotations', annotations_router)
 app.use('/api/lyrics', lyrics_router)
