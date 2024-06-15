@@ -164,15 +164,18 @@ router.post('/login', async (req, res) => {
         let pass = hash(req.body.password, user.password_salt)
 
         if (pass.hash != user.password_hash) {
-            throw new JSONResponse(401, 'Invalid credentials')
+            throw new JSONResponse(401, {
+                code: ErrorCodes.LOGIN_UNAUTHORIZED,
+                message: 'Invalid credentials',
+            })
         }
 
         // generate session token
         const token = base36token()
-        await client.query("insert into tokens(value, user_id, type) values($1, $2, 'session')", [
-            token,
-            user.id,
-        ])
+        await client.query(
+            "insert into tokens(value, user_id, type) values($1, $2, 'session')",
+            [token, user.id]
+        )
 
         res.setCookie({ token }, { domain: 'http://localhost', secure: true })
         return new JSONResponse(200, {
