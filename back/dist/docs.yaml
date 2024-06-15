@@ -40,7 +40,7 @@ paths:
                                 password:
                                     type: string
                                     description: The password in plaintext
-            responses: 
+            responses:
                 '201':
                     description: Successful response
                     content:
@@ -68,7 +68,7 @@ paths:
                   schema:
                       type: string
                   description: The verification token
-            responses: 
+            responses:
                 '200':
                     description: Successful response
                     content:
@@ -85,7 +85,7 @@ paths:
     /api/auth/login:
         post:
             summary: Login to account
-            description: This route logins the user in their account, returning a session token through cookies
+            description: This route logins the user in their account, returning a session token through cookies. Identifier is either the email or nickname of the user
             tags:
                 - auth
                 - TODO
@@ -96,7 +96,7 @@ paths:
                         schema:
                             type: object
                             required:
-                                - email
+                                - identifier
                                 - password
                             properties:
                                 email:
@@ -105,7 +105,7 @@ paths:
                                 password:
                                     type: string
                                     description: The password in plaintext
-            responses: 
+            responses:
                 '200':
                     description: Successful response
                     headers:
@@ -791,7 +791,6 @@ paths:
     #                     application/json:
     #                         schema:
     #                             $ref: '#/components/schemas/Message'
-
 
     # /api/example/{id}/test:
     #     post:
