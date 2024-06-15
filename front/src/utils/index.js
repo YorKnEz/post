@@ -1,3 +1,5 @@
+export * from './api.js'
+
 export const toggleTheme = () => {
     document.documentElement.classList.toggle('theme-dark')
 }

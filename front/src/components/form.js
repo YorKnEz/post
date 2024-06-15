@@ -20,7 +20,7 @@ export class Form {
             }
         }
 
-        document.getElementById('form').onsubmit = (ev) => {
+        document.getElementById('form').onsubmit = async (ev) => {
             ev.preventDefault()
             this.clearError()
 
@@ -38,7 +38,7 @@ export class Form {
                 data[field] = value
             }
 
-            onsubmit(data, this.setError)
+            await onsubmit(data, this.setError)
         }
     }
 
