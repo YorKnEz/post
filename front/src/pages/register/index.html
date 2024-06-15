@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/1ea9bc0996.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/css/pages/login/index.css">
+    <title>Register</title>
+</head>
+
+<body>
+    <nav class="nav" id="nav">
+        <div class="nav__item">
+            <button class="nav__button">
+                <i class="fa-solid fa-bars" onclick="navbar.toggleMenu()"></i>
+            </button>
+            <a href="/" class="nav__brand">PoST</a>
+        </div>
+
+        <div class="search nav__item" id="search">
+            <i class="fa-solid fa-magnifying-glass search__icon" onclick="searchBar.search()"></i>
+            <input class="search__input" placeholder="Search" type="text" id="searchInput"
+                onkeydown="searchBar.handleKeyDown(event)">
+        </div>
+
+        <div class="nav__buttons nav__item" id="buttons">
+            <a class="nav__button" href="/add_poem">
+                <i class="fa-solid fa-plus"></i>
+            </a>
+            <a class="nav__button" href="/rss">
+                <i class="fa-solid fa-rss"></i>
+            </a>
+            <button class="nav__button">
+                <i class="fa-solid fa-sun" onclick="navbar.changeTheme()"></i>
+            </button>
+        </div>
+    </nav>
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar__user">
+            <img class="sidebar__pfp" src="/assets/avatar.png" alt="Profile picture of user">
+            <div class="sidebar__info">
+                <span class="sidebar__username">Eminem</span>
+                <span class="sidebar__role">Poet</span>
+            </div>
+        </div>
+        <div class="search search--sidebar" id="search2">
+            <i class="fa-solid fa-magnifying-glass sidebar__icon" onclick="searchBar.search()"></i>
+            <input class="search__input" placeholder="Search" type="text" id="searchInput2"
+                onkeydown="searchBar.handleKeyDown(event)">
+        </div>
+        <!-- <div class="sidebar__toggle"></div> -->
+        <a class="sidebar__item" href="/login">
+            <i class="fa-solid fa-right-to-bracket sidebar__icon"></i><span>Log in</span>
+        </a>
+        <a class="sidebar__item sidebar__item--active" href="/register">
+            <i class="fa-solid fa-user-plus sidebar__icon"></i>
+            <span>Register</span>
+        </a>
+        <a class="sidebar__item sidebar__item--nav" href="/add_poem">
+            <i class="fa-solid fa-plus sidebar__icon"></i>
+            <span>Add Poem</span>
+        </a>
+        <a class="sidebar__item sidebar__item--nav" href="/rss" onclick="navbar.showRss()">
+            <i class="fa-solid fa-rss sidebar__icon"></i>
+            <span>RSS</span>
+        </a>
+        <div class="sidebar__separator"></div>
+        <button class="sidebar__item sidebar__item--button">
+            <i class="fa-solid fa-right-from-bracket sidebar__icon"></i>
+            <span>Log Out</span>
+        </button>
+        <button class="sidebar__item sidebar__item--button sidebar__item--nav" onclick="navbar.changeTheme()">
+            <i class="fa-solid fa-sun sidebar__icon"></i>
+            <span>Toggle Theme</span>
+        </button>
+    </nav>
+    <header class="container gradient"></header>
+    <main class="container">
+        <div class="row page">
+            <section class="col-xs-4 col-sm-4 col-md-5">
+                <h1>Register</h1>
+                <form id="form" class="form">
+                    <div class="form__item">
+                        <label for="firstName" class="form__label">First name</label>
+                        <input id="firstName" name="firstName" placeholder="First name" class="form__input">
+                    </div>
+                    <div class="form__item">
+                        <label for="lastName" class="form__label">Last name</label>
+                        <input id="lastName" name="lastName" placeholder="Last name" class="form__input">
+                    </div>
+                    <div class="form__item">
+                        <label for="nickname" class="form__label">Nickname</label>
+                        <input id="nickname" name="nickname" placeholder="Nickname" class="form__input">
+                    </div>
+                    <div class="form__item">
+                        <label for="email" class="form__label">Email</label>
+                        <input id="email" name="email" type="email" placeholder="Email" class="form__input">
+                    </div>
+                    <div class="form__item">
+                        <label for="password" class="form__label">Password</label>
+                        <input id="password" name="password" type="password" placeholder="Password" class="form__input">
+                        <i id="password-toggler" class="fa-solid fa-eye form__icon" onclick="togglePassword()"></i>
+                    </div>
+                    <div class="form__item">
+                        <label for="confirmPassword" class="form__label">Confirm password</label>
+                        <input id="confirmPassword" name="password" type="password" placeholder="Confirm password" class="form__input">
+                    </div>
+                    <span id="form-error" class="form__error hidden"></span>
+                    <button class="btn form__submit">Submit</button>
+                </form>
+            </section>
+            <aside class="col-xs-4 col-sm-4 col-md-7">
+                <img class="page__bg" src="/assets/bg.png" alt="Post page background">
+            </aside>
+        </div>
+    </main>
+    <footer class="container footer"></footer>
+
+    <script type="module" src="/src/pages/register/index.js"></script>
+</body>
+
+</html>

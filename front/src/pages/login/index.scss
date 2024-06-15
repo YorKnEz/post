@@ -1,0 +1,19 @@
+@import '../../index.scss';
+
+@import '../../components/button.scss';
+@import '../../components/input.scss';
+@import '../../components/form.scss';
+
+.page {
+    width: 100%;
+    min-height: calc(100vh - 48px - 4rem);
+    padding: 2rem 0;
+
+    &__bg {
+        width: 100%;
+        height: 100%;
+        border-radius: 5px;
+        filter:blur(0px) grayscale(40%) contrast(130%);
+        object-fit: cover;
+    }
+}

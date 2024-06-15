@@ -1,0 +1,50 @@
+@import '../../index.scss';
+
+@import '../../components/button.scss';
+@import '../../components/input.scss';
+@import '../../components/form.scss';
+@import '../../components/dropdown.scss';
+
+body {
+    min-height: calc(100vh - 48px);
+}
+
+.section {
+    margin: 0.4rem 0;
+    padding: 0.5rem 1rem;
+    background-color: var(--text-white);
+    border: 1px solid var(--text-black);
+    border-radius: 10px;
+
+    &__title {
+        margin: 0;
+    }
+
+    &__list {
+        // display: flex;
+        // flex-direction: column;
+        padding-left: 1.4rem;
+        padding-right: 0.2rem;
+        overflow-y: scroll;
+        max-height: 150px;
+
+        &--grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+    }
+
+    
+}
+
+.request {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+
+    &__link {
+        color: var(--text-black);
+        text-underline-offset: 4px;
+    }
+}
