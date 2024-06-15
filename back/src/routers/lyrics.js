@@ -1,6 +1,6 @@
 import { Router } from '../../../lib/routing/index.js'
 
-export const router = new Router('Lyrics Router', '/api/lyrics')
+export const router = new Router('Lyrics Router')
 
 router.get('/', async (req, res) => { })
 

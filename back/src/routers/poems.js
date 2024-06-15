@@ -2,7 +2,7 @@ import { JSONResponse, Router } from '../../../lib/routing/index.js'
 import * as db from '../db/index.js'
 import { ErrorCodes, SuccessCodes, InternalError } from '../utils/index.js'
 
-export const router = new Router('Poems Router', '/api/poems')
+export const router = new Router('Poems Router')
 
 router.get('/', async (req, res) => {
     // TODO: add some form of safe conversion to router

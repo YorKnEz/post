@@ -1,6 +1,6 @@
 import { Router } from '../../../lib/routing/index.js'
 
-export const router = new Router('Posts Router', '/api/posts')
+export const router = new Router('Posts Router')
 
 router.get('/', async (req, res) => { })
 

@@ -1,6 +1,6 @@
 import { Router } from '../../../lib/routing/index.js'
 
-export const router = new Router('Annotations Router', '/api/annotations')
+export const router = new Router('Annotations Router')
 
 router.get('/', async (req, res) => { })
 
