@@ -4,7 +4,9 @@
   --gradient-1: #32a852;
   --gradient-2: #7132a8;
   --text-white: #eee;
+  --text-full-white: #fff;
   --text-black: #111;
+  --text-full-black: #000;
   --highlight: #ccc;
   --active-highlight: #32a85250;
 }
@@ -15,7 +17,9 @@
   --gradient-1: #7132a8;
   --gradient-2: #32a852;
   --text-white: #111;
+  --text-full-white: #000;
   --text-black: #eee;
+  --text-full-black: #fff;
   --highlight: #333;
   --active-highlight: #7132a850;
 }
