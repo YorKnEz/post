@@ -4,6 +4,7 @@ import { App, WebServer } from '../../lib/routing/index.js'
 import {
     albums_router,
     annotations_router,
+    auth_router,
     lyrics_router,
     poems_router,
     posts_router,
@@ -24,6 +25,7 @@ app.middleware((req, res, next) => {
 
 app.use('/api/albums', albums_router)
 app.use('/api/annotations', annotations_router)
+app.use('/api/auth', auth_router)
 app.use('/api/lyrics', lyrics_router)
 app.use('/api/poems', poems_router)
 app.use('/api/posts', posts_router)

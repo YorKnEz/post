@@ -5,20 +5,130 @@ info:
     description: A simple API example
 
 paths:
-    # /api/test:
-    #     get:
-    #         summary: Example route
-    #         description: An example POST route with path and query parameters, and a JSON body.
-    #         tags:
-    #             - test
-    #         responses:
-    #             '200':
-    #                 description: Successful response
-    #                 content:
-    #                     text/plain:
-    #                         schema:
-    #                             type: string
-    #                             example: Successfully processed the request
+    /api/auth/register:
+        post:
+            summary: Register an account
+            description: This route registers a new user to our database
+            tags:
+                - auth
+                - TODO
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - first_name
+                                - last_name
+                                - nickname
+                                - email
+                                - password
+                            properties:
+                                first_name:
+                                    type: string
+                                    description: The first name of the user
+                                last_name:
+                                    type: string
+                                    description: The last name of the user
+                                nickname:
+                                    type: string
+                                    description: The nickname of the user
+                                email:
+                                    type: string
+                                    description: The email of the user
+                                password:
+                                    type: string
+                                    description: The password in plaintext
+            responses: 
+                '201':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/User'
+                '400':
+                    description: Invalid data
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+
+    /api/auth/verify:
+        post:
+            summary: Verify an account
+            description: Upon registration, a user must call this route with the provided token in order to verify it's account
+            tags:
+                - auth
+                - TODO
+            parameters:
+                - name: token
+                  in: query
+                  required: true
+                  schema:
+                      type: string
+                  description: The verification token
+            responses: 
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+                '404':
+                    description: The token provided doesn't exist
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+
+    /api/auth/login:
+        post:
+            summary: Login to account
+            description: This route logins the user in their account, returning a session token through cookies
+            tags:
+                - auth
+                - TODO
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - email
+                                - password
+                            properties:
+                                email:
+                                    type: string
+                                    description: The email of the user
+                                password:
+                                    type: string
+                                    description: The password in plaintext
+            responses: 
+                '200':
+                    description: Successful response
+                    headers:
+                        Set-Cookie:
+                            description: This header contains the session token
+                            schema:
+                                type: string
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+                '400':
+                    description: Invalid data
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+                '401':
+                    description: Invalid credentials provided
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
 
     /api/users:
         get:
@@ -129,8 +239,6 @@ paths:
                                 lyrics_contributions:
                                     type: integer
                                     description: Number of lyrics contributed to
-                  
-
             responses:
                 '201':
                     description: Successful response

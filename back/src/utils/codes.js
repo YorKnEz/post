@@ -7,6 +7,9 @@ export const ErrorCodes = Object.freeze({
     ALBUM_NOT_FOUND: 1011,
     POEM_NOT_FOUND: 1012,
     REGISTER_VALIDATION: 1020,
+    REGISTER_DUPLICATE_NICKNAME: 1021,
+    VERIFY_INVALID_TOKEN: 1025,
+    LOGIN_VALIDATION: 1026,
 })
 
 // Success codes to use in API responses
@@ -15,6 +18,8 @@ export const SuccessCodes = Object.freeze({
     ALBUM_DELETED: 2,
     POEM_DELETED: 3,
     REGISTERED: 4,
+    VERIFIED: 5,
+    LOGGED_IN: 6,
 })
 
 export class ErrorMessage extends Error {
