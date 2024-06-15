@@ -1,0 +1,92 @@
+.annotation {
+  padding: 2rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.annotation--floating {
+  position: relative;
+  background-color: var(--highlight);
+  padding: 1.5rem;
+  height: fit-content;
+  width: calc(100% - 3rem);
+}
+.annotation__title {
+  font-size: 3rem;
+  margin: 0;
+  margin-bottom: 1rem;
+}
+.annotation__top-controls {
+  width: 100%;
+  display: flex;
+  justify-content: end;
+}
+.annotation__hr {
+  color: inherit;
+  margin: 1rem 0;
+  width: 100%;
+}
+.annotation__hr--big {
+  margin: 3rem 0;
+}
+.annotation__header {
+  font-size: 0.8rem;
+  width: 100%;
+  display: flex;
+  margin-bottom: 1rem;
+  justify-content: space-between;
+}
+.annotation__textarea {
+  width: calc(100% - 20px - 2px);
+  height: 10rem;
+  padding: 10px;
+  color: inherit;
+  background-color: transparent;
+  border: 1px solid inherit;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  resize: none;
+}
+.annotation__textarea:focus-visible {
+  outline: none;
+}
+.annotation__footer {
+  width: 100%;
+}
+.annotation__edit-footer {
+  width: 100%;
+}
+.annotation__controls {
+  font-size: 0.8rem;
+  margin: 1rem 0;
+}
+.annotation__control {
+  margin: 0 0.4rem;
+}
+.annotation__control:first-child {
+  margin-left: 0;
+}
+.annotation__control:last-child {
+  margin-right: 0;
+}
+.annotation__buttons {
+  font-size: 0.8rem;
+  display: flex;
+  justify-content: space-between;
+}
+.annotation__subtitle {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+@media only screen and (max-width: 599px) {
+  .annotation--floating {
+    z-index: 1000;
+    position: fixed;
+    top: 0 !important;
+    left: 0;
+  }
+}
+
+/*# sourceMappingURL=index.css.map */

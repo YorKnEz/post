@@ -1,0 +1,50 @@
+@import 'common/layout.scss';
+@import 'common/navbar.scss';
+@import 'common/theme.scss';
+@import 'common/typography.scss';
+@import 'common/sidebar.scss';
+@import 'common/search.scss';
+
+body {
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 1rem;
+    background-color: var(--text-white);
+    color: var(--text-black);
+
+    // hr {
+    //     margin: 10rem 0;
+    // }
+}
+
+i {
+    color: inherit;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.gradient {
+    background: linear-gradient(var(--primary), var(--gradient-1));
+    color: var(--text-white);
+
+    i {
+        color: var(--text--white);
+    }
+}
+
+.page {
+    width: 100%;
+    min-height: calc(100vh - 48px - 4rem);
+    padding: 2rem 0;
+
+    &__bg {
+        width: 100%;
+        height: 100%;
+        border-radius: 5px;
+        filter:blur(0px) grayscale(40%) contrast(130%);
+        object-fit: cover;
+    }
+}

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/1ea9bc0996.js" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="/css/pages/profile/index.css">
+
+    <title>Profile</title>
+</head>
+
+<body>
+    <nav class="nav" id="nav">
+        <div class="nav__item">
+            <button class="nav__button">
+                <i class="fa-solid fa-bars" onclick="navbar.toggleMenu()"></i>
+            </button>
+            <a href="/" class="nav__brand">PoST</a>
+        </div>
+
+        <div class="search nav__item" id="search">
+            <i class="fa-solid fa-magnifying-glass search__icon" onclick="searchBar.search()"></i>
+            <input class="search__input" placeholder="Search" type="text" id="searchInput"
+                onkeydown="searchBar.handleKeyDown(event)">
+        </div>
+
+        <div class="nav__buttons nav__item" id="buttons">
+            <a class="nav__button" href="/add-poem">
+                <i class="fa-solid fa-plus"></i>
+            </a>
+            <a class="nav__button" href="/rss">
+                <i class="fa-solid fa-rss"></i>
+            </a>
+            <button class="nav__button">
+                <i class="fa-solid fa-sun" onclick="navbar.changeTheme()"></i>
+            </button>
+        </div>
+    </nav>
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar__user sidebar__item--active">
+            <img class="sidebar__pfp" src="/assets/avatar.png" alt="Profile picture of user">
+            <div class="sidebar__info">
+                <span class="sidebar__username">Eminem</span>
+                <span class="sidebar__role">Poet</span>
+            </div>
+        </div>
+        <div class="search search--sidebar" id="search2">
+            <i class="fa-solid fa-magnifying-glass sidebar__icon" onclick="searchBar.search()"></i>
+            <input class="search__input" placeholder="Search" type="text" id="searchInput2"
+                onkeydown="searchBar.handleKeyDown(event)">
+        </div>
+        <!-- <div class="sidebar__toggle"></div> -->
+        <a class="sidebar__item" href="/login">
+            <i class="fa-solid fa-right-to-bracket sidebar__icon"></i><span>Log in</span>
+        </a>
+        <a class="sidebar__item" href="/register">
+            <i class="fa-solid fa-user-plus sidebar__icon"></i>
+            <span>Register</span>
+        </a>
+        <a class="sidebar__item sidebar__item--nav" href="/add-poem">
+            <i class="fa-solid fa-plus sidebar__icon"></i>
+            <span>Add Poem</span>
+        </a>
+        <a class="sidebar__item sidebar__item--nav" href="/rss" onclick="navbar.showRss()">
+            <i class="fa-solid fa-rss sidebar__icon"></i>
+            <span>RSS</span>
+        </a>
+        <div class="sidebar__separator"></div>
+        <button class="sidebar__item sidebar__item--button">
+            <i class="fa-solid fa-right-from-bracket sidebar__icon"></i>
+            <span>Log Out</span>
+        </button>
+        <button class="sidebar__item sidebar__item--button sidebar__item--nav" onclick="navbar.changeTheme()">
+            <i class="fa-solid fa-sun sidebar__icon"></i>
+            <span>Toggle Theme</span>
+        </button>
+    </nav>
+
+    <header class="container profile__header">
+        <div class="row">
+            <img class="profile__avatar col-xs-1 col-sm-2 col-md-3" src="/assets/avatar.png">
+            <div class="profile__info col-xs-3 col-sm-6 col-md-9">
+                <h2 class="profile__name">Eminem</h2>
+                <span class="profile__contact">Poet</span>
+                <span class="profile__contact">emineminem@gmail.com</span>
+                <button class="btn">
+                    <span class="btn__label">Become a Poet</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="row">
+            <div class="col-xs-4 col-sm-8 col-md-4">
+                <div class="statisticCard">
+                    <h3>Statistics</h3>
+                    <div class="statisticCard__list">
+                        <div class="" title="Annotations Made">
+                            <i class="fa-solid fa-quote-left statisticCard__item"></i>
+                            <span class="statisticCard__item">204</span>
+                        </div>
+                        <div class="" title="Translations Made">
+                            <i class="fa-solid fa-pen-nib statisticCard__item"></i>
+                            <span class="statisticCard__item">11</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="statisticCard statisticCard--accomp listing">
+                    <h3>Top Accomplishments</h3>
+                    <ol>
+                        <li class="listing__item listing__item--heading">
+                            <span class="listing__position">Rank</span>
+                            <div class="userRow">
+                                <span class="userRow__name">Name</span>
+                                <span class="userRow__score">Contribution</span>
+                            </div>
+                        </li>
+                        <li class="listing__item">
+                            <a href="/profile">
+                                <span class="listing__position">1</span>
+                                <div class="userRow">
+                                    <img class="userRow__image" src="/assets/avatar.png" alt="User1 Profile Picture">
+                                    <div>
+                                        <h3 class="userRow__name">User1</h3>
+                                    </div>
+                                    <span class="userRow__score">1004</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="listing__item">
+                            <a href="/profile">
+                                <span class="listing__position">1</span>
+                                <div class="userRow">
+                                    <img class="userRow__image" src="/assets/avatar.png" alt="User1 Profile Picture">
+                                    <div>
+                                        <h3 class="userRow__name">User1</h3>
+                                    </div>
+                                    <span class="userRow__score">1004</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="listing__item">
+                            <a href="/profile">
+                                <span class="listing__position">1</span>
+                                <div class="userRow">
+                                    <img class="userRow__image" src="/assets/avatar.png" alt="User1 Profile Picture">
+                                    <div>
+                                        <h3 class="userRow__name">User1</h3>
+                                    </div>
+                                    <span class="userRow__score">1004</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="listing__item">
+                            <a href="/profile">
+                                <span class="listing__position">1</span>
+                                <div class="userRow">
+                                    <img class="userRow__image" src="/assets/avatar.png" alt="User1 Profile Picture">
+                                    <div>
+                                        <h3 class="userRow__name">User1</h3>
+                                    </div>
+                                    <span class="userRow__score">1004</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="listing__item">
+                            <a href="/profile">
+                                <span class="listing__position">1</span>
+                                <div class="userRow">
+                                    <img class="userRow__image" src="/assets/avatar.png" alt="User1 Profile Picture">
+                                    <div>
+                                        <h3 class="userRow__name">User1</h3>
+                                    </div>
+                                    <span class="userRow__score">1004</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="listing__item">
+                            <a href="/profile">
+                                <span class="listing__position">1</span>
+                                <div class="userRow">
+                                    <img class="userRow__image" src="/assets/avatar.png" alt="User1 Profile Picture">
+                                    <div>
+                                        <h3 class="userRow__name">User1</h3>
+                                    </div>
+                                    <span class="userRow__score">1004</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="listing__item">
+                            <a href="/profile">
+                                <span class="listing__position">1</span>
+                                <div class="userRow">
+                                    <img class="userRow__image" src="/assets/avatar.png" alt="User1 Profile Picture">
+                                    <div>
+                                        <h3 class="userRow__name">User1</h3>
+                                    </div>
+                                    <span class="userRow__score">1004</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="listing__item">
+                            <a href="/profile">
+                                <span class="listing__position">1</span>
+                                <div class="userRow">
+                                    <img class="userRow__image" src="/assets/avatar.png" alt="User1 Profile Picture">
+                                    <div>
+                                        <h3 class="userRow__name">User1</h3>
+                                    </div>
+                                    <span class="userRow__score">1004</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="listing__item">
+                            <a href="/profile">
+                                <span class="listing__position">1</span>
+                                <div class="userRow">
+                                    <img class="userRow__image" src="/assets/avatar.png" alt="User1 Profile Picture">
+                                    <div>
+                                        <h3 class="userRow__name">User1</h3>
+                                    </div>
+                                    <span class="userRow__score">1004</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="listing__item">
+                            <a href="/profile">
+                                <span class="listing__position">1</span>
+                                <div class="userRow">
+                                    <img class="userRow__image" src="/assets/avatar.png" alt="User1 Profile Picture">
+                                    <div>
+                                        <h3 class="userRow__name">User1</h3>
+                                    </div>
+                                    <span class="userRow__score">1004</span>
+                                </div>
+                            </a>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+            <div class="contributions listing col-xs-4 col-sm-8 col-md-8">
+                <ol>
+                    <li class="listing__item listing__item--heading">
+                        <span class="listing__position">Eminem's contributions</span>
+                        <div class="contributions__item">
+                            <div id="dropdown" class="dropdown userRow__score" onclick="dropdown.toggle()">
+                                <span class="dropdown__text">Annotations</span>
+                                <div class="dropdown__container hidden">
+                                    <span class="dropdown__item">Annotations</span>
+                                    <span class="dropdown__item">Translations</span>
+                                    <span class="dropdown__item">Pending</span>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </div>
+
+                    </li>
+                    <li class="listing__item">
+                        <a href="/poem">
+                            <span class="listing__position">1</span>
+                            <span class="poemRow">
+                                <img class="poemRow__image" src="/assets/avatar.png" alt="Poem1 Cover Picture">
+                                <h3 class="poemRow__title">Poem1</h3>
+                                <h4 class="poemRow__author">Auth1</h4>
+                                <span class="listing__date">12/04/2024</span>
+                            </span>
+                        </a>
+                    </li>
+                    <li class="listing__item">
+                        <a href="/poem">
+                            <span class="listing__position">1</span>
+                            <span class="poemRow">
+                                <img class="poemRow__image" src="/assets/avatar.png" alt="Poem1 Cover Picture">
+                                <h3 class="poemRow__title">Poem1</h3>
+                                <h4 class="poemRow__author">Auth1</h4>
+                                <span class="listing__date">12/04/2024</span>
+                            </span>
+                        </a>
+                    </li>
+                    <li class="listing__item">
+                        <a href="/poem">
+                            <span class="listing__position">1</span>
+                            <span class="poemRow">
+                                <img class="poemRow__image" src="/assets/avatar.png" alt="Poem1 Cover Picture">
+                                <h3 class="poemRow__title">Poem1</h3>
+                                <h4 class="poemRow__author">Auth1</h4>
+                                <span class="listing__date">12/04/2024</span>
+                            </span>
+                        </a>
+                    </li>
+                    <li class="listing__item">
+                        <a href="/poem">
+                            <span class="listing__position">1</span>
+                            <span class="poemRow">
+                                <img class="poemRow__image" src="/assets/avatar.png" alt="Poem1 Cover Picture">
+                                <h3 class="poemRow__title">Poem1</h3>
+                                <h4 class="poemRow__author">Auth1</h4>
+                                <span class="listing__date">12/04/2024</span>
+                            </span>
+                        </a>
+                    </li>
+                    <li class="listing__item">
+                        <a href="/poem">
+                            <span class="listing__position">1</span>
+                            <span class="poemRow">
+                                <img class="poemRow__image" src="/assets/avatar.png" alt="Poem1 Cover Picture">
+                                <h3 class="poemRow__title">Poem1</h3>
+                                <h4 class="poemRow__author">Auth1</h4>
+                                <span class="listing__date">12/04/2024</span>
+                            </span>
+                        </a>
+                    </li>
+                    <li class="listing__item">
+                        <a href="/poem">
+                            <span class="listing__position">1</span>
+                            <span class="poemRow">
+                                <img class="poemRow__image" src="/assets/avatar.png" alt="Poem1 Cover Picture">
+                                <h3 class="poemRow__title">Poem1</h3>
+                                <h4 class="poemRow__author">Auth1</h4>
+                                <span class="listing__date">12/04/2024</span>
+                            </span>
+                        </a>
+                    </li>
+                </ol>
+            </div>
+
+        </div>
+    </main>
+
+    <script type="module" src="/src/pages/profile/index.js"></script>
+</body>
+
+</html>

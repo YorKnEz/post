@@ -7,31 +7,32 @@ dotenv.config()
 const hostname = process.env.HOST
 const port = process.env.PORT
 
+const app = new App()
+
 const web_routes = {
+    '/assets': { '*': 'assets' },
     '/css': { '*': 'css' },
     '/docs': {
         '': 'docs/index.html',
         '*': 'docs',
     },
-    '/fonts': { '*': 'fonts' },
-    '/img': { '*': 'img' },
-    '/js': { '*': 'js' },
-    '/favicon.ico': 'favicon.ico',
-    '': 'pages/index.html',
-    '/add_poem': 'pages/add_poem/index.html',
-    '/dashboard': 'pages/dashboard/index.html',
-    '/login': 'pages/login/index.html',
-    '/poem': 'pages/poem/index.html',
-    '/profile': 'pages/profile/index.html',
-    '/register': 'pages/register/index.html',
-    '/reset-password': 'pages/reset-password/index.html',
+    '/favicon.ico': 'assets/favicon.ico',
+    '': 'src/pages/home/index.html',
+    '/add-poem': 'src/pages/add_poem/index.html',
+    '/dashboard': 'src/pages/dashboard/index.html',
+    '/login': 'src/pages/login/index.html',
+    '/poem': 'src/pages/poem/index.html',
+    '/profile': 'src/pages/profile/index.html',
+    '/register': 'src/pages/register/index.html',
+    '/reset-password': 'src/pages/reset_password/index.html',
+    '/verify' : 'src/pages/verify/index.html',
+    '/src': { '*': 'src' },
 }
-
-const app = new App()
 
 app.use(
     '/',
     new WebServer(process.env.CONTENT_LOCATION, web_routes, {
+        envLocation: `${process.env.CONTENT_LOCATION}/src/env.js`,
         env: { API_URL: process.env.API_URL },
     })
 )
