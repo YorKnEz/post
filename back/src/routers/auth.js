@@ -116,7 +116,7 @@ router.post('/verify', async (req, res) => {
 
         const user = res.rows[0]
 
-        await client.query('update users set verified = 1 where id = $1', [
+        await client.query('update users set verified = true where id = $1', [
             user.user_id,
         ])
 
