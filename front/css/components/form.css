@@ -48,6 +48,10 @@
   color: var(--text-white);
   padding: 0.8rem;
 }
+.form__submit[disabled] {
+  background-image: none;
+  background-color: var(--highlight);
+}
 .form__error {
   color: red;
   font-size: 0.8rem;
