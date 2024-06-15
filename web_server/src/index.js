@@ -17,7 +17,7 @@ const web_routes = {
     '/img': { '*': 'img' },
     '/js': { '*': 'js' },
     '/favicon.ico': 'favicon.ico',
-    '/': 'pages/index.html',
+    '': 'pages/index.html',
     '/add_poem': 'pages/add_poem/index.html',
     '/dashboard': 'pages/dashboard/index.html',
     '/login': 'pages/login/index.html',
@@ -29,9 +29,10 @@ const web_routes = {
 
 const app = new App()
 
-app.add(
+app.use(
+    '/',
     new WebServer(process.env.CONTENT_LOCATION, web_routes, {
-        env: { TEST: 'testy' },
+        env: { API_URL: process.env.API_URL },
     })
 )
 
