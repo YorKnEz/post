@@ -6,7 +6,7 @@ export const validate = (obj, schema) => {
         // check that all keys are present
         if (!(key in obj)) {
             throw new ErrorMessage(
-                ErrorCodes.VALIDATION,
+                ErrorCodes.VALIDATION_MISSING_FIELD,
                 `Missing field ${key}`
             )
         }
@@ -14,13 +14,13 @@ export const validate = (obj, schema) => {
         // check the requirements for each field
         if ('min' in schema[key] && obj[key].length < schema[key].min) {
             throw new ErrorMessage(
-                ErrorCodes.VALIDATION,
+                ErrorCodes.VALIDATION_MIN_LENGTH,
                 `Length of field ${key} should be at least ${schema[key].min}`
             )
         }
         if ('max' in schema[key] && obj[key].length > schema[key].max) {
             throw new ErrorMessage(
-                ErrorCodes.VALIDATION,
+                ErrorCodes.VALIDATION_MAX_LENGTH,
                 `Length of field ${key} should be at most ${schema[key].max}`
             )
         }
@@ -29,7 +29,7 @@ export const validate = (obj, schema) => {
                 // regex provided as plain RegExp
                 if (!schema[key].regex.test(obj[key])) {
                     throw new ErrorMessage(
-                        ErrorCodes.VALIDATION,
+                        ErrorCodes.VALIDATION_REGEX,
                         `Field ${key} does not match ${schema[key].regex}`
                     )
                 }
@@ -37,7 +37,7 @@ export const validate = (obj, schema) => {
                 // regex provided as (pattern, message) pair
                 if (!schema[key].regex.pattern.test(obj[key])) {
                     throw new ErrorMessage(
-                        ErrorCodes.VALIDATION,
+                        ErrorCodes.VALIDATION_REGEX,
                         schema[key].regex.message
                     )
                 }
