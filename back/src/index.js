@@ -18,9 +18,19 @@ const port = process.env.PORT
 
 const app = new App()
 
-app.middleware((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*')
-    next()
+const allowList = ['http://localhost:3000']
+
+app.middleware(async (req, res, next) => {
+    if (req.headers.origin) {
+        if (!allowList.includes(req.headers.origin)) {
+            return
+        }
+
+        res.setHeader('Access-Control-Allow-Origin', req.headers.origin)
+        res.setHeader('Access-Control-Allow-Credentials', true)
+    }
+
+    return await next(req, res)
 })
 
 app.use('/api/albums', albums_router)
@@ -39,6 +49,4 @@ const web_routes = {
 
 app.use('/docs', new WebServer(process.env.DOCS_LOCATION, web_routes))
 
-app.listen(port, hostname, () => {
-    console.log(`Server running at http://${hostname}:${port}/`)
-})
+app.listen(port, hostname)

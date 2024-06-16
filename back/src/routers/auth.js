@@ -127,6 +127,7 @@ router.post('/verify', async (req, res) => {
 })
 
 router.post('/login', async (req, res) => {
+    console.log(req.headers)
     // in order to mitigate timing attacks, any failure except validation will cause the handler to
     // wait 5 seconds before sending the response
     //
@@ -177,7 +178,16 @@ router.post('/login', async (req, res) => {
             [token, user.id]
         )
 
-        res.setCookie({ token }, { domain: 'http://localhost', secure: true })
+        res.setCookie(
+            { token },
+            {
+                domain: process.env.HOST,
+                path: '/',
+                secure: true,
+                sameSite: 'Strict',
+                httpOnly: false,
+            }
+        )
         return new JSONResponse(200, {
             code: SuccessCodes.LOGGED_IN,
             message: 'Logged in successfully',
