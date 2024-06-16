@@ -1,4 +1,5 @@
 import dotenv from 'dotenv'
+import fs from 'fs'
 
 import { App, WebServer } from '../../lib/routing/index.js'
 
@@ -7,7 +8,10 @@ dotenv.config()
 const hostname = process.env.HOST
 const port = process.env.PORT
 
-const app = new App()
+const app = new App({
+    key: fs.readFileSync('./cert.key'),
+    cert: fs.readFileSync('./cert.pem'),
+})
 
 const web_routes = {
     '/assets': { '*': 'assets' },
@@ -25,7 +29,7 @@ const web_routes = {
     '/profile': 'src/pages/profile/index.html',
     '/register': 'src/pages/register/index.html',
     '/reset-password': 'src/pages/reset_password/index.html',
-    '/verify' : 'src/pages/verify/index.html',
+    '/verify': 'src/pages/verify/index.html',
     '/src': { '*': 'src' },
 }
 
@@ -37,6 +41,4 @@ app.use(
     })
 )
 
-app.listen(port, hostname, () => {
-    console.log(`Server running at http://${hostname}:${port}/`)
-})
+app.listen(port, hostname)
