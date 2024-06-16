@@ -55,6 +55,8 @@ export class Form {
 
             // enable submit after handling
             this.submitter.disabled = false
+
+            return false
         }
     }
 

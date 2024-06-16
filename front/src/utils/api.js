@@ -1,9 +1,15 @@
 // check if status code is in [200, 300) by checking 3rd digit value
 export const success = (status) => status / 100 == 2
 
+// if key == value, it tells `getErrorMessage` to keep the original message
 const errors = {
     1021: 'Nickname already in use',
-    1025: 'The given token is invalid'
+    1025: 'The given token is invalid',
+    1027: 'Invalid credentials',
+    1030: 1030,
+    1031: 1031,
+    1032: 1032,
+    1033: 1033,
 }
 
 export const getErrorMessage = (error) => {
@@ -16,8 +22,11 @@ export const getErrorMessage = (error) => {
     // if code is not known
     if (!(error.code in errors)) {
         console.error(error)
-        // return error.message
         return 'Unknown error'
+    }
+
+    if (error.code == errors[error.code]) {
+        return error.message
     }
 
     return errors[error.code]
