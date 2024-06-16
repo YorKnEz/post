@@ -18,7 +18,11 @@ const port = process.env.PORT
 
 const app = new App()
 
-const allowList = ['http://localhost:3000']
+const allowList = [
+    'http://localhost:3000',
+    'https://localhost:3000',
+    'http://localhost:4000',
+]
 
 app.middleware(async (req, res, next) => {
     if (req.headers.origin) {

@@ -11,7 +11,6 @@ paths:
             description: This route registers a new user to our database
             tags:
                 - auth
-                - TODO
             requestBody:
                 required: true
                 content:
@@ -60,7 +59,6 @@ paths:
             description: Upon registration, a user must call this route with the provided token in order to verify it's account
             tags:
                 - auth
-                - TODO
             parameters:
                 - name: token
                   in: query
@@ -88,7 +86,6 @@ paths:
             description: This route logins the user in their account, returning a session token through cookies. Identifier is either the email or nickname of the user
             tags:
                 - auth
-                - TODO
             requestBody:
                 required: true
                 content:
@@ -99,9 +96,9 @@ paths:
                                 - identifier
                                 - password
                             properties:
-                                email:
+                                identifier:
                                     type: string
-                                    description: The email of the user
+                                    description: The email or nickname of the user
                                 password:
                                     type: string
                                     description: The password in plaintext
@@ -125,6 +122,48 @@ paths:
                                 $ref: '#/components/schemas/Message'
                 '401':
                     description: Invalid credentials provided
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+
+    /api/auth/authenticated:
+        post:
+            summary: Verify that a given token is indeed valid
+            description: This route is used by services that must check the authenticity of a token given by a user
+            tags:
+                - auth
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - token
+                            properties:
+                                token:
+                                    type: string
+                                    description: The token to validate
+            responses:
+                '200':
+                    description: The token is valid
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                required:
+                                    - user_id
+                                    - user_roles
+                                properties:
+                                    user_id:
+                                        type: integer
+                                        description: The id of the token's owner
+                                    user_roles:
+                                        type: integer
+                                        description: The roles of the token's owner
+                '401':
+                    description: The token is not valid
                     content:
                         application/json:
                             schema:

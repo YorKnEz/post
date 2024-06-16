@@ -14,6 +14,7 @@ export const ErrorCodes = Object.freeze({
     VALIDATION_MIN_LENGTH: 1031,
     VALIDATION_MAX_LENGTH: 1032,
     VALIDATION_REGEX: 1033,
+    NOT_AUTHENTICATED: 1034,
 })
 
 // Success codes to use in API responses
@@ -24,6 +25,7 @@ export const SuccessCodes = Object.freeze({
     REGISTERED: 4,
     VERIFIED: 5,
     LOGGED_IN: 6,
+    AUTHENTICATED: 7,
 })
 
 export class ErrorMessage extends Error {

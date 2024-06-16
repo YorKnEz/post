@@ -127,7 +127,6 @@ router.post('/verify', async (req, res) => {
 })
 
 router.post('/login', async (req, res) => {
-    console.log(req.headers)
     // in order to mitigate timing attacks, any failure except validation will cause the handler to
     // wait 5 seconds before sending the response
     //
@@ -185,7 +184,7 @@ router.post('/login', async (req, res) => {
                 path: '/',
                 secure: true,
                 sameSite: 'Strict',
-                httpOnly: false,
+                httpOnly: true,
             }
         )
         return new JSONResponse(200, {
@@ -208,7 +207,30 @@ router.post('/login', async (req, res) => {
     return response
 })
 
-router.post('/request-change', async (req, res) => { })
+router.post('/authenticated', async (req, res) => {
+    const client = await db.getClient()
+
+    try {
+        let result = await client.query(
+            'select t.user_id user_id, u.roles user_roles from tokens t join users u on t.user_id = u.id where t.value = $1',
+            [req.body.token]
+        )
+
+        if (result.rows.length == 0) {
+            return new JSONResponse(401, {
+                code: ErrorCodes.NOT_AUTHENTICATED,
+                message: 'The token is invalid'
+            })
+        }
+
+        return new JSONResponse(200, result.rows[0])
+    } catch (e) {
+        console.error(e)
+        return new InternalError()
+    }
+})
+
+router.post('/request-change', async (req, res) => {})
 // TODO: do we do it
 // router.post('/change-email', async (req, res) => {})
-router.post('/change-password', async (req, res) => { })
+router.post('/change-password', async (req, res) => {})
