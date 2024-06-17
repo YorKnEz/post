@@ -1,7 +1,7 @@
 import dotenv from 'dotenv'
 import fs from 'fs'
 
-import { App, WebServer } from '../../lib/routing/index.js'
+import { App, WebServer } from 'web-lib'
 
 dotenv.config()
 

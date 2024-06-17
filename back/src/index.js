@@ -1,6 +1,6 @@
 import dotenv from 'dotenv'
 
-import { App, WebServer } from '../../lib/routing/index.js'
+import { App, WebServer } from 'web-lib'
 import {
     albums_router,
     annotations_router,

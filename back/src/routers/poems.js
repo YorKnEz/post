@@ -1,4 +1,4 @@
-import { JSONResponse, Router } from '../../../lib/routing/index.js'
+import { JSONResponse, Router } from 'web-lib'
 import * as db from '../db/index.js'
 import { ErrorCodes, SuccessCodes, InternalError } from '../utils/index.js'
 

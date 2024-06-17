@@ -1,4 +1,4 @@
-import { Router } from '../../../lib/routing/index.js'
+import { Router } from 'web-lib'
 
 export const router = new Router('Lyrics Router')
 
