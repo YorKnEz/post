@@ -1,0 +1,38 @@
+name: post
+services:
+    db:
+        image: postgres:alpine
+        ports:
+            - "5432:5432"
+        environment:
+            - POSTGRES_USER=$DB_USER 
+            - POSTGRES_PASSWORD=$DB_PASSWORD
+    front:
+        build: 
+            context: .
+            dockerfile: web_server.Dockerfile
+        ports:
+            - "3000:3000"
+        env_file: web_server/.env
+        environment:
+            - POSTGRES_USER=$DB_USER 
+            - POSTGRES_PASSWORD=$DB_PASSWORD
+            - CONTENT_LOCATION=/app/front
+        volumes:
+            - ./front:/app/front
+            - ./lib:/app/lib
+            - ./web_server:/app/web_server
+            - /app/web_server/node_modules
+    back:
+        build:
+            context: .
+            dockerfile: back.Dockerfile
+            args:
+                name: back
+        ports:
+            - "4000:4000"
+        env_file: back/.env
+        volumes:
+            - ./lib:/app/lib
+            - ./back:/app/back
+            - /app/back/node_modules
