@@ -1,4 +1,5 @@
-import dotenv from 'dotenv'
+// load env before anything else
+import env from './utils/env.js'
 
 import { App, WebServer } from 'web-lib'
 import {
@@ -11,7 +12,6 @@ import {
     users_router,
 } from './routers/index.js'
 
-dotenv.config()
 
 const hostname = process.env.HOST
 const port = process.env.PORT
