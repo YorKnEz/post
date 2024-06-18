@@ -153,13 +153,13 @@ paths:
                             schema:
                                 type: object
                                 required:
-                                    - user_id
-                                    - user_roles
+                                    - userId
+                                    - userRoles
                                 properties:
-                                    user_id:
+                                    userId:
                                         type: integer
                                         description: The id of the token's owner
-                                    user_roles:
+                                    userRoles:
                                         type: integer
                                         description: The roles of the token's owner
                 '401':
@@ -362,61 +362,61 @@ components:
                 nickname:
                     type: string
                     description: Nickname of the user
-                last_name:
+                lastName:
                     type: string
                     description: Last name of the user
-                created_at:
+                createdAt:
                     type: string
                     format: date-time
                     description: Timestamp when the user was created
-                first_name:
+                firstName:
                     type: string
                     description: First name of the user
-                updated_at:
+                updatedAt:
                     type: string
                     format: date-time
                     description: Timestamp when the user was last updated
-                poems_count:
+                poemsCount:
                     type: integer
                     description: Count of poems created by the user
-                albums_count:
+                albumsCount:
                     type: integer
                     description: Count of albums created by the user
-                annotations_count:
+                annotationsCount:
                     type: integer
                     description: Count of annotations created by the user
-                poems_contributions:
+                poemsContributions:
                     type: integer
                     description: Number of poems the user has contributed to
-                albums_contributions:
+                albumsContributions:
                     type: integer
                     description: Number of albums the user has contributed to
-                created_lyrics_count:
+                createdLyricsCount:
                     type: integer
                     description: Count of lyrics created by the user
-                lyrics_contributions:
+                lyricsContributions:
                     type: integer
                     description: Number of lyrics the user has contributed to
-                translated_lyrics_count:
+                translatedLyricsCount:
                     type: integer
                     description: Count of lyrics translated by the user
-                annotations_contributions:
+                annotationsContributions:
                     type: integer
                     description: Number of annotations the user has contributed to
             required:
                 - id
                 - roles
                 - nickname
-                - last_name
-                - created_at
-                - first_name
-                - updated_at
-                - poems_count
-                - albums_count
-                - annotations_count
-                - poems_contributions
-                - albums_contributions
-                - created_lyrics_count
-                - lyrics_contributions
-                - translated_lyrics_count
-                - annotations_contributions
+                - lastName
+                - createdAt
+                - firstName
+                - updatedAt
+                - poemsCount
+                - albumsCount
+                - annotationsCount
+                - poemsContributions
+                - albumsContributions
+                - createdLyricsCount
+                - lyricsContributions
+                - translatedLyricsCount
+                - annotationsContributions
