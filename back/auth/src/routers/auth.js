@@ -6,6 +6,7 @@ import {
     SuccessCodes,
     base36token,
     hash,
+    objToCamel,
     validate,
 } from 'web-lib'
 import * as db from '../db/index.js'
@@ -16,6 +17,9 @@ import {
     FAIL_TIMEOUT,
     requestChangeSchema,
     sendChangeCredentialEmail,
+    changeEmailSchema,
+    changeNicknameSchema,
+    changePasswordSchema,
 } from '../utils/index.js'
 
 export const router = new Router('Auth Router')
@@ -44,7 +48,7 @@ router.post('/register', async (req, res) => {
 
     if (result.rows.length > 0) {
         return new JSONResponse(400, {
-            code: ErrorCodes.REGISTER_DUPLICATE_NICKNAME,
+            code: ErrorCodes.DUPLICATE_NICKNAME,
             message: 'Nickname already used',
         })
     }
@@ -68,7 +72,7 @@ router.post('/register', async (req, res) => {
                 ]
             )
 
-            const user = result.rows[0]
+            const user = objToCamel(result.rows[0])
             const token = base36token()
 
             await client.query(
@@ -123,11 +127,11 @@ router.post('/verify', async (req, res) => {
             })
         }
 
-        const user = result.rows[0]
+        const user = objToCamel(result.rows[0])
 
         await client.query(
             'update users set verified = true, email = new_email, new_email = null where id = $1',
-            [user.user_id]
+            [user.userId]
         )
 
         return new JSONResponse(200, {
@@ -172,12 +176,12 @@ router.post('/login', async (req, res) => {
             })
         }
 
-        const user = result.rows[0]
+        const user = objToCamel(result.rows[0])
 
         // check password
-        let pass = hash(req.body.password, user.password_salt)
+        let pass = hash(req.body.password, user.passwordSalt)
 
-        if (pass.hash != user.password_hash) {
+        if (pass.hash != user.passwordHash) {
             throw new JSONResponse(401, {
                 code: ErrorCodes.LOGIN_UNAUTHORIZED,
                 message: 'Invalid credentials',
@@ -237,7 +241,7 @@ router.post('/authenticated', async (req, res) => {
             })
         }
 
-        return new JSONResponse(200, result.rows[0])
+        return new JSONResponse(200, objToCamel(result.rows[0]))
     } catch (e) {
         console.error(e)
         return new InternalError()
@@ -314,8 +318,15 @@ router.post('/request-change', async (req, res) => {
                 return
             }
 
-            const user = result.rows[0]
+            const user = objToCamel(result.rows[0])
             const token = base36token()
+
+            // in the case that the user already generated a credential change request, invalidate
+            // it
+            await client.query(
+                "delete from tokens where user_id = $1 and type in ('emailChange', 'nicknameChange', 'passwordChange')",
+                [user.id]
+            )
 
             await client.query(
                 'insert into tokens(value, user_id, type) values($1, $2, $3)',
@@ -348,6 +359,184 @@ router.post('/request-change', async (req, res) => {
     })
 })
 
-// TODO: do we do it
-// router.post('/change-email', async (req, res) => {})
-router.post('/change-password', async (req, res) => { })
+// an email change works like this:
+// 1. a user sends a change request
+// 2. a confirmation email is sent on the old email of the user
+// 3. the user provides a new email
+// 4. if the email is invalid they will get an error, if the email is already used the process is
+// stopped
+// 5. the `new_email` is set to the given email, a confirmation token is generated and sent to the
+// user's new email (in the meantime, the old email remains valid)
+router.post('/change-email', async (req, res) => {
+    const client = await db.getClient()
+
+    try {
+        // validate the user data
+        validate(req.body, changeEmailSchema)
+    } catch (e) {
+        return new JSONResponse(400, e.obj())
+    }
+
+    // destroy the old token
+    let result = await client.query(
+        "delete from tokens where value = $1 and type = 'emailChange' returning *",
+        [req.body.token]
+    )
+
+    if (result.rows.length == 0) {
+        return new JSONResponse(400, {
+            code: ErrorCodes.INVALID_TOKEN,
+            message: 'Invalid token provided',
+        })
+    }
+
+    const token = objToCamel(result.rows[0])
+
+    result = await client.query('select * from users where id = $1', [
+        token.userId,
+    ])
+
+    const user = objToCamel(result.rows[0])
+
+    // start another async task for: initiating step 2 of changing an email
+    const task = async () => {
+        try {
+            await client.query('begin')
+
+            result = await client.query(
+                'select id from users where email = $1',
+                [req.body.email]
+            )
+
+            // don't send an email if the email is already used
+            if (result.rows.length > 0) {
+                console.log('email already used')
+                return
+            }
+
+            result = await client.query(
+                'update users set new_email = $1 where id = $2',
+                [req.body.email, user.id]
+            )
+
+            const token = base36token()
+
+            await client.query(
+                "insert into tokens(value, user_id, type) values($1, $2, 'emailConfirm')",
+                [token, user.id]
+            )
+
+            await sendVerifyAccountEmail(
+                req.body.email,
+                user.firstName + ' ' + user.lastName,
+                token
+            )
+
+            await client.query('commit')
+        } catch (e) {
+            await client.query('rollback')
+
+            // other errors, ignore as well
+            console.error(e)
+        }
+    }
+
+    // whatever happens with this task, the user won't know the result, they'll just know that they
+    // must check their email
+    task()
+
+    return new JSONResponse(200, {
+        code: SuccessCodes.EMAIL_CHANGE_INITIATED,
+        message: 'Confirmation email sent to the new email address',
+    })
+})
+
+router.post('/change-nickname', async (req, res) => {
+    const client = await db.getClient()
+
+    try {
+        // validate the user data
+        validate(req.body, changeNicknameSchema)
+    } catch (e) {
+        return new JSONResponse(400, e.obj())
+    }
+
+    // destroy the old token
+    let result = await client.query(
+        "delete from tokens where value = $1 and type = 'nicknameChange' returning *",
+        [req.body.token]
+    )
+
+    if (result.rows.length == 0) {
+        return new JSONResponse(400, {
+            code: ErrorCodes.INVALID_TOKEN,
+            message: 'Invalid token provided',
+        })
+    }
+
+    const token = objToCamel(result.rows[0])
+
+    try {
+        await client.query('update users set nickname = $1 where id = $2', [
+            req.body.nickname,
+            token.userId,
+        ])
+
+        return new JSONResponse(200, {
+            code: SuccessCodes.NICKNAME_CHANGED,
+            message: 'Nickname changed successfully',
+        })
+    } catch (e) {
+        // duplicate nickname error
+        if (e.code == 23505 && e.constraint == 'users_nickname_key') {
+            return new JSONResponse(400, {
+                code: ErrorCodes.DUPLICATE_NICKNAME,
+                message: 'Nickname already used',
+            })
+        }
+
+        return new InternalError()
+    }
+})
+
+router.post('/change-password', async (req, res) => {
+    const client = await db.getClient()
+
+    try {
+        // validate the user data
+        validate(req.body, changePasswordSchema)
+    } catch (e) {
+        return new JSONResponse(400, e.obj())
+    }
+
+    // destroy the old token
+    let result = await client.query(
+        "delete from tokens where value = $1 and type = 'passwordChange' returning *",
+        [req.body.token]
+    )
+
+    if (result.rows.length == 0) {
+        return new JSONResponse(400, {
+            code: ErrorCodes.INVALID_TOKEN,
+            message: 'Invalid token provided',
+        })
+    }
+
+    const token = objToCamel(result.rows[0])
+
+    try {
+        const pass = hash(req.body.password)
+
+        await client.query(
+            'update users set password_hash = $1, password_salt = $2 where id = $3',
+            [pass.hash, pass.salt, token.userId]
+        )
+
+        return new JSONResponse(200, {
+            code: SuccessCodes.PASSWORD_CHANGED,
+            message: 'Password changed successfully',
+        })
+    } catch (e) {
+        return new InternalError()
+    }
+})

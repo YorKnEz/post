@@ -167,7 +167,7 @@ create table tokens
     updated_at timestamp not null default now(),
     value      text primary key,
     user_id    integer   not null,
-    type       text      not null, -- session, emailConfirm, passwordChange
+    type       text      not null, -- session, emailConfirm, emailChange, nicknameChange, passwordChange
 
     constraint tokens_f1 foreign key (user_id) references users (id)
 );
