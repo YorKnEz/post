@@ -134,6 +134,12 @@ router.post('/verify', async (req, res) => {
             [user.userId]
         )
 
+        // invalidate all sessions after having made the change
+        await client.query(
+            "delete from tokens where user_id = $1 and type = 'session'",
+            [token.userId]
+        )
+
         return new JSONResponse(200, {
             code: SuccessCodes.VERIFIED,
             message: 'Verified successfully, you may now log in',
@@ -482,6 +488,9 @@ router.post('/change-nickname', async (req, res) => {
             token.userId,
         ])
 
+        // invalidate all sessions after having made the change
+        await client.query("delete from tokens where user_id = $1 and type = 'session'", [token.userId])
+
         return new JSONResponse(200, {
             code: SuccessCodes.NICKNAME_CHANGED,
             message: 'Nickname changed successfully',
@@ -495,6 +504,7 @@ router.post('/change-nickname', async (req, res) => {
             })
         }
 
+        console.error(e)
         return new InternalError()
     }
 })
@@ -532,11 +542,15 @@ router.post('/change-password', async (req, res) => {
             [pass.hash, pass.salt, token.userId]
         )
 
+        // invalidate all sessions after having made the change
+        await client.query("delete from tokens where user_id = $1 and type = 'session'", [token.userId])
+
         return new JSONResponse(200, {
             code: SuccessCodes.PASSWORD_CHANGED,
             message: 'Password changed successfully',
         })
     } catch (e) {
+        console.error(e)
         return new InternalError()
     }
 })
