@@ -3,6 +3,7 @@ create or replace procedure delete_user(p_user_id integer)
 $$
 declare
     temprow record;
+    deleted int;
 begin
     for temprow in (select id, type from posts where poster_id = p_user_id) loop
         case
@@ -16,7 +17,11 @@ begin
     delete from contributions where contributor_id = p_user_id;
     delete from requests where requester_id = p_user_id;
     delete from reactions where user_id = p_user_id;
-    delete from users where id = p_user_id;
+    delete from users where id = p_user_id returning id into deleted;
+
+    if deleted is null then
+        raise exception 'user not found';
+    end if;
 end;
 $$;
 
@@ -42,9 +47,15 @@ $$;
 create or replace procedure delete_annotation(p_annotation_id integer)
     language plpgsql as
 $$
+declare
+    deleted int;
 begin
     -- delete annotation
-    delete from annotations where id = p_annotation_id;
+    delete from annotations where id = p_annotation_id returning id into deleted;
+
+    if deleted is null then
+        raise exception 'annotation not found';
+    end if;
 
     -- delete post that it referenced
     call __delete_post(p_annotation_id);
@@ -56,8 +67,13 @@ create or replace procedure delete_lyrics(p_lyrics_id integer)
 $$
 declare
     temprow record;
+    deleted int;
 begin
-    update lyrics set main_annotation_id = null where id = p_lyrics_id;
+    update lyrics set main_annotation_id = null where id = p_lyrics_id returning id into deleted;
+
+    if deleted is null then
+        raise exception 'lyrics not found';
+    end if;
 
     -- delete annotations
     for temprow in select id from annotations where lyrics_id = p_lyrics_id
@@ -78,6 +94,7 @@ create or replace procedure delete_poem(p_poem_id integer)
 $$
 declare
     temprow record;
+    deleted int;
 begin
     -- delete lyrics
     for temprow in select id from lyrics where poem_id = p_poem_id
@@ -89,7 +106,11 @@ begin
     delete from album_poems where poem_id = p_poem_id;
 
     -- delete poem
-    delete from poems where id = p_poem_id;
+    delete from poems where id = p_poem_id returning id into deleted;
+
+    if deleted is null then
+        raise exception 'poem not found';
+    end if;
 
     -- delete post that it referenced
     call __delete_post(p_poem_id);
@@ -99,12 +120,18 @@ $$;
 create or replace procedure delete_album(p_album_id integer)
     language plpgsql as
 $$
+declare
+    deleted int;
 begin
     -- delete album_poems connections
     delete from album_poems where album_id = p_album_id;
 
     -- delete album
-    delete from albums where id = p_album_id;
+    delete from albums where id = p_album_id returning id into deleted;
+
+    if deleted is null then
+        raise exception 'album not found';
+    end if;
 
     -- delete post that it referenced
     call __delete_post(p_album_id);

@@ -33,7 +33,6 @@ begin
         "order" := filters ->> 'order';
     end if;
 
-
     sql_query := format('
     select jsonb_agg(e)
     from (select jsonb_build_object(''id'', u.id,
@@ -49,6 +48,11 @@ begin
     offset %s limit %s;
     ', sort, "order", query, query, query, start, count);
     execute sql_query into result;
+
+    if result is null then
+        return '[]'::jsonb;
+    end if;
+
     return result;
 end;
 $$ language plpgsql;
@@ -79,6 +83,11 @@ begin
     into result
     from users u
     where id = p_id;
+
+    if result is null then
+        raise exception 'user not found';
+    end if;
+
     return result;
 end;
 $$ language plpgsql;
@@ -98,6 +107,11 @@ begin
     into result
     from users u
     where id = p_id;
+
+    if result is null then
+        raise exception 'user not found';
+    end if;
+
     return result;
 end;
 $$ language plpgsql;
@@ -123,8 +137,6 @@ begin
 
     start := (filters -> 'start')::int;
     count := (filters -> 'count')::int;
-
-    raise notice '%d %d', start, count;
 
     if filters ? 'sort' and filters ->> 'sort' in ('new', 'poster', 'title', 'author', 'publication', 'poems') then
         sort := filters ->> 'sort';
@@ -166,6 +178,11 @@ begin
                             else 'created_at'
                         end, "order", query, query, query, query, query, query, query, start, count);
     execute sql_query into result;
+
+    if result is null then
+        return '[]'::jsonb;
+    end if;
+
     return result;
 end;
 $$ language plpgsql;
@@ -188,6 +205,11 @@ begin
              join posts p on a.id = p.id
     where a.author_id = p_id
        or p.poster_id = p_id;
+
+    if result is null then
+        return '[]'::jsonb;
+    end if;
+
     return result;
 end;
 $$ language plpgsql;
@@ -210,6 +232,11 @@ begin
     from albums a
              join posts p on a.id = p.id
     where p.id = p_id;
+
+    if result is null then
+        raise exception 'album not found';
+    end if;
+
     return result;
 end;
 $$ language plpgsql;
@@ -310,6 +337,11 @@ begin
              join posts p on po.id = p.id
     where po.author_id = p_id
        or p.poster_id = p_id;
+
+    if result is null then
+        return '[]'::jsonb;
+    end if;
+
     return result;
 end;
 $$ language plpgsql;
@@ -331,6 +363,11 @@ begin
              join posts p on po.id = p.id
              join album_poems ap on ap.poem_id = p.id
     where ap.album_id = p_id;
+
+    if result is null then
+        return '[]'::jsonb;
+    end if;
+
     return result;
 end;
 $$ language plpgsql;
@@ -342,10 +379,6 @@ declare
     lyrics jsonb;
 begin
     lyrics := find_lyrics(p_id, p_language);
-
-    if lyrics is null then
-        return result;
-    end if;
 
     select jsonb_build_object(
                    'id', p.id,
@@ -360,6 +393,11 @@ begin
     from poems po
              join posts p on po.id = p.id
     where p.id = p_id;
+
+    if result is null then
+        raise exception 'poem not found';
+    end if;
+
     return result;
 end;
 $$ language plpgsql;
@@ -384,6 +422,11 @@ begin
              join posts p on p.id = l.id
     where poem_id = p_poem_id
       and language = p_language;
+
+    if result is null then
+        raise exception 'lyrics not found';
+    end if;
+
     return result;
 end;
 $$ language plpgsql;
@@ -418,11 +461,11 @@ begin
     into result
     from annotations
     where id = p_annotation_id;
+
+    if result is null then
+        raise exception 'annotation not found';
+    end if;
+
     return result;
 end;
 $$ language plpgsql;
-
-
--- select find_poem_by_id(6, 'en');
--- select find_lyrics(6, 'en');
--- select find_annotations_by_lyrics_id(25, 26);
