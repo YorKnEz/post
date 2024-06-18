@@ -16,16 +16,17 @@ create table users
     created_at                timestamp default now(),
     updated_at                timestamp default now(),
     -- primary information
-    first_name                varchar(32),                  -- between 2 and 32 characters
-    last_name                 varchar(32),                  -- between 2 and 32 characters
-    nickname                  varchar(32) unique  not null, -- between 4 and 32 characters
-    email                     varchar(256) unique not null, -- valid email
+    first_name                varchar(32),                 -- between 2 and 32 characters
+    last_name                 varchar(32),                 -- between 2 and 32 characters
+    nickname                  varchar(32) unique not null, -- between 4 and 32 characters
+    email                     varchar(256) unique,         -- valid email
+    new_email                 varchar(256),                -- valid email
     -- auth information
-    verified                  boolean   default false,      -- whether or not the account is verified
+    verified                  boolean   default false,     -- whether or not the account is verified
     password_hash             varchar(256),
     password_salt             varchar(256),
     -- other information
-    roles                     integer   default 0,          -- a bitfield: 0b1 - poet, 0b10 - admin
+    roles                     integer   default 0,         -- a bitfield: 0b1 - poet, 0b10 - admin
     albums_count              integer   default 0,
     albums_contributions      integer   default 0,
     poems_count               integer   default 0,
@@ -164,9 +165,9 @@ create table tokens
 (
     created_at timestamp not null default now(),
     updated_at timestamp not null default now(),
-    value   text primary key,
-    user_id integer not null,
-    type    text    not null, -- session, emailConfirm, passwordChange
+    value      text primary key,
+    user_id    integer   not null,
+    type       text      not null, -- session, emailConfirm, passwordChange
 
     constraint tokens_f1 foreign key (user_id) references users (id)
 );

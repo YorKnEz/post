@@ -1,0 +1,574 @@
+openapi: 3.0.0
+info:
+    title: Lyrical Service
+    version: 1.0.0
+    description: Lyrical Service API Documentation
+
+paths:
+    /api/albums:
+        get:
+            summary: Get paginated albums by specified filters
+            description: This route returns a paginated list of albums, based on some filtering criteria
+            tags:
+                - albums
+            parameters:
+                - name: query
+                  in: query
+                  required: false
+                  schema:
+                      type: string
+                  description: The query string to search by
+                - name: start
+                  in: query
+                  required: true
+                  schema:
+                      type: integer
+                  description: Offset of results to start from
+                - name: count
+                  in: query
+                  required: true
+                  schema:
+                      type: integer
+                  description: Number of results to return
+                - name: sort
+                  in: query
+                  required: false
+                  schema:
+                      type: string
+                  description: The sort criteria
+                - name: order
+                  in: query
+                  required: false
+                  schema:
+                      type: string
+                  description: The order of the sorting
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/Album'
+                                description: List of matched albums
+        post:
+            summary: Create a new album
+            tags:
+                - albums
+                - TODO
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Album'
+
+    /api/albums/{id}:
+        get:
+            summary: Get album by id
+            tags:
+                - albums
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                  description: Id of the album
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Album'
+                '404':
+                    description: Album not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+        patch:
+            summary: Update some of the album state
+            description: Update the title of the album
+            tags:
+                - albums
+                - TODO
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                  description: Id of the album
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Album'
+                '404':
+                    description: Album not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+        delete:
+            summary: Delete an album and it's related content by id
+            tags:
+                - albums
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                  description: Id of the album
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+                '404':
+                    description: Album not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+
+    /api/poems:
+        get:
+            summary: Get paginated poems by specified filters
+            description: This route returns a paginated list of poems, based on some filtering criteria
+            tags:
+                - poems
+            parameters:
+                - name: query
+                  in: query
+                  required: false
+                  schema:
+                      type: string
+                  description: The query string to search by
+                - name: start
+                  in: query
+                  required: true
+                  schema:
+                      type: integer
+                  description: Offset of results to start from
+                - name: count
+                  in: query
+                  required: true
+                  schema:
+                      type: integer
+                  description: Number of results to return
+                - name: sort
+                  in: query
+                  required: false
+                  schema:
+                      type: string
+                  description: The sort criteria
+                - name: order
+                  in: query
+                  required: false
+                  schema:
+                      type: string
+                  description: The order of the sorting
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/Poem'
+                                description: List of matched poems
+        post:
+            summary: Create a new poem
+            tags:
+                - poems
+                - TODO
+            responses:
+                '201':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Poem'
+
+    /api/poems/{id}:
+        get:
+            summary: Get poem by id
+            tags:
+                - poems
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                  description: Id of the poem
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Poem'
+                '404':
+                    description: Poem not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+        patch:
+            summary: Update some of the poem state
+            description: Update the first name and/or last name of the poem
+            tags:
+                - poems
+                - TODO
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                  description: Id of the poem
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Poem'
+                '404':
+                    description: Poem not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+        delete:
+            summary: Delete a poem and it's work by id
+            tags:
+                - poems
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                  description: Id of the poem
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+                '404':
+                    description: Poem not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+
+    # /api/users:
+    #     get:
+    #         summary: Get paginated users by specified filters
+    #         description: This route returns a paginated list of users, based on some filtering criteria
+    #         tags:
+    #             - users
+    #         parameters:
+    #             - name: query
+    #               in: query
+    #               required: false
+    #               schema:
+    #                   type: string
+    #               description: The query string to search by
+    #             - name: start
+    #               in: query
+    #               required: true
+    #               schema:
+    #                   type: integer
+    #               description: Offset of results to start from
+    #             - name: count
+    #               in: query
+    #               required: true
+    #               schema:
+    #                   type: integer
+    #               description: Number of results to return
+    #             - name: sort
+    #               in: query
+    #               required: false
+    #               schema:
+    #                   type: string
+    #               description: The sort criteria
+    #             - name: order
+    #               in: query
+    #               required: false
+    #               schema:
+    #                   type: string
+    #               description: The order of the sorting
+    #         responses:
+    #             '200':
+    #                 description: Successful response
+    #                 content:
+    #                     application/json:
+    #                         schema:
+    #                             type: array
+    #                             items:
+    #                                 $ref: '#/components/schemas/User'
+    #                             description: List of matched users
+    #     post:
+    #         summary: Create a new user
+    #         tags:
+    #             - users
+    #             - TODO
+    #         responses:
+    #             '201':
+    #                 description: Successful response
+    #                 content:
+    #                     application/json:
+    #                         schema:
+    #                             $ref: '#/components/schemas/User'
+    #
+    # /api/users/{id}:
+    #     get:
+    #         summary: Get user by id
+    #         tags:
+    #             - users
+    #         parameters:
+    #             - name: id
+    #               in: path
+    #               required: true
+    #               schema:
+    #                   type: string
+    #               description: Id of the user
+    #         responses:
+    #             '200':
+    #                 description: Successful response
+    #                 content:
+    #                     application/json:
+    #                         schema:
+    #                             $ref: '#/components/schemas/User'
+    #             '404':
+    #                 description: User not found
+    #                 content:
+    #                     application/json:
+    #                         schema:
+    #                             $ref: '#/components/schemas/Message'
+    #     patch:
+    #         summary: Update some of the user state
+    #         description: Update the first name and/or last name of the user
+    #         tags:
+    #             - users
+    #             - TODO
+    #         parameters:
+    #             - name: id
+    #               in: path
+    #               required: true
+    #               schema:
+    #                   type: string
+    #               description: Id of the user
+    #         responses:
+    #             '200':
+    #                 description: Successful response
+    #                 content:
+    #                     application/json:
+    #                         schema:
+    #                             $ref: '#/components/schemas/User'
+    #             '404':
+    #                 description: User not found
+    #                 content:
+    #                     application/json:
+    #                         schema:
+    #                             $ref: '#/components/schemas/Message'
+    #     delete:
+    #         summary: Delete a user and it's work by id
+    #         tags:
+    #             - users
+    #         parameters:
+    #             - name: id
+    #               in: path
+    #               required: true
+    #               schema:
+    #                   type: string
+    #               description: Id of the user
+    #         responses:
+    #             '200':
+    #                 description: Successful response
+    #                 content:
+    #                     application/json:
+    #                         schema:
+    #                             $ref: '#/components/schemas/Message'
+    #             '404':
+    #                 description: User not found
+    #                 content:
+    #                     application/json:
+    #                         schema:
+    #                             $ref: '#/components/schemas/Message'
+
+    # /api/example/{id}/test:
+    #     post:
+    #         summary: Example route
+    #         description: An example POST route with path and query parameters, and a JSON body.
+    #         tags:
+    #             - test
+    #         parameters:
+    #             - name: id
+    #               in: path
+    #               required: true
+    #               schema:
+    #                   type: string
+    #               description: The ID path parameter
+    #             - name: a
+    #               in: query
+    #               required: false
+    #               schema:
+    #                   type: string
+    #               description: Optional query parameter a
+    #             - name: b
+    #               in: query
+    #               required: false
+    #               schema:
+    #                   type: string
+    #               description: Optional query parameter b
+    #             - name: c
+    #               in: query
+    #               required: true
+    #               schema:
+    #                   type: string
+    #               description: Required query parameter c
+    #         requestBody:
+    #             required: true
+    #             content:
+    #                 application/json:
+    #                     schema:
+    #                         type: object
+    #                         required:
+    #                             - name
+    #                             - preferences
+    #                             - age
+    #                         properties:
+    #                             name:
+    #                                 type: string
+    #                                 description: The name of the user
+    #                             preferences:
+    #                                 type: array
+    #                                 items:
+    #                                     type: string
+    #                                 description: A list of preferences
+    #                             age:
+    #                                 type: integer
+    #                                 description: The age of the user
+    #         responses:
+    #             '200':
+    #                 description: Successful response
+    #                 content:
+    #                     application/json:
+    #                         schema:
+    #                             type: object
+    #                             properties:
+    #                                 message:
+    #                                     type: string
+    #                                     example: Successfully processed the request
+    #             '400':
+    #                 description: Bad request
+    #                 content:
+    #                     application/json:
+    #                         schema:
+    #                             type: object
+    #                             properties:
+    #                                 error:
+    #                                     type: string
+    #                                     example: Invalid input
+
+components:
+    schemas:
+        Message:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    description: The code of the message received (an error or a success message)
+                message:
+                    type: string
+                    description: The english message associated with the code
+            required:
+                - code
+                - message
+        User:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: Unique identifier for the user
+                roles:
+                    type: integer
+                    description: Roles assigned to the user
+                nickname:
+                    type: string
+                    description: Nickname of the user
+                last_name:
+                    type: string
+                    description: Last name of the user
+                created_at:
+                    type: string
+                    format: date-time
+                    description: Timestamp when the user was created
+                first_name:
+                    type: string
+                    description: First name of the user
+                updated_at:
+                    type: string
+                    format: date-time
+                    description: Timestamp when the user was last updated
+                poems_count:
+                    type: integer
+                    description: Count of poems created by the user
+                albums_count:
+                    type: integer
+                    description: Count of albums created by the user
+                annotations_count:
+                    type: integer
+                    description: Count of annotations created by the user
+                poems_contributions:
+                    type: integer
+                    description: Number of poems the user has contributed to
+                albums_contributions:
+                    type: integer
+                    description: Number of albums the user has contributed to
+                created_lyrics_count:
+                    type: integer
+                    description: Count of lyrics created by the user
+                lyrics_contributions:
+                    type: integer
+                    description: Number of lyrics the user has contributed to
+                translated_lyrics_count:
+                    type: integer
+                    description: Count of lyrics translated by the user
+                annotations_contributions:
+                    type: integer
+                    description: Number of annotations the user has contributed to
+            required:
+                - id
+                - roles
+                - nickname
+                - last_name
+                - created_at
+                - first_name
+                - updated_at
+                - poems_count
+                - albums_count
+                - annotations_count
+                - poems_contributions
+                - albums_contributions
+                - created_lyrics_count
+                - lyrics_contributions
+                - translated_lyrics_count
+                - annotations_contributions

@@ -234,3 +234,12 @@ router.post('/request-change', async (req, res) => {})
 // TODO: do we do it
 // router.post('/change-email', async (req, res) => {})
 router.post('/change-password', async (req, res) => {})
+
+router.post('/logout', async (req, res) => {
+    try {
+
+    } catch (e) {
+        console.error(e)
+        return new InternalError()
+    }
+})
