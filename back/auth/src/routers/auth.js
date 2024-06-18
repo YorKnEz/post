@@ -6,7 +6,7 @@ import {
     SuccessCodes,
     base36token,
     hash,
-    objToCamel,
+    toCamel,
     validate,
 } from 'web-lib'
 import * as db from '../db/index.js'
@@ -72,7 +72,7 @@ router.post('/register', async (req, res) => {
                 ]
             )
 
-            const user = objToCamel(result.rows[0])
+            const user = toCamel(result.rows[0])
             const token = base36token()
 
             await client.query(
@@ -127,7 +127,7 @@ router.post('/verify', async (req, res) => {
             })
         }
 
-        const user = objToCamel(result.rows[0])
+        const user = toCamel(result.rows[0])
 
         await client.query(
             'update users set verified = true, email = new_email, new_email = null where id = $1',
@@ -176,7 +176,7 @@ router.post('/login', async (req, res) => {
             })
         }
 
-        const user = objToCamel(result.rows[0])
+        const user = toCamel(result.rows[0])
 
         // check password
         let pass = hash(req.body.password, user.passwordSalt)
@@ -241,7 +241,7 @@ router.post('/authenticated', async (req, res) => {
             })
         }
 
-        return new JSONResponse(200, objToCamel(result.rows[0]))
+        return new JSONResponse(200, toCamel(result.rows[0]))
     } catch (e) {
         console.error(e)
         return new InternalError()
@@ -318,7 +318,7 @@ router.post('/request-change', async (req, res) => {
                 return
             }
 
-            const user = objToCamel(result.rows[0])
+            const user = toCamel(result.rows[0])
             const token = base36token()
 
             // in the case that the user already generated a credential change request, invalidate
@@ -390,13 +390,13 @@ router.post('/change-email', async (req, res) => {
         })
     }
 
-    const token = objToCamel(result.rows[0])
+    const token = toCamel(result.rows[0])
 
     result = await client.query('select * from users where id = $1', [
         token.userId,
     ])
 
-    const user = objToCamel(result.rows[0])
+    const user = toCamel(result.rows[0])
 
     // start another async task for: initiating step 2 of changing an email
     const task = async () => {
@@ -474,7 +474,7 @@ router.post('/change-nickname', async (req, res) => {
         })
     }
 
-    const token = objToCamel(result.rows[0])
+    const token = toCamel(result.rows[0])
 
     try {
         await client.query('update users set nickname = $1 where id = $2', [
@@ -522,7 +522,7 @@ router.post('/change-password', async (req, res) => {
         })
     }
 
-    const token = objToCamel(result.rows[0])
+    const token = toCamel(result.rows[0])
 
     try {
         const pass = hash(req.body.password)
