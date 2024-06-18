@@ -1,9 +1,9 @@
 {
-    "name": "web",
+    "name": "user-service",
     "type": "module",
     "version": "1.0.0",
-    "description": "A vanilla Javascript web server",
-    "main": "index.js",
+    "description": "User service responsible with user opertaions such as: updating stats, updating data, search etc.",
+    "main": "src/index.js",
     "scripts": {
         "dev": "nodemon --watch . --watch ../../lib src/index.js",
         "test": "echo \"Error: no test specified\" && exit 1",

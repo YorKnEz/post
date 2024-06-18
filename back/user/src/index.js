@@ -2,16 +2,7 @@
 import env from './utils/env.js'
 
 import { App, WebServer } from 'web-lib'
-import {
-    albums_router,
-    annotations_router,
-    auth_router,
-    lyrics_router,
-    poems_router,
-    posts_router,
-    users_router,
-} from './routers/index.js'
-
+import { users_router } from './routers/index.js'
 
 const hostname = process.env.HOST
 const port = process.env.PORT
@@ -37,12 +28,6 @@ app.middleware(async (req, res, next) => {
     return await next(req, res)
 })
 
-app.use('/api/albums', albums_router)
-app.use('/api/annotations', annotations_router)
-app.use('/api/auth', auth_router)
-app.use('/api/lyrics', lyrics_router)
-app.use('/api/poems', poems_router)
-app.use('/api/posts', posts_router)
 app.use('/api/users', users_router)
 
 const web_routes = {

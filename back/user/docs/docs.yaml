@@ -50,7 +50,7 @@ paths:
                             schema:
                                 type: array
                                 items:
-                                    $ref: '#/components/schemas/User'
+                                    $ref: '#/components/schemas/UserCard'
                                 description: List of matched users
         post:
             summary: Create a new user
@@ -65,9 +65,11 @@ paths:
                             type: object
                             required:
                                 - nickname
-                                - email
+                                - new_email
                                 - roles
                                 - verified
+                                - password_hash
+                                - password_salt
                             properties:
                                 first_name:
                                     type: string
@@ -78,42 +80,15 @@ paths:
                                 nickname:
                                     type: string
                                     description: The nickname of the user
-                                email:
+                                new_email:
                                     type: string
                                     description: The email of the user
-                                verified:
-                                    type: integer
-                                    description: Verified = 1 if the user is verified, 0 otherwise
-                                roles:
-                                    type: integer
-                                    description: A bitfield representing 0b1 - poet, 0b10 - admin
-                                albums_count:
-                                    type: integer
-                                    description: Number of created albums
-                                albums_contributions:
-                                    type: integer
-                                    description: Number of albums contributed to
-                                poems_count:
-                                    type: integer
-                                    description: Number of created poems
-                                poems_contributions:
-                                    type: integer
-                                    description: Number of poems contributed to
-                                annotations_count:
-                                    type: integer
-                                    description: Number of created annotations
-                                annotations_contributions:
-                                    type: integer
-                                    description: Number of annotations contributed to
-                                created_lyrics_count:
-                                    type: integer
-                                    description: Number of created lyrics
-                                translated_lyrics_count:
-                                    type: integer
-                                    description: Number of translated lyrics
-                                lyrics_contributions:
-                                    type: integer
-                                    description: Number of lyrics contributed to
+                                password_hash:
+                                    type: string
+                                    description: The hash of the password of the user
+                                password_salt:
+                                    type: string
+                                    description: The salt of the password of the user
             responses:
                 '201':
                     description: Successful response
@@ -259,217 +234,6 @@ paths:
                                     $ref: '#/components/schemas/Poem'
                                 description: List of matched poems
 
-    # /api/users:
-    #     get:
-    #         summary: Get paginated users by specified filters
-    #         description: This route returns a paginated list of users, based on some filtering criteria
-    #         tags:
-    #             - users
-    #         parameters:
-    #             - name: query
-    #               in: query
-    #               required: false
-    #               schema:
-    #                   type: string
-    #               description: The query string to search by
-    #             - name: start
-    #               in: query
-    #               required: true
-    #               schema:
-    #                   type: integer
-    #               description: Offset of results to start from
-    #             - name: count
-    #               in: query
-    #               required: true
-    #               schema:
-    #                   type: integer
-    #               description: Number of results to return
-    #             - name: sort
-    #               in: query
-    #               required: false
-    #               schema:
-    #                   type: string
-    #               description: The sort criteria
-    #             - name: order
-    #               in: query
-    #               required: false
-    #               schema:
-    #                   type: string
-    #               description: The order of the sorting
-    #         responses:
-    #             '200':
-    #                 description: Successful response
-    #                 content:
-    #                     application/json:
-    #                         schema:
-    #                             type: array
-    #                             items:
-    #                                 $ref: '#/components/schemas/User'
-    #                             description: List of matched users
-    #     post:
-    #         summary: Create a new user
-    #         tags:
-    #             - users
-    #             - TODO
-    #         responses:
-    #             '201':
-    #                 description: Successful response
-    #                 content:
-    #                     application/json:
-    #                         schema:
-    #                             $ref: '#/components/schemas/User'
-    #
-    # /api/users/{id}:
-    #     get:
-    #         summary: Get user by id
-    #         tags:
-    #             - users
-    #         parameters:
-    #             - name: id
-    #               in: path
-    #               required: true
-    #               schema:
-    #                   type: string
-    #               description: Id of the user
-    #         responses:
-    #             '200':
-    #                 description: Successful response
-    #                 content:
-    #                     application/json:
-    #                         schema:
-    #                             $ref: '#/components/schemas/User'
-    #             '404':
-    #                 description: User not found
-    #                 content:
-    #                     application/json:
-    #                         schema:
-    #                             $ref: '#/components/schemas/Message'
-    #     patch:
-    #         summary: Update some of the user state
-    #         description: Update the first name and/or last name of the user
-    #         tags:
-    #             - users
-    #             - TODO
-    #         parameters:
-    #             - name: id
-    #               in: path
-    #               required: true
-    #               schema:
-    #                   type: string
-    #               description: Id of the user
-    #         responses:
-    #             '200':
-    #                 description: Successful response
-    #                 content:
-    #                     application/json:
-    #                         schema:
-    #                             $ref: '#/components/schemas/User'
-    #             '404':
-    #                 description: User not found
-    #                 content:
-    #                     application/json:
-    #                         schema:
-    #                             $ref: '#/components/schemas/Message'
-    #     delete:
-    #         summary: Delete a user and it's work by id
-    #         tags:
-    #             - users
-    #         parameters:
-    #             - name: id
-    #               in: path
-    #               required: true
-    #               schema:
-    #                   type: string
-    #               description: Id of the user
-    #         responses:
-    #             '200':
-    #                 description: Successful response
-    #                 content:
-    #                     application/json:
-    #                         schema:
-    #                             $ref: '#/components/schemas/Message'
-    #             '404':
-    #                 description: User not found
-    #                 content:
-    #                     application/json:
-    #                         schema:
-    #                             $ref: '#/components/schemas/Message'
-
-    # /api/example/{id}/test:
-    #     post:
-    #         summary: Example route
-    #         description: An example POST route with path and query parameters, and a JSON body.
-    #         tags:
-    #             - test
-    #         parameters:
-    #             - name: id
-    #               in: path
-    #               required: true
-    #               schema:
-    #                   type: string
-    #               description: The ID path parameter
-    #             - name: a
-    #               in: query
-    #               required: false
-    #               schema:
-    #                   type: string
-    #               description: Optional query parameter a
-    #             - name: b
-    #               in: query
-    #               required: false
-    #               schema:
-    #                   type: string
-    #               description: Optional query parameter b
-    #             - name: c
-    #               in: query
-    #               required: true
-    #               schema:
-    #                   type: string
-    #               description: Required query parameter c
-    #         requestBody:
-    #             required: true
-    #             content:
-    #                 application/json:
-    #                     schema:
-    #                         type: object
-    #                         required:
-    #                             - name
-    #                             - preferences
-    #                             - age
-    #                         properties:
-    #                             name:
-    #                                 type: string
-    #                                 description: The name of the user
-    #                             preferences:
-    #                                 type: array
-    #                                 items:
-    #                                     type: string
-    #                                 description: A list of preferences
-    #                             age:
-    #                                 type: integer
-    #                                 description: The age of the user
-    #         responses:
-    #             '200':
-    #                 description: Successful response
-    #                 content:
-    #                     application/json:
-    #                         schema:
-    #                             type: object
-    #                             properties:
-    #                                 message:
-    #                                     type: string
-    #                                     example: Successfully processed the request
-    #             '400':
-    #                 description: Bad request
-    #                 content:
-    #                     application/json:
-    #                         schema:
-    #                             type: object
-    #                             properties:
-    #                                 error:
-    #                                     type: string
-    #                                     example: Invalid input
-
 components:
     schemas:
         Message:
@@ -483,7 +247,6 @@ components:
                     description: The english message associated with the code
             required:
                 - code
-                - message
         User:
             type: object
             properties:
@@ -554,3 +317,28 @@ components:
                 - lyrics_contributions
                 - translated_lyrics_count
                 - annotations_contributions
+        UserCard:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: Unique identifier for the user
+                roles:
+                    type: integer
+                    description: Roles assigned to the user
+                nickname:
+                    type: string
+                    description: Nickname of the user
+                last_name:
+                    type: string
+                    description: Last name of the user
+                first_name:
+                    type: string
+                    description: First name of the user
+            required:
+                - id
+                - roles
+                - nickname
+                - last_name
+                - first_name
+                - message
