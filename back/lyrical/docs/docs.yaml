@@ -50,16 +50,46 @@ paths:
                             schema:
                                 type: array
                                 items:
-                                    $ref: '#/components/schemas/Album'
+                                    $ref: '#/components/schemas/AlbumCard'
                                 description: List of matched albums
         post:
             summary: Create a new album
             tags:
                 - albums
                 - TODO
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                posterId:
+                                    type: integer
+                                    description: The id of the user that posted the album
+                                authorId:
+                                    type: integer
+                                    description: The id of the user that authored the album
+                                title:
+                                    type: string
+                                    description: The title of the album
+                                publicationDate:
+                                    type: string
+                                    format: date-time
+                                    description: Timestamp when the album has been officially released
+                            required:
+                                - posterId
+                                - authorId
+                                - title
             responses:
                 '200':
                     description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Album'
+                '400':
+                    description: Invalid data
                     content:
                         application/json:
                             schema:
@@ -70,6 +100,7 @@ paths:
             summary: Get album by id
             tags:
                 - albums
+                - TODO
             parameters:
                 - name: id
                   in: path
@@ -120,6 +151,7 @@ paths:
             summary: Delete an album and it's related content by id
             tags:
                 - albums
+                - TODO
             parameters:
                 - name: id
                   in: path
@@ -147,6 +179,7 @@ paths:
             description: This route returns a paginated list of poems, based on some filtering criteria
             tags:
                 - poems
+                - TODO
             parameters:
                 - name: query
                   in: query
@@ -186,7 +219,7 @@ paths:
                             schema:
                                 type: array
                                 items:
-                                    $ref: '#/components/schemas/Poem'
+                                    $ref: '#/components/schemas/PoemCard'
                                 description: List of matched poems
         post:
             summary: Create a new poem
@@ -206,6 +239,7 @@ paths:
             summary: Get poem by id
             tags:
                 - poems
+                - TODO
             parameters:
                 - name: id
                   in: path
@@ -256,6 +290,7 @@ paths:
             summary: Delete a poem and it's work by id
             tags:
                 - poems
+                - TODO
             parameters:
                 - name: id
                   in: path
@@ -277,217 +312,6 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/Message'
 
-    # /api/users:
-    #     get:
-    #         summary: Get paginated users by specified filters
-    #         description: This route returns a paginated list of users, based on some filtering criteria
-    #         tags:
-    #             - users
-    #         parameters:
-    #             - name: query
-    #               in: query
-    #               required: false
-    #               schema:
-    #                   type: string
-    #               description: The query string to search by
-    #             - name: start
-    #               in: query
-    #               required: true
-    #               schema:
-    #                   type: integer
-    #               description: Offset of results to start from
-    #             - name: count
-    #               in: query
-    #               required: true
-    #               schema:
-    #                   type: integer
-    #               description: Number of results to return
-    #             - name: sort
-    #               in: query
-    #               required: false
-    #               schema:
-    #                   type: string
-    #               description: The sort criteria
-    #             - name: order
-    #               in: query
-    #               required: false
-    #               schema:
-    #                   type: string
-    #               description: The order of the sorting
-    #         responses:
-    #             '200':
-    #                 description: Successful response
-    #                 content:
-    #                     application/json:
-    #                         schema:
-    #                             type: array
-    #                             items:
-    #                                 $ref: '#/components/schemas/User'
-    #                             description: List of matched users
-    #     post:
-    #         summary: Create a new user
-    #         tags:
-    #             - users
-    #             - TODO
-    #         responses:
-    #             '201':
-    #                 description: Successful response
-    #                 content:
-    #                     application/json:
-    #                         schema:
-    #                             $ref: '#/components/schemas/User'
-    #
-    # /api/users/{id}:
-    #     get:
-    #         summary: Get user by id
-    #         tags:
-    #             - users
-    #         parameters:
-    #             - name: id
-    #               in: path
-    #               required: true
-    #               schema:
-    #                   type: string
-    #               description: Id of the user
-    #         responses:
-    #             '200':
-    #                 description: Successful response
-    #                 content:
-    #                     application/json:
-    #                         schema:
-    #                             $ref: '#/components/schemas/User'
-    #             '404':
-    #                 description: User not found
-    #                 content:
-    #                     application/json:
-    #                         schema:
-    #                             $ref: '#/components/schemas/Message'
-    #     patch:
-    #         summary: Update some of the user state
-    #         description: Update the first name and/or last name of the user
-    #         tags:
-    #             - users
-    #             - TODO
-    #         parameters:
-    #             - name: id
-    #               in: path
-    #               required: true
-    #               schema:
-    #                   type: string
-    #               description: Id of the user
-    #         responses:
-    #             '200':
-    #                 description: Successful response
-    #                 content:
-    #                     application/json:
-    #                         schema:
-    #                             $ref: '#/components/schemas/User'
-    #             '404':
-    #                 description: User not found
-    #                 content:
-    #                     application/json:
-    #                         schema:
-    #                             $ref: '#/components/schemas/Message'
-    #     delete:
-    #         summary: Delete a user and it's work by id
-    #         tags:
-    #             - users
-    #         parameters:
-    #             - name: id
-    #               in: path
-    #               required: true
-    #               schema:
-    #                   type: string
-    #               description: Id of the user
-    #         responses:
-    #             '200':
-    #                 description: Successful response
-    #                 content:
-    #                     application/json:
-    #                         schema:
-    #                             $ref: '#/components/schemas/Message'
-    #             '404':
-    #                 description: User not found
-    #                 content:
-    #                     application/json:
-    #                         schema:
-    #                             $ref: '#/components/schemas/Message'
-
-    # /api/example/{id}/test:
-    #     post:
-    #         summary: Example route
-    #         description: An example POST route with path and query parameters, and a JSON body.
-    #         tags:
-    #             - test
-    #         parameters:
-    #             - name: id
-    #               in: path
-    #               required: true
-    #               schema:
-    #                   type: string
-    #               description: The ID path parameter
-    #             - name: a
-    #               in: query
-    #               required: false
-    #               schema:
-    #                   type: string
-    #               description: Optional query parameter a
-    #             - name: b
-    #               in: query
-    #               required: false
-    #               schema:
-    #                   type: string
-    #               description: Optional query parameter b
-    #             - name: c
-    #               in: query
-    #               required: true
-    #               schema:
-    #                   type: string
-    #               description: Required query parameter c
-    #         requestBody:
-    #             required: true
-    #             content:
-    #                 application/json:
-    #                     schema:
-    #                         type: object
-    #                         required:
-    #                             - name
-    #                             - preferences
-    #                             - age
-    #                         properties:
-    #                             name:
-    #                                 type: string
-    #                                 description: The name of the user
-    #                             preferences:
-    #                                 type: array
-    #                                 items:
-    #                                     type: string
-    #                                 description: A list of preferences
-    #                             age:
-    #                                 type: integer
-    #                                 description: The age of the user
-    #         responses:
-    #             '200':
-    #                 description: Successful response
-    #                 content:
-    #                     application/json:
-    #                         schema:
-    #                             type: object
-    #                             properties:
-    #                                 message:
-    #                                     type: string
-    #                                     example: Successfully processed the request
-    #             '400':
-    #                 description: Bad request
-    #                 content:
-    #                     application/json:
-    #                         schema:
-    #                             type: object
-    #                             properties:
-    #                                 error:
-    #                                     type: string
-    #                                     example: Invalid input
-
 components:
     schemas:
         Message:
@@ -502,6 +326,232 @@ components:
             required:
                 - code
                 - message
+        Album:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: Unique identifier of the album
+                createdAt:
+                    type: string
+                    format: date-time
+                    description: Timestamp when the album has been added to the site
+                updatedAt:
+                    type: string
+                    format: date-time
+                    description: Timestamp when the album has been last updated on the site
+                poster:
+                    $ref: '#/components/schemas/UserCard'
+                    description: The information of the user that posted the album
+                author:
+                    $ref: '#/components/schemas/UserCard'
+                    description: The information of the user that authored the album
+                title:
+                    type: string
+                    description: The title of the album
+                publicationDate:
+                    type: string
+                    format: date-time
+                    description: Timestamp when the album has been officially released
+                poems:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/PoemCard'
+                    description: The list of poems part of this album
+            required:
+                - id
+                - createdAt
+                - updatedAt
+                - poster
+                - author
+                - title
+                - publicationDate
+                - poems
+        AlbumCard:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: Unique identifier of the album
+                createdAt:
+                    type: string
+                    format: date-time
+                    description: Timestamp when the album has been added to the site
+                updatedAt:
+                    type: string
+                    format: date-time
+                    description: Timestamp when the album has been last updated on the site
+                poster:
+                    $ref: '#/components/schemas/UserCard'
+                    description: The information of the user that posted the album
+                author:
+                    $ref: '#/components/schemas/UserCard'
+                    description: The information of the user that authored the album
+                title:
+                    type: string
+                    description: The title of the album
+                publicationDate:
+                    type: string
+                    format: date-time
+                    description: Timestamp when the album has been officially released
+                poemsCount:
+                    type: integer
+                    description: The number of poems part of this album
+            required:
+                - id
+                - createdAt
+                - updatedAt
+                - poster
+                - author
+                - title
+                - publicationDate
+                - poemsCount
+        Poem:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: Unique identifier of the poem
+                createdAt:
+                    type: string
+                    format: date-time
+                    description: Timestamp when the poem has been added to the site
+                updatedAt:
+                    type: string
+                    format: date-time
+                    description: Timestamp when the poem has been last updated on the site
+                poster:
+                    $ref: '#/components/schemas/UserCard'
+                    description: The information of the user that posted the poem
+                author:
+                    $ref: '#/components/schemas/UserCard'
+                    description: The information of the user that authored the poem
+                title:
+                    type: string
+                    description: The title of the poem
+                publicationDate:
+                    type: string
+                    format: date-time
+                    description: Timestamp when the poem has been officially released
+                lyrics:
+                    $ref: '#/components/schemas/Lyrics'
+                    description: The lyrics of the poem
+            required:
+                - id
+                - createdAt
+                - updatedAt
+                - poster
+                - author
+                - title
+                - publicationDate
+                - lyrics
+        PoemCard:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: Unique identifier of the poem
+                createdAt:
+                    type: string
+                    format: date-time
+                    description: Timestamp when the poem has been added to the site
+                updatedAt:
+                    type: string
+                    format: date-time
+                    description: Timestamp when the poem has been last updated on the site
+                poster:
+                    $ref: '#/components/schemas/UserCard'
+                    description: The information of the user that posted the poem
+                author:
+                    $ref: '#/components/schemas/UserCard'
+                    description: The information of the user that authored the poem
+                title:
+                    type: string
+                    description: The title of the poem
+                publicationDate:
+                    type: string
+                    format: date-time
+                    description: Timestamp when the poem has been officially released
+            required:
+                - id
+                - createdAt
+                - updatedAt
+                - poster
+                - author
+                - title
+                - publicationDate
+        Lyrics:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: Unique identifier of the lyrics
+                createdAt:
+                    type: string
+                    format: date-time
+                    description: Timestamp when the lyrics have been added to the site
+                updatedAt:
+                    type: string
+                    format: date-time
+                    description: Timestamp when the lyrics have been last updated on the site
+                poster:
+                    $ref: '#/components/schemas/UserCard'
+                    description: The poster of the lyrics
+                title:
+                    type: string
+                    description: The title of the lyrics
+                content:
+                    type: string
+                    description: The lyrics
+                language:
+                    type: string
+                    description: The language the lyrics are written in
+                mainAnnotation:
+                    $ref: '#/components/schemas/MainAnnotation'
+                    description: The main information about this poem
+                annotations:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Annotation'
+                        description: An annotation of a segment of the lyrics
+            required:
+                - id
+                - createdAt
+                - updatedAt
+                - poster
+                - title
+                - content
+                - language
+                - mainAnnotation
+                - annotations
+        MainAnnotation:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: Unique identifier of the annotation
+                content:
+                    type: string
+                    description: The annotation
+            required:
+                - id
+                - content
+        Annotation:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: Unique identifier of the annotation
+                offset:
+                    type: integer
+                    description: The position in the content where the annotation begins
+                length:
+                    type: integer
+                    description: The length of the annotation
+            required:
+                - id
+                - offset
+                - length
         User:
             type: object
             properties:
@@ -514,61 +564,85 @@ components:
                 nickname:
                     type: string
                     description: Nickname of the user
-                last_name:
+                lastName:
                     type: string
                     description: Last name of the user
-                created_at:
+                createdAt:
                     type: string
                     format: date-time
                     description: Timestamp when the user was created
-                first_name:
+                firstName:
                     type: string
                     description: First name of the user
-                updated_at:
+                updatedAt:
                     type: string
                     format: date-time
                     description: Timestamp when the user was last updated
-                poems_count:
+                poemsCount:
                     type: integer
                     description: Count of poems created by the user
-                albums_count:
+                albumsCount:
                     type: integer
                     description: Count of albums created by the user
-                annotations_count:
+                annotationsCount:
                     type: integer
                     description: Count of annotations created by the user
-                poems_contributions:
+                poemsContributions:
                     type: integer
                     description: Number of poems the user has contributed to
-                albums_contributions:
+                albumsContributions:
                     type: integer
                     description: Number of albums the user has contributed to
-                created_lyrics_count:
+                createdLyricsCount:
                     type: integer
                     description: Count of lyrics created by the user
-                lyrics_contributions:
+                lyricsContributions:
                     type: integer
                     description: Number of lyrics the user has contributed to
-                translated_lyrics_count:
+                translatedLyricsCount:
                     type: integer
                     description: Count of lyrics translated by the user
-                annotations_contributions:
+                annotationsContributions:
                     type: integer
                     description: Number of annotations the user has contributed to
             required:
                 - id
                 - roles
                 - nickname
-                - last_name
-                - created_at
-                - first_name
-                - updated_at
-                - poems_count
-                - albums_count
-                - annotations_count
-                - poems_contributions
-                - albums_contributions
-                - created_lyrics_count
-                - lyrics_contributions
-                - translated_lyrics_count
-                - annotations_contributions
+                - lastName
+                - createdAt
+                - firstName
+                - updatedAt
+                - poemsCount
+                - albumsCount
+                - annotationsCount
+                - poemsContributions
+                - albumsContributions
+                - createdLyricsCount
+                - lyricsContributions
+                - translatedLyricsCount
+                - annotationsContributions
+        UserCard:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: Unique identifier for the user
+                roles:
+                    type: integer
+                    description: Roles assigned to the user
+                nickname:
+                    type: string
+                    description: Nickname of the user
+                lastName:
+                    type: string
+                    description: Last name of the user
+                firstName:
+                    type: string
+                    description: First name of the user
+            required:
+                - id
+                - roles
+                - nickname
+                - lastName
+                - firstName
