@@ -5,11 +5,9 @@ import { App, WebServer } from 'web-lib'
 import {
     albums_router,
     annotations_router,
-    auth_router,
     lyrics_router,
     poems_router,
     posts_router,
-    users_router,
 } from './routers/index.js'
 
 
@@ -21,15 +19,11 @@ const app = new App()
 const allowList = [
     'http://localhost:3000',
     'https://localhost:3000',
-    'http://localhost:4000',
+    // `http://${process.env.HOST}:${process.env.PORT}`,
 ]
 
 app.middleware(async (req, res, next) => {
-    if (req.headers.origin) {
-        if (!allowList.includes(req.headers.origin)) {
-            return
-        }
-
+    if (req.headers.origin && allowList.includes(req.headers.origin)) {
         res.setHeader('Access-Control-Allow-Origin', req.headers.origin)
         res.setHeader('Access-Control-Allow-Credentials', true)
     }
@@ -39,11 +33,9 @@ app.middleware(async (req, res, next) => {
 
 app.use('/api/albums', albums_router)
 app.use('/api/annotations', annotations_router)
-app.use('/api/auth', auth_router)
 app.use('/api/lyrics', lyrics_router)
 app.use('/api/poems', poems_router)
 app.use('/api/posts', posts_router)
-app.use('/api/users', users_router)
 
 const web_routes = {
     '': 'index.html',
