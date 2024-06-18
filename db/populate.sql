@@ -1,4 +1,4 @@
-create or replace procedure add_post(user_id integer, post_type text, verified integer, out post_id integer)
+create or replace procedure add_post(user_id integer, post_type text, verified boolean, out post_id integer)
     language plpgsql as
 $$
 begin
@@ -8,7 +8,7 @@ begin
     returning id into post_id;
 
     -- add request
-    if verified = 0 then
+    if verified = false then
         insert into requests (created_at, updated_at, requester_id, post_id)
         values (now(), now(), user_id, post_id);
     end if;
@@ -43,25 +43,16 @@ $$
         for i in 0..user_count - 1
         loop
             insert into users (created_at, updated_at, first_name, last_name, nickname, email, verified,
-                               password_hash, password_salt, roles, albums_count,
-                               albums_contributions,
-                               poems_count,
-                               poems_contributions,
-                               created_lyrics_count,
-                               translated_lyrics_count,
-                               lyrics_contributions,
-                               annotations_count,
-                               annotations_contributions)
+                               password_hash, password_salt, roles)
             values (now(), now(), 'firstname' || i, 'lastname' || i, 'nickname' || i, 'user' || i || '@example.com',
-                    (i % 2), 'hash' || i, 'salt' || i, (i % 3), (i * 2), (i * 3), (i * 1), (i % 3), (i * 2),
-                    (i * 3), (i * 1), (i % 3), (i * 2));
+                    i % 2 = 1, 'hash' || i, 'salt' || i, (i % 3));
         end loop;
 
         -- populate albums table
         for i in 0..album_count - 1
         loop
             user_id := (i % user_count) + 1;
-            call add_post(user_id, 'album', i % 2, post_id);
+            call add_post(user_id, 'album', i % 2 = 1, post_id);
 
             -- add album
             insert into albums (id, author_id, title, publication_date)
@@ -72,7 +63,7 @@ $$
         for i in 1..poem_count
         loop
             user_id := (i % user_count) + 1;
-            call add_post(user_id, 'poem', i % 2, post_id);
+            call add_post(user_id, 'poem', i % 2 = 1, post_id);
 
             -- add poem
             insert into poems (id, author_id, title, publication_date)
@@ -93,7 +84,7 @@ $$
         for i in 0..lyrics_count - 1
         loop
             user_id := (i % user_count) + 1;
-            call add_post(user_id, 'lyrics', i % 2, lyrics_id);
+            call add_post(user_id, 'lyrics', i % 2 = 1, lyrics_id);
 
             select id into poem_id from poems where id % poem_count = i % poem_count limit 1;
             select id
@@ -107,7 +98,7 @@ $$
             values (lyrics_id, poem_id, 'lyrics title ' || i, null, 'lyrics content ' || i,
                     case when i % 3 = 0 then 'en' when i % 3 = 1 then 'es' when i % 3 = 2 then 'ro' end);
 
-            call add_post(user_id, 'annotation', i % 2, annotation_id);
+            call add_post(user_id, 'annotation', i % 2 = 1, annotation_id);
 
             -- add annotation
             insert into annotations (id, lyrics_id, content, "offset", length)
