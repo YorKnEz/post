@@ -5,5 +5,18 @@ export const albumSchema = {
         min: 4,
         max: 256,
     },
-    publicationDate: {}, // TODO: validate?
+    publicationDate: {
+        optional: true,
+    }, // TODO: validate?
+}
+
+export const albumUpdateSchema = {
+    title: {
+        min: 4,
+        max: 256,
+        optional: true,
+    },
+    publicationDate: {
+        optional: true,
+    }, // TODO: validate?
 }
