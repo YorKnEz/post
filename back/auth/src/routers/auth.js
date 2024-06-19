@@ -137,7 +137,7 @@ router.post('/verify', async (req, res) => {
         // invalidate all sessions after having made the change
         await client.query(
             "delete from tokens where user_id = $1 and type = 'session'",
-            [token.userId]
+            [user.id]
         )
 
         return new JSONResponse(200, {
