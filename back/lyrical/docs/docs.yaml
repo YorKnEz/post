@@ -182,7 +182,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                      type: string
+                      type: integer
                   description: Id of the album
             responses:
                 '200':
@@ -208,7 +208,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                      type: string
+                      type: integer
                   description: Id of the album
                 - name: token
                   in: cookie
@@ -259,7 +259,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                      type: string
+                      type: integer
                   description: Id of the album
                 - name: token
                   in: cookie
@@ -280,6 +280,102 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Message'
+
+    /api/albums/{id}/poems:
+        post:
+            summary: Add a poem to this album
+            tags:
+                - albums
+                - auth
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                  description: Id of the album
+                - name: token
+                  in: cookie
+                  required: true
+                  schema:
+                      type: string
+                  description: The authentication token
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                poemId:
+                                    type: integer
+                                    description: The id of the poem to link to this album
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+                '400':
+                    description: Poem is already in the album
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+                '404':
+                    description: Album or poem not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+
+    /api/albums/{id}/poems/{poemId}:
+        delete:
+            summary: Remove a poem from this album
+            tags:
+                - albums
+                - auth
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                  description: Id of the album
+                - name: poemId
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                  description: Id of the poem
+                - name: token
+                  in: cookie
+                  required: true
+                  schema:
+                      type: string
+                  description: The authentication token
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+                '400':
+                    description: Poem is not in album
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+                '404':
+                    description: Album or poem not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+
+
 
     /api/poems:
         get:

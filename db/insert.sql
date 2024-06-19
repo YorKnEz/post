@@ -43,5 +43,3 @@ begin
     on conflict(user_id, post_id) do update set type = p_type;
 end;
 $$ language plpgsql;
-
-call add_reaction(2, 4, 0);

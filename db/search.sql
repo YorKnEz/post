@@ -346,18 +346,19 @@ $$
 declare
     result jsonb;
 begin
-    select jsonb_build_object('id', p.id,
-                              'created_at', p.created_at,
-                              'updated_at', p.updated_at,
-                              'poster', find_user_card_by_id(p.poster_id),
-                              'author', find_user_card_by_id(po.author_id),
-                              'title', po.title,
-                              'publication_date', po.publication_date)
+    select jsonb_agg(e)
     into result
-    from poems po
-             join posts p on po.id = p.id
-             join album_poems ap on ap.poem_id = p.id
-    where ap.album_id = p_id;
+    from (select jsonb_build_object('id', p.id,
+                                    'created_at', p.created_at,
+                                    'updated_at', p.updated_at,
+                                    'poster', find_user_card_by_id(p.poster_id),
+                                    'author', find_user_card_by_id(po.author_id),
+                                    'title', po.title,
+                                    'publication_date', po.publication_date) e
+          from poems po
+                   join posts p on po.id = p.id
+                   join album_poems ap on ap.poem_id = p.id
+          where ap.album_id = p_id) t;
 
     if result is null then
         return '[]'::jsonb;

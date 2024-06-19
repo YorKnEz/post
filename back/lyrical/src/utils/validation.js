@@ -20,3 +20,7 @@ export const albumUpdateSchema = {
         optional: true,
     }, // TODO: validate?
 }
+
+export const albumAddPoemSchema = {
+    poemId: {}
+}
