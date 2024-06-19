@@ -106,7 +106,7 @@ paths:
             parameters:
                 - name: token
                   in: cookie
-                  required: true
+                  required: false
                   schema:
                       type: string
                   description: The authentication token
@@ -117,9 +117,6 @@ paths:
                         schema:
                             type: object
                             properties:
-                                posterId:
-                                    type: integer
-                                    description: The id of the user that posted the album
                                 authorId:
                                     type: integer
                                     description: The id of the user that authored the album
@@ -131,7 +128,6 @@ paths:
                                     format: date-time
                                     description: Timestamp when the album has been officially released
                             required:
-                                - posterId
                                 - authorId
                                 - title
             responses:
@@ -263,7 +259,7 @@ paths:
                   description: Id of the album
                 - name: token
                   in: cookie
-                  required: true
+                  required: false
                   schema:
                       type: string
                   description: The authentication token
@@ -296,7 +292,7 @@ paths:
                   description: Id of the album
                 - name: token
                   in: cookie
-                  required: true
+                  required: false
                   schema:
                       type: string
                   description: The authentication token
@@ -351,7 +347,7 @@ paths:
                   description: Id of the poem
                 - name: token
                   in: cookie
-                  required: true
+                  required: false
                   schema:
                       type: string
                   description: The authentication token
@@ -374,8 +370,6 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Message'
-
-
 
     /api/poems:
         get:

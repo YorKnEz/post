@@ -1,5 +1,4 @@
 export const albumSchema = {
-    posterId: {},
     authorId: {},
     title: {
         min: 4,
@@ -22,5 +21,5 @@ export const albumUpdateSchema = {
 }
 
 export const albumAddPoemSchema = {
-    poemId: {}
+    poemId: {},
 }

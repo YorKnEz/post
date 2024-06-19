@@ -44,7 +44,7 @@ router.get('/:id', async (req, res) => {
             req.params.id,
         ])
 
-        return new JSONResponse(200, result.rows[0].find_album_by_id)
+        return new JSONResponse(200, toCamel(result.rows[0].find_album_by_id))
     } catch (e) {
         // db threw 404
         if (e.code == 'P0001' && e.message == 'album not found') {
@@ -74,7 +74,10 @@ auth_router.post('/', async (req, res) => {
     }
 
     try {
-        let result = await db.query('select add_album($1)', [req.body])
+        let result = await db.query('select add_album($1, $2)', [
+            req.locals.userId,
+            req.body,
+        ])
 
         return new JSONResponse(200, toCamel(result.rows[0].add_album))
     } catch (e) {
@@ -99,7 +102,7 @@ auth_router.patch('/:id', async (req, res) => {
             req.body,
         ])
 
-        return new JSONResponse(200, result.rows[0].update_album)
+        return new JSONResponse(200, toCamel(result.rows[0].update_album))
     } catch (e) {
         // db threw 404
         if (e.code == 'P0001' && e.message == 'album not found') {
