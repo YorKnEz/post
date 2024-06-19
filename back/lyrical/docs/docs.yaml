@@ -5,6 +5,52 @@ info:
     description: Lyrical Service API Documentation
 
 paths:
+    /api/users/{id}/albums:
+        get:
+            summary: Get paginated albums that were authored or posted by a specified user
+            description: This route returns a paginated list of albums, based on some filtering criteria
+            tags:
+                - albums
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                  description: The id of the user
+                - name: start
+                  in: query
+                  required: true
+                  schema:
+                      type: integer
+                  description: Offset of results to start from
+                - name: count
+                  in: query
+                  required: true
+                  schema:
+                      type: integer
+                  description: Number of results to return
+                - name: sort
+                  in: query
+                  schema:
+                      type: string
+                  description: The sort criteria
+                - name: order
+                  in: query
+                  schema:
+                      type: string
+                  description: The order of the sorting
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/AlbumCard'
+                                description: List of matched albums
+
     /api/albums:
         get:
             summary: Get paginated albums by specified filters
@@ -56,6 +102,14 @@ paths:
             summary: Create a new album
             tags:
                 - albums
+                - auth
+            parameters:
+                - name: token
+                  in: cookie
+                  required: true
+                  schema:
+                      type: string
+                  description: The authentication token
             requestBody:
                 required: true
                 content:
@@ -94,6 +148,30 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/Album'
 
+    /api/albums/suggestions:
+        get:
+            summary: Get 5 suggestions of albums based on the given query
+            description: This route returns a list of at most 5 albums that match the given query, this is like a mini version of search
+            tags:
+                - albums
+            parameters:
+                - name: query
+                  in: query
+                  required: false
+                  schema:
+                      type: string
+                  description: The query string to search by
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/AlbumCard'
+                                description: List of matched albums
+
     /api/albums/{id}:
         get:
             summary: Get album by id
@@ -124,6 +202,7 @@ paths:
             description: Update the title of the album
             tags:
                 - albums
+                - auth
             parameters:
                 - name: id
                   in: path
@@ -131,6 +210,12 @@ paths:
                   schema:
                       type: string
                   description: Id of the album
+                - name: token
+                  in: cookie
+                  required: false
+                  schema:
+                      type: string
+                  description: The authentication token
             requestBody:
                 required: true
                 content:
@@ -168,6 +253,7 @@ paths:
             summary: Delete an album and it's related content by id
             tags:
                 - albums
+                - auth
             parameters:
                 - name: id
                   in: path
@@ -175,6 +261,12 @@ paths:
                   schema:
                       type: string
                   description: Id of the album
+                - name: token
+                  in: cookie
+                  required: true
+                  schema:
+                      type: string
+                  description: The authentication token
             responses:
                 '200':
                     description: Successful response
