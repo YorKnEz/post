@@ -7,8 +7,9 @@ import {
     toCamel,
     validate,
 } from 'web-lib'
-import * as db from '../db/index.js'
+import db from '../db/index.js'
 import { albumSchema, albumUpdateSchema } from '../utils/validation.js'
+import { authMiddleware } from '../utils/index.js'
 
 export const router = new Router('Albums Router')
 
@@ -26,18 +27,11 @@ router.get('/', async (req, res) => {
     }
 })
 
-router.post('/', async (req, res) => {
+router.get('/suggestions', async (req, res) => {
     try {
-        // validate the user data
-        validate(req.body, albumSchema)
-    } catch (e) {
-        return new JSONResponse(400, e.obj())
-    }
+        let result = await db.query('select find_album_cards($1)', [req.query])
 
-    try {
-        let result = await db.query('select add_album($1)', [req.body])
-
-        return new JSONResponse(200, toCamel(result.rows[0].add_album))
+        return new JSONResponse(200, toCamel(result.rows[0].find_album_cards))
     } catch (e) {
         console.error(e)
         return new InternalError()
@@ -65,7 +59,31 @@ router.get('/:id', async (req, res) => {
     }
 })
 
-router.patch('/:id', async (req, res) => {
+const auth_router = new Router('Albums Auth Router')
+
+router.use('/', auth_router)
+
+auth_router.middleware(authMiddleware)
+
+auth_router.post('/', async (req, res) => {
+    try {
+        // validate the user data
+        validate(req.body, albumSchema)
+    } catch (e) {
+        return new JSONResponse(400, e.obj())
+    }
+
+    try {
+        let result = await db.query('select add_album($1)', [req.body])
+
+        return new JSONResponse(200, toCamel(result.rows[0].add_album))
+    } catch (e) {
+        console.error(e)
+        return new InternalError()
+    }
+})
+
+auth_router.patch('/:id', async (req, res) => {
     try {
         // validate the user data
         validate(req.body, albumUpdateSchema)
@@ -95,7 +113,7 @@ router.patch('/:id', async (req, res) => {
     }
 })
 
-router.delete('/:id', async (req, res) => {
+auth_router.delete('/:id', async (req, res) => {
     try {
         await db.query('call delete_album($1)', [req.params.id])
 
