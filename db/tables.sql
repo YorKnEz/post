@@ -1,4 +1,5 @@
 drop view albums_view;
+drop view annotations_view;
 
 drop table tokens;
 drop table annotations cascade;
@@ -203,6 +204,30 @@ select p.id,
 from albums a
          join posts p on p.id = a.id;
 
-select *
-from albums_view
-order by (0.3 * contributions_ratio + 0.3 * contributors_ratio + 0.4 * (likes / reactions)) desc;
+create or replace view annotations_view as
+select p.id,
+       p.created_at,
+       p.updated_at,
+       find_user_card_by_id(p.poster_id)                                                  poster,
+       p.verified,
+       a.lyrics_id,
+       a.content,
+       a.offset,
+       a.length,
+       (select count(*) from contributions where post_id = a.id)                          contributions,
+       (select count(*)::numeric from contributions where post_id = a.id) /
+       (select max(contributions)::numeric
+        from (select count(post_id) contributions from contributions group by post_id) t) contributions_ratio,
+       (select count(distinct contributor_id) from contributions where post_id = a.id)    contributors,
+       (select count(distinct contributor_id)::numeric from contributions where post_id = a.id) /
+       (select max(contributors)::numeric
+        from (select count(distinct contributor_id) contributors
+              from contributions
+              group by post_id) t)                                                        contributors_ratio,
+       (select count(*)::numeric from reactions where post_id = a.id)                     reactions,
+       (select count(*)::numeric from reactions where post_id = a.id and type = 0)        likes,
+       (select count(*)::numeric from reactions where post_id = a.id and type = 1)        dislikes
+from annotations a
+         join posts p on p.id = a.id;
+
+select * from annotations_view;

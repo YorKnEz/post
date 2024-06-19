@@ -91,7 +91,6 @@ auth_router.patch('/:id', async (req, res) => {
         // validate the user data
         validate(req.body, albumUpdateSchema)
     } catch (e) {
-        console.error(e)
         return new JSONResponse(400, e.obj())
     }
 

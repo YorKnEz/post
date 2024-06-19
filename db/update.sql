@@ -42,3 +42,33 @@ begin
     return find_album_by_id(p_id);
 end;
 $$ language plpgsql;
+
+create or replace function update_annotation(p_id integer, p_user_id integer, p_data jsonb) returns jsonb as
+$$
+declare
+    sql_query text;
+    updated   integer;
+begin
+
+    sql_query = format('
+        update annotations set
+            content = %s
+        where id = %s returning id;
+    ',
+                       case
+                           when p_data ? 'content' then format('''%s''', p_data ->> 'content')
+                           else 'content'
+                       end,
+                       p_id
+                );
+    execute sql_query into updated;
+
+    if updated is null then
+        raise exception 'annotation not found';
+    end if;
+
+    call __update_post(p_id, p_user_id);
+
+    return find_annotation_by_id(p_id);
+end;
+$$ language plpgsql;

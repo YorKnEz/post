@@ -411,7 +411,7 @@ begin
                               'content', l.content,
                               'language', l.language,
                               'main_annotation', find_annotation_by_id(l.main_annotation_id),
-                              'annotations', find_annotations_by_lyrics_id(l.id, l.main_annotation_id)
+                              'annotations', find_annotations_metadata_by_lyrics_id(l.id, l.main_annotation_id)
            )
     into result
     from lyrics l
@@ -427,18 +427,20 @@ begin
 end;
 $$ language plpgsql;
 
-create or replace function find_annotations_by_lyrics_id(p_lyrics_id integer, p_main_annotation_id integer) returns jsonb as
+create or replace function find_annotations_metadata_by_lyrics_id(p_lyrics_id integer, p_main_annotation_id integer) returns jsonb as
 $$
 declare
     result jsonb;
 begin
-    select jsonb_agg(jsonb_build_object('id', id, 'offset', "offset", 'length', length))
+    select jsonb_agg(e)
     into result
-    from (select *
-          from annotations
+    from (select jsonb_build_object('id', id,
+                                    'offset', "offset",
+                                    'length', length) e
+          from annotations_view
           where lyrics_id = p_lyrics_id
             and id != p_main_annotation_id
-          order by "offset") ann;
+          order by "offset") t;
 
     if result is null then
         result := '[]'::jsonb;
@@ -453,9 +455,16 @@ $$
 declare
     result jsonb;
 begin
-    select jsonb_build_object('id', id, 'content', content)
+    select jsonb_build_object('id', id,
+                              'created_at', created_at,
+                              'updated_at', updated_at,
+                              'poster', poster,
+                              'content', content,
+                              'contributors', contributors,
+                              'likes', likes,
+                              'dislikes', dislikes)
     into result
-    from annotations
+    from annotations_view
     where id = p_annotation_id;
 
     if result is null then

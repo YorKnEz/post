@@ -520,6 +520,162 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/Message'
 
+    /api/annotations:
+        post:
+            summary: Create a new annotation
+            tags:
+                - annotations
+                - auth
+            security:
+                - cookieAuth: []
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                lyricsId:
+                                    type: integer
+                                    description: The id of the lyrics the annotation belongs to
+                                content:
+                                    type: string
+                                    description: The content of the annotation (not the part of lyrics that is annotated!)
+                                offset:
+                                    type: integer
+                                    description: The start position of the annotated content
+                                length:
+                                    type: integer
+                                    description: The length of the annotated content
+                            required:
+                                - lyricsId
+                                - content
+                                - offset
+                                - length
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Annotation'
+                '400':
+                    description: Invalid data
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+                '404':
+                    description: Lyrics not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+
+    /api/annotations/{id}:
+        get:
+            summary: Get an annotation by id
+            tags:
+                - annotations
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                  description: Id of the annotation
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Annotation'
+                '404':
+                    description: Annotation not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+        patch:
+            summary: Update an annotation
+            tags:
+                - annotations
+                - auth
+            security:
+                - cookieAuth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                  description: Id of the annotation
+                - name: token
+                  in: cookie
+                  required: false
+                  schema:
+                      type: string
+                  description: The authentication token
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                content:
+                                    type: string
+                                    description: The new content of the annotation
+                            required:
+                                - content
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Annotation'
+                '404':
+                    description: Annotation not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+        delete:
+            summary: Delete an annotation
+            tags:
+                - annotations
+                - auth
+            security:
+                - cookieAuth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                  description: Id of the annotation
+                - name: token
+                  in: cookie
+                  required: false
+                  schema:
+                      type: string
+                  description: The authentication token
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+                '404':
+                    description: Annotation not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+
 components:
     securitySchemes:
         cookieAuth:

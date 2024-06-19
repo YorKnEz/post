@@ -23,3 +23,20 @@ export const albumUpdateSchema = {
 export const albumAddPoemSchema = {
     poemId: {},
 }
+
+export const annotationSchema = {
+    lyricsId: {},
+    content: {
+        min: 16,
+        max: 32678,
+    },
+    offset: {},
+    length: {},
+}
+
+export const annotationUpdateSchema = {
+    content: {
+        min: 16,
+        max: 32678,
+    },
+}
