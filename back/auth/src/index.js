@@ -1,7 +1,7 @@
 // load env before anything else
 import env from './utils/env.js'
 
-import { App, WebServer } from 'web-lib'
+import { App, WebServer, getCorsMiddleware } from 'web-lib'
 
 import { auth_router } from './routers/index.js'
 
@@ -16,18 +16,7 @@ const allowList = [
     'http://localhost:4000',
 ]
 
-app.middleware(async (req, res, next) => {
-    if (req.headers.origin) {
-        if (!allowList.includes(req.headers.origin)) {
-            return
-        }
-
-        res.setHeader('Access-Control-Allow-Origin', req.headers.origin)
-        res.setHeader('Access-Control-Allow-Credentials', true)
-    }
-
-    return await next(req, res)
-})
+app.middleware(getCorsMiddleware(allowList))
 
 app.use('/api/auth', auth_router)
 

@@ -1,7 +1,7 @@
 // load env before anything else
 import env from './utils/env.js'
 
-import { App, WebServer } from 'web-lib'
+import { App, WebServer, getCorsMiddleware } from 'web-lib'
 import {
     albums_router,
     annotations_router,
@@ -22,14 +22,7 @@ const allowList = [
     // `http://${process.env.HOST}:${process.env.PORT}`,
 ]
 
-app.middleware(async (req, res, next) => {
-    if (req.headers.origin && allowList.includes(req.headers.origin)) {
-        res.setHeader('Access-Control-Allow-Origin', req.headers.origin)
-        res.setHeader('Access-Control-Allow-Credentials', true)
-    }
-
-    return await next(req, res)
-})
+app.middleware(getCorsMiddleware(allowList))
 
 app.use('/api/albums', albums_router)
 app.use('/api/annotations', annotations_router)
