@@ -103,6 +103,8 @@ paths:
             tags:
                 - albums
                 - auth
+            security:
+                - cookieAuth: []
             parameters:
                 - name: token
                   in: cookie
@@ -199,6 +201,8 @@ paths:
             tags:
                 - albums
                 - auth
+            security:
+                - cookieAuth: []
             parameters:
                 - name: id
                   in: path
@@ -250,6 +254,8 @@ paths:
             tags:
                 - albums
                 - auth
+            security:
+                - cookieAuth: []
             parameters:
                 - name: id
                   in: path
@@ -283,6 +289,8 @@ paths:
             tags:
                 - albums
                 - auth
+            security:
+                - cookieAuth: []
             parameters:
                 - name: id
                   in: path
@@ -332,6 +340,8 @@ paths:
             tags:
                 - albums
                 - auth
+            security:
+                - cookieAuth: []
             parameters:
                 - name: id
                   in: path
@@ -511,6 +521,11 @@ paths:
                                 $ref: '#/components/schemas/Message'
 
 components:
+    securitySchemes:
+        cookieAuth:
+            type: apiKey
+            in: cookie
+            name: token
     schemas:
         Message:
             type: object
