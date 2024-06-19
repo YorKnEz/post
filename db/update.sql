@@ -7,7 +7,7 @@ begin
 end;
 $$ language plpgsql;
 
-create or replace function update_album(p_id integer, p_user_id integer, data jsonb) returns jsonb as
+create or replace function update_album(p_id integer, p_user_id integer, p_data jsonb) returns jsonb as
 $$
 declare
     sql_query text;
@@ -21,12 +21,12 @@ begin
         where id = %s returning id;
     ',
                        case
-                           when data ? 'title' then format('''%s''', data ->> 'title')
+                           when p_data ? 'title' then format('''%s''', p_data ->> 'title')
                            else 'title'
                        end,
                        case
-                           when data ? 'publicationDate'
-                               then format('''%s''::timestamp', data ->> 'publicationDate')
+                           when p_data ? 'publicationDate'
+                               then format('''%s''::timestamp', p_data ->> 'publicationDate')
                            else 'publication_date'
                        end,
                        p_id

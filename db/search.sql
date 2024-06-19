@@ -1,4 +1,4 @@
-create or replace function find_user_cards(filters jsonb) returns jsonb as
+create or replace function find_user_cards(p_filters jsonb) returns jsonb as
 $$
 declare
     query     text := '';
@@ -9,19 +9,19 @@ declare
     sql_query text;
     result    jsonb;
 begin
-    if filters ? 'query' then
-        query := lower(trim(filters ->> 'query'));
+    if p_filters ? 'query' then
+        query := lower(trim(p_filters ->> 'query'));
     end if;
 
-    if not filters ? 'start' or not filters ? 'count' then
+    if not p_filters ? 'start' or not p_filters ? 'count' then
         raise exception '`start` and `count` are missing';
     end if;
 
-    start := (filters -> 'start')::int;
-    count := (filters -> 'count')::int;
+    start := (p_filters -> 'start')::int;
+    count := (p_filters -> 'count')::int;
 
-    if filters ? 'sort' and filters ->> 'sort' in ('new', 'activity') then
-        sort := filters ->> 'sort';
+    if p_filters ? 'sort' and p_filters ->> 'sort' in ('new', 'activity') then
+        sort := p_filters ->> 'sort';
         sort := case
                     when sort = 'activity' then
                         '(u.albums_contributions + u.poems_contributions + u.lyrics_contributions + u.annotations_contributions)'
@@ -29,8 +29,8 @@ begin
                 end;
     end if;
 
-    if filters ? 'order' and filters ->> 'order' in ('asc', 'desc') then
-        "order" := filters ->> 'order';
+    if p_filters ? 'order' and p_filters ->> 'order' in ('asc', 'desc') then
+        "order" := p_filters ->> 'order';
     end if;
 
     sql_query := format('
@@ -116,7 +116,7 @@ begin
 end;
 $$ language plpgsql;
 
-create or replace function find_album_cards(filters jsonb) returns jsonb as
+create or replace function find_album_cards(p_filters jsonb) returns jsonb as
 $$
 declare
     start     int  := 0;
@@ -125,21 +125,35 @@ declare
     "order"   text := 'asc';
     sql_query text;
     result    jsonb;
-    album     jsonb;
 begin
-    if not filters ? 'start' or not filters ? 'count' then
+    if not p_filters ? 'start' or not p_filters ? 'count' then
         raise exception '`start` and `count` are missing';
     end if;
 
-    start := (filters -> 'start')::int;
-    count := (filters -> 'count')::int;
+    start := (p_filters -> 'start')::int;
+    count := (p_filters -> 'count')::int;
 
-    if filters ? 'sort' and filters ->> 'sort' in ('new', 'poster', 'title', 'author', 'publication', 'poems') then
-        sort := filters ->> 'sort';
+    if p_filters ? 'sort' then
+        sort := p_filters ->> 'sort';
+        sort := case
+                    when sort = 'title' then 'title'
+                    when sort = 'poster' then 'poster ->> ''nickname'''
+                    when sort = 'author' then 'author ->> ''nickname'''
+                    when sort = 'publication' then 'publication_date'
+                    when sort = 'poems_count' then 'poems_count'
+                    when
+                        sort = 'popular'
+                        then '(0.3 * contributions_ratio + 0.3 * contributors_ratio + 0.4 * (likes / reactions))'
+                    when
+                        sort = 'trending'
+                        then '(0.7 * (0.3 * contributions_ratio + 0.3 * contributors_ratio + 0.4 * (likes / reactions)) + 0.3 * (extract(epoch from created_at) / extract(epoch from now())))'
+                    else 'created_at'
+                end;
     end if;
 
-    if filters ? 'order' and filters ->> 'order' in ('asc', 'desc') then
-        "order" := filters ->> 'order';
+    if p_filters ? 'order' then
+        "order" := p_filters ->> 'order';
+        "order" := case when "order" = 'desc' then 'desc' else 'asc' end;
     end if;
 
     sql_query := format(
@@ -152,7 +166,6 @@ begin
                                                 ''author'', author,
                                                 ''title'', title,
                                                 ''publication_date'', publication_date,
-                                                ''views'', views,
                                                 ''contributors'', contributors,
                                                 ''likes'', likes,
                                                 ''dislikes'', dislikes,
@@ -163,12 +176,12 @@ begin
                       offset %s limit %s) t;
             ',
             case -- when user id is used, query is ignored
-                when filters ? 'userId' then format(
+                when p_filters ? 'userId' then format(
                         '
                             (author ->> ''id'')::int = %1$s or
                             (poster ->> ''id'')::int = %1$s
-                        ', filters ->> 'userId')
-                when filters ? 'query' then format(
+                        ', p_filters ->> 'userId')
+                when p_filters ? 'query' then format(
                         '
                             lower(author ->> ''nickname'') like ''%%'' || ''%1$s'' || ''%%''
                             or lower(author ->> ''first_name'') like ''%%'' || ''%1$s'' || ''%%''
@@ -176,28 +189,19 @@ begin
                             or lower(poster ->> ''nickname'') like ''%%'' || ''%1$s'' || ''%%''
                             or lower(poster ->> ''first_name'') like ''%%'' || ''%1$s'' || ''%%''
                             or lower(poster ->> ''last_name'') like ''%%'' || ''%1$s'' || ''%%''
-                        ', lower(trim(filters ->> 'query')))
+                            or lower(title) like ''%%'' || ''%1$s'' || ''%%''
+                        ', lower(trim(p_filters ->> 'query')))
                 else 'true'
             end,
-            case
-                when sort = 'title' then 'title'
-                when sort = 'poster' then 'poster ->> ''nickname'''
-                when sort = 'author' then 'author ->> ''nickname'''
-                when sort = 'publication' then 'publication_date'
-                when sort = 'poems_count' then 'poems_count'
-                when sort = 'popular' then '()'
-                else 'created_at'
-            end, "order",
+            sort, "order",
             start, count
                  );
+    raise notice '%s', sql_query;
     execute sql_query into result;
 
     if result is null then
         return '[]'::jsonb;
     end if;
-
-    -- update views on albums fetched (the views are incremented post fetching, so the user will not see "their view"
-    update posts set views = views + 1 where id in (select (jsonb_array_elements(result) ->> 'id')::int);
 
     return result;
 end;
@@ -216,7 +220,6 @@ begin
                    'author', author,
                    'title', title,
                    'publication_date', publication_date,
-                   'views', views,
                    'contributors', contributors,
                    'likes', likes,
                    'dislikes', dislikes,
@@ -229,17 +232,12 @@ begin
         raise exception 'album not found';
     end if;
 
-    -- update views on albums fetched (the views are incremented post fetching, so the user will not see "their view"
-    update posts set views = views + 1 where id = (result ->> 'id')::int;
-
     return result;
 end;
 $$ language plpgsql;
 
-select find_album_by_id(1);
-
 -- TODO
-create or replace function find_poems(filters jsonb) returns refcursor as
+create or replace function find_poems(p_filters jsonb) returns refcursor as
 $$
 declare
     query     text := '';
@@ -250,25 +248,25 @@ declare
     sql_query text;
     cursor    refcursor;
 begin
-    if filters ? 'query' then
-        query := lower(trim(filters ->> 'query'));
+    if p_filters ? 'query' then
+        query := lower(trim(p_filters ->> 'query'));
     end if;
 
-    if not filters ? 'start' or not filters ? 'count' then
+    if not p_filters ? 'start' or not p_filters ? 'count' then
         raise exception '`start` and `count` are missing';
     end if;
 
-    start := (filters -> 'start')::int;
-    count := (filters -> 'count')::int;
+    start := (p_filters -> 'start')::int;
+    count := (p_filters -> 'count')::int;
 
     raise notice '%d %d', start, count;
 
-    if filters ? 'sort' and filters ->> 'sort' in ('new', 'poster', 'title', 'author', 'publication') then
-        sort := filters ->> 'sort';
+    if p_filters ? 'sort' and p_filters ->> 'sort' in ('new', 'poster', 'title', 'author', 'publication') then
+        sort := p_filters ->> 'sort';
     end if;
 
-    if filters ? 'order' and filters ->> 'order' in ('asc', 'desc') then
-        "order" := filters ->> 'order';
+    if p_filters ? 'order' and p_filters ->> 'order' in ('asc', 'desc') then
+        "order" := p_filters ->> 'order';
     end if;
 
     sql_query := format(

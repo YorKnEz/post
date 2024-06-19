@@ -93,8 +93,9 @@ auth_router.patch('/:id', async (req, res) => {
     }
 
     try {
-        let result = await db.query('select update_album($1, $2);', [
+        let result = await db.query('select update_album($1, $2, $3);', [
             req.params.id,
+            req.locals.userId,
             req.body,
         ])
 

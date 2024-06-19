@@ -181,25 +181,28 @@ create or replace view albums_view as
 select p.id,
        p.created_at,
        p.updated_at,
-       find_user_card_by_id(p.poster_id)                                                 poster,
-       find_user_card_by_id(a.author_id)                                                 author,
+       find_user_card_by_id(p.poster_id)                                                  poster,
+       find_user_card_by_id(a.author_id)                                                  author,
        p.verified,
        a.title,
        a.publication_date,
-       p.views,
-       (select count(*) from contributions where post_id = a.id)                         contributions,
-       (select count(distinct contributor_id) from contributions where post_id = a.id)   contributors,
-       (select count(*) from reactions where post_id = a.id)                             reactions,
-       (select count(*) from reactions where post_id = a.id and type = 0)                likes,
-       (select count(*) from reactions where post_id = a.id and type = 1)                dislikes,
-       (select count(*) from album_poems where album_id = a.id)                          poems_count,
-       (p.views::numeric / (select max(views)::numeric from posts where type = 'album')) views_ratio,
-       ((select count(*)::numeric from contributions where post_id = a.id)  / (select max(x) from (select count(post_id)::numeric x from contributions group by post_id))) views_ratio,
-
+       (select count(*) from contributions where post_id = a.id)                          contributions,
+       (select count(*)::numeric from contributions where post_id = a.id) /
+       (select max(contributions)::numeric
+        from (select count(post_id) contributions from contributions group by post_id) t) contributions_ratio,
+       (select count(distinct contributor_id) from contributions where post_id = a.id)    contributors,
+       (select count(distinct contributor_id)::numeric from contributions where post_id = a.id) /
+       (select max(contributors)::numeric
+        from (select count(distinct contributor_id) contributors
+              from contributions
+              group by post_id) t)                                                        contributors_ratio,
+       (select count(*)::numeric from reactions where post_id = a.id)                     reactions,
+       (select count(*)::numeric from reactions where post_id = a.id and type = 0)        likes,
+       (select count(*)::numeric from reactions where post_id = a.id and type = 1)        dislikes,
+       (select count(*)::numeric from album_poems where album_id = a.id)                  poems_count
 from albums a
          join posts p on p.id = a.id;
 
-select count(post_id)::numeric x from contributions group by post_id;
-
 select *
-from albums_view;
+from albums_view
+order by (0.3 * contributions_ratio + 0.3 * contributors_ratio + 0.4 * (likes / reactions)) desc;
