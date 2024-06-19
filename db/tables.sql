@@ -1,3 +1,5 @@
+drop view albums_view;
+
 drop table tokens;
 drop table annotations cascade;
 drop table lyrics;
@@ -47,6 +49,7 @@ create table posts
     poster_id  integer   not null,
     type       varchar(16),                      -- one of: album, poem, lyrics, annotation
     verified   boolean            default false, -- verified by admin, unverified posts are not displayed on the site to regular users
+    views      integer            default 0,     -- number of views of the post, incremented by 1 each time it is retrieved from db
 
     constraint posts_f1 foreign key (poster_id) references users (id)
 );
@@ -171,3 +174,32 @@ create table tokens
 
     constraint tokens_f1 foreign key (user_id) references users (id)
 );
+
+-- views
+
+create or replace view albums_view as
+select p.id,
+       p.created_at,
+       p.updated_at,
+       find_user_card_by_id(p.poster_id)                                                 poster,
+       find_user_card_by_id(a.author_id)                                                 author,
+       p.verified,
+       a.title,
+       a.publication_date,
+       p.views,
+       (select count(*) from contributions where post_id = a.id)                         contributions,
+       (select count(distinct contributor_id) from contributions where post_id = a.id)   contributors,
+       (select count(*) from reactions where post_id = a.id)                             reactions,
+       (select count(*) from reactions where post_id = a.id and type = 0)                likes,
+       (select count(*) from reactions where post_id = a.id and type = 1)                dislikes,
+       (select count(*) from album_poems where album_id = a.id)                          poems_count,
+       (p.views::numeric / (select max(views)::numeric from posts where type = 'album')) views_ratio,
+       ((select count(*)::numeric from contributions where post_id = a.id)  / (select max(x) from (select count(post_id)::numeric x from contributions group by post_id))) views_ratio,
+
+from albums a
+         join posts p on p.id = a.id;
+
+select count(post_id)::numeric x from contributions group by post_id;
+
+select *
+from albums_view;

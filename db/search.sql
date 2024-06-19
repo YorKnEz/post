@@ -119,18 +119,14 @@ $$ language plpgsql;
 create or replace function find_album_cards(filters jsonb) returns jsonb as
 $$
 declare
-    query     text := '';
     start     int  := 0;
     count     int  := 10;
     sort      text := 'new';
     "order"   text := 'asc';
     sql_query text;
     result    jsonb;
+    album     jsonb;
 begin
-    if filters ? 'query' then
-        query := lower(trim(filters ->> 'query'));
-    end if;
-
     if not filters ? 'start' or not filters ? 'count' then
         raise exception '`start` and `count` are missing';
     end if;
@@ -146,69 +142,62 @@ begin
         "order" := filters ->> 'order';
     end if;
 
-    sql_query := format('
-    select json_agg(e)
-    from (select jsonb_build_object(''id'', p.id,
-                                    ''created_at'', p.created_at,
-                                    ''updated_at'', p.updated_at,
-                                    ''poster'', find_user_card_by_id(p.poster_id),
-                                    ''author'', find_user_card_by_id(a.author_id),
-                                    ''title'', a.title,
-                                    ''publication_date'', a.publication_date,
-                                    ''poems_count'', (select count(*) from album_poems where album_id = p.id)) e
-          from albums a
-                   join posts p on a.id = p.id
-          where p.verified = true
-          order by %s %s) t
-    where (lower(e[''author''] ->> ''nickname'') like ''%%'' || ''%s'' || ''%%''
-        or lower(e[''author''] ->> ''first_name'') like ''%%'' || ''%s'' || ''%%''
-        or lower(e[''author''] ->> ''last_name'') like ''%%'' || ''%s'' || ''%%''
-        or lower(e[''poster''] ->> ''nickname'') like ''%%'' || ''%s'' || ''%%''
-        or lower(e[''poster''] ->> ''first_name'') like ''%%'' || ''%s'' || ''%%''
-        or lower(e[''poster''] ->> ''last_name'') like ''%%'' || ''%s'' || ''%%''
-        or lower(e ->> ''title'') like ''%%'' || ''%s'' || ''%%'')
-    offset %s limit %s;
-    ',
-                        case
-                            when sort = 'poster' then 'poster.nickname'
-                            when sort = 'title' then 'a.title'
-                            when sort = 'author' then 'author.nickname'
-                            when sort = 'publication' then 'a.publication_date'
-                            when sort = 'poems' then 'poems'
-                            else 'created_at'
-                        end, "order", query, query, query, query, query, query, query, start, count);
+    sql_query := format(
+            '
+                select jsonb_agg(e)
+                from (select jsonb_build_object(''id'', id,
+                                                ''created_at'', created_at,
+                                                ''updated_at'', updated_at,
+                                                ''poster'', poster,
+                                                ''author'', author,
+                                                ''title'', title,
+                                                ''publication_date'', publication_date,
+                                                ''views'', views,
+                                                ''contributors'', contributors,
+                                                ''likes'', likes,
+                                                ''dislikes'', dislikes,
+                                                ''poems_count'', poems_count) e
+                      from albums_view
+                      where verified = true and (%s)
+                      order by %s %s
+                      offset %s limit %s) t;
+            ',
+            case -- when user id is used, query is ignored
+                when filters ? 'userId' then format(
+                        '
+                            (author ->> ''id'')::int = %1$s or
+                            (poster ->> ''id'')::int = %1$s
+                        ', filters ->> 'userId')
+                when filters ? 'query' then format(
+                        '
+                            lower(author ->> ''nickname'') like ''%%'' || ''%1$s'' || ''%%''
+                            or lower(author ->> ''first_name'') like ''%%'' || ''%1$s'' || ''%%''
+                            or lower(author ->> ''last_name'') like ''%%'' || ''%1$s'' || ''%%''
+                            or lower(poster ->> ''nickname'') like ''%%'' || ''%1$s'' || ''%%''
+                            or lower(poster ->> ''first_name'') like ''%%'' || ''%1$s'' || ''%%''
+                            or lower(poster ->> ''last_name'') like ''%%'' || ''%1$s'' || ''%%''
+                        ', lower(trim(filters ->> 'query')))
+                else 'true'
+            end,
+            case
+                when sort = 'title' then 'title'
+                when sort = 'poster' then 'poster ->> ''nickname'''
+                when sort = 'author' then 'author ->> ''nickname'''
+                when sort = 'publication' then 'publication_date'
+                when sort = 'poems_count' then 'poems_count'
+                when sort = 'popular' then '()'
+                else 'created_at'
+            end, "order",
+            start, count
+                 );
     execute sql_query into result;
 
     if result is null then
         return '[]'::jsonb;
     end if;
 
-    return result;
-end;
-$$ language plpgsql;
-
-create or replace function find_album_cards_by_user_id(p_id integer) returns jsonb as
-$$
-declare
-    result jsonb;
-begin
-    select jsonb_build_object('id', p.id,
-                              'created_at', p.created_at,
-                              'updated_at', p.updated_at,
-                              'poster', find_user_card_by_id(p.poster_id),
-                              'author', find_user_card_by_id(a.author_id),
-                              'title', a.title,
-                              'publication_date', a.publication_date,
-                              'poems_count', (select count(*) from album_poems where album_id = p.id))
-    into result
-    from albums a
-             join posts p on a.id = p.id
-    where a.author_id = p_id
-       or p.poster_id = p_id;
-
-    if result is null then
-        return '[]'::jsonb;
-    end if;
+    -- update views on albums fetched (the views are incremented post fetching, so the user will not see "their view"
+    update posts set views = views + 1 where id in (select (jsonb_array_elements(result) ->> 'id')::int);
 
     return result;
 end;
@@ -220,26 +209,34 @@ declare
     result jsonb;
 begin
     select jsonb_build_object(
-                   'id', p.id,
-                   'created_at', p.created_at,
-                   'updated_at', p.updated_at,
-                   'poster', find_user_card_by_id(p.poster_id),
-                   'author', find_user_card_by_id(a.author_id),
-                   'title', a.title,
-                   'publication_date', a.publication_date,
-                   'poems', find_poem_cards_by_album_id(a.id))
+                   'id', id,
+                   'created_at', created_at,
+                   'updated_at', updated_at,
+                   'poster', poster,
+                   'author', author,
+                   'title', title,
+                   'publication_date', publication_date,
+                   'views', views,
+                   'contributors', contributors,
+                   'likes', likes,
+                   'dislikes', dislikes,
+                   'poems', find_poem_cards_by_album_id(id))
     into result
-    from albums a
-             join posts p on a.id = p.id
-    where p.id = p_id;
+    from albums_view
+    where id = p_id;
 
     if result is null then
         raise exception 'album not found';
     end if;
 
+    -- update views on albums fetched (the views are incremented post fetching, so the user will not see "their view"
+    update posts set views = views + 1 where id = (result ->> 'id')::int;
+
     return result;
 end;
 $$ language plpgsql;
+
+select find_album_by_id(1);
 
 -- TODO
 create or replace function find_poems(filters jsonb) returns refcursor as

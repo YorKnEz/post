@@ -1,11 +1,13 @@
-create or replace procedure __update_post(p_id integer) as
+create or replace procedure __update_post(p_id integer, p_user_id integer) as
 $$
 begin
     update posts set updated_at = now() where id = p_id;
+
+    insert into contributions(contributor_id, post_id) values (p_user_id, p_id);
 end;
 $$ language plpgsql;
 
-create or replace function update_album(p_id integer, data jsonb) returns jsonb as
+create or replace function update_album(p_id integer, p_user_id integer, data jsonb) returns jsonb as
 $$
 declare
     sql_query text;
@@ -35,7 +37,7 @@ begin
         raise exception 'album not found';
     end if;
 
-    call __update_post(p_id);
+    call __update_post(p_id, p_user_id);
 
     return find_album_by_id(p_id);
 end;
