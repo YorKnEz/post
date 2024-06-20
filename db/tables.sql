@@ -1,12 +1,10 @@
 drop view annotations_view;
-drop view lyrics_view;
 drop view poems_view;
 drop view albums_view;
 
 drop table tokens;
-drop table annotations cascade;
-drop table lyrics;
 drop table album_poems;
+drop table annotations cascade;
 drop table poems;
 drop table albums;
 drop table reactions;
@@ -34,11 +32,9 @@ create table users
     roles                     integer   default 0,         -- a bitfield: 0b1 - poet, 0b10 - admin
     albums_count              integer   default 0,
     albums_contributions      integer   default 0,
-    poems_count               integer   default 0,
+    created_poems_count       integer   default 0,
+    translated_poems_count    integer   default 0,
     poems_contributions       integer   default 0,
-    created_lyrics_count      integer   default 0,
-    translated_lyrics_count   integer   default 0,
-    lyrics_contributions      integer   default 0,
     annotations_count         integer   default 0,
     annotations_contributions integer   default 0
 );
@@ -50,7 +46,7 @@ create table posts
     updated_at timestamp not null default now(),
     -- primary information
     poster_id  integer   not null,
-    type       varchar(16),                      -- one of: album, poem, lyrics, annotation
+    type       varchar(16),                      -- one of: album, poem, annotation
     verified   boolean            default false, -- verified by admin, unverified posts are not displayed on the site to regular users
     views      integer            default 0,     -- number of views of the post, incremented by 1 each time it is retrieved from db
 
@@ -112,18 +108,41 @@ create table albums
     constraint albums_f2 foreign key (author_id) references users (id)
 );
 
+create table annotations
+(
+    id       integer primary key,
+    -- primary information
+    poem_id  integer not null,
+    content  varchar not null, -- between 16 and 4000 characters
+    "offset" integer not null, -- 0 <= offset, 0 < length, offset + length <= poem_content.length
+    length   integer not null, -- [offset, offset + length)
+
+    constraint annotations_f1 foreign key (id) references posts (id)
+);
+
 create table poems
 (
-    id               integer primary key,
+    id                 integer primary key,
     -- primary information
-    author_id        integer      not null,
-    title            varchar(256) not null, -- between 4 and 256 characters
+    author_id          integer      not null,
+    poem_id            integer,               -- an id of a poem IF this poem is a translation, otherwise null
+    language           varchar(2)   not null, -- exactly 2 characters representing a valid language (!)
+    title              varchar(256) not null, -- between 4 and 256 characters
+    publication_date   timestamp,
+    main_annotation_id integer,
+    content            varchar      not null, -- between 16 and 4000 characters
     -- optional
-    publication_date timestamp,
 
+    constraint poems_u1 unique (poem_id, language),
     constraint poems_f1 foreign key (id) references posts (id),
-    constraint poems_f2 foreign key (author_id) references users (id)
+    constraint poems_f2 foreign key (poem_id) references poems (id),
+    constraint poems_f3 foreign key (main_annotation_id) references annotations (id),
+    constraint poems_f4 foreign key (author_id) references users (id)
 );
+
+-- add constraint after because poems and annotations reference each other
+alter table annotations
+    add constraint annotations_f2 foreign key (poem_id) references poems (id);
 
 create table album_poems
 (
@@ -134,38 +153,6 @@ create table album_poems
     constraint album_poems_f1 foreign key (album_id) references albums (id),
     constraint album_poems_f2 foreign key (poem_id) references poems (id)
 );
-
-create table annotations
-(
-    id        integer primary key,
-    -- primary information
-    lyrics_id integer not null,
-    content   varchar not null, -- between 16 and 4000 characters
-    "offset"  integer not null, -- 0 <= offset, 0 < length, offset + length <= lyrics_content.length
-    length    integer not null, -- [offset, offset + length)
-
-    constraint annotations_f1 foreign key (id) references posts (id)
-);
-
-create table lyrics
-(
-    id                 integer primary key,
-    -- primary information
-    poem_id            integer      not null,
-    title              varchar(256) not null, -- between 4 and 256 characters
-    main_annotation_id integer,
-    content            varchar      not null, -- between 16 and 4000 characters
-    language           varchar(2)   not null, -- exactly 2 characters representing a valid language (!)
-
-    constraint lyrics_u1 unique (poem_id, language),
-    constraint lyrics_f1 foreign key (id) references posts (id),
-    constraint lyrics_f2 foreign key (poem_id) references poems (id),
-    constraint lyrics_f3 foreign key (main_annotation_id) references annotations (id)
-);
-
--- add constraint after because lyrics and annotations reference each other
-alter table annotations
-    add constraint annotations_f2 foreign key (lyrics_id) references lyrics (id);
 
 create table tokens
 (
@@ -210,11 +197,16 @@ create or replace view poems_view as
 select p.id,
        p.created_at,
        p.updated_at,
-       find_user_card_by_id(p.poster_id)                                                  poster,
-       find_user_card_by_id(po.author_id)                                                 author,
        p.verified,
+       find_user_card_by_id(po.author_id)                                                 author,
+       find_user_card_by_id(p.poster_id)                                                  poster,
+       po.poem_id,
+       po.language,
        po.title,
        po.publication_date,
+       find_annotation_by_id(po.main_annotation_id)                                       main_annotation,
+       po.content,
+       find_annotations_metadata_by_poem_id(p.id, po.main_annotation_id)                  annotations,
        (select count(*) from contributions where post_id = po.id)                         contributions,
        (select count(*)::numeric from contributions where post_id = po.id) /
        (select max(contributions)::numeric
@@ -231,41 +223,13 @@ select p.id,
 from poems po
          join posts p on p.id = po.id;
 
-create or replace view lyrics_view as
-select p.id,
-       p.created_at,
-       p.updated_at,
-       find_user_card_by_id(p.poster_id)                                                  poster,
-       p.verified,
-       l.poem_id,
-       l.title,
-       find_annotation_by_id(l.main_annotation_id)                                        main_annotation,
-       l.content,
-       l.language,
-       find_annotations_metadata_by_lyrics_id(p.id, l.main_annotation_id)                 annotations,
-       (select count(*) from contributions where post_id = l.id)                          contributions,
-       (select count(*)::numeric from contributions where post_id = l.id) /
-       (select max(contributions)::numeric
-        from (select count(post_id) contributions from contributions group by post_id) t) contributions_ratio,
-       (select count(distinct contributor_id) from contributions where post_id = l.id)    contributors,
-       (select count(distinct contributor_id)::numeric from contributions where post_id = l.id) /
-       (select max(contributors)::numeric
-        from (select count(distinct contributor_id) contributors
-              from contributions
-              group by post_id) t)                                                        contributors_ratio,
-       (select count(*)::numeric from reactions where post_id = l.id)                     reactions,
-       (select count(*)::numeric from reactions where post_id = l.id and type = 0)        likes,
-       (select count(*)::numeric from reactions where post_id = l.id and type = 1)        dislikes
-from lyrics l
-         join posts p on p.id = l.id;
-
 create or replace view annotations_view as
 select p.id,
        p.created_at,
        p.updated_at,
        find_user_card_by_id(p.poster_id)                                                  poster,
        p.verified,
-       a.lyrics_id,
+       a.poem_id,
        a.content,
        a.offset,
        a.length,
@@ -284,8 +248,3 @@ select p.id,
        (select count(*)::numeric from reactions where post_id = a.id and type = 1)        dislikes
 from annotations a
          join posts p on p.id = a.id;
-
-select *
-from annotations_view;
-
-select * from lyrics_view;

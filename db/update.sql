@@ -53,7 +53,8 @@ begin
     sql_query = format('
         update poems set
             title = %s,
-            publication_date = %s
+            publication_date = %s,
+            content = %s
         where id = %s returning id;
     ',
                        case
@@ -64,6 +65,10 @@ begin
                            when p_data ? 'publicationDate'
                                then format('''%s''::timestamp', p_data ->> 'publicationDate')
                            else 'publication_date'
+                       end,
+                       case
+                           when p_data ? 'content' then format('''%s''', p_data ->> 'content')
+                           else 'content'
                        end,
                        p_id
                 );
@@ -76,34 +81,6 @@ begin
     call __update_post(p_id, p_user_id);
 
     return find_poem_by_id(p_id);
-end;
-$$ language plpgsql;
-
-create or replace function update_lyrics(p_id integer, p_user_id integer, p_data jsonb) returns jsonb as
-$$
-declare
-    sql_query text;
-    poem_id   integer;
-    language  text;
-begin
-
-    sql_query = format('update lyrics set content = %s where id = %s returning poem_id, language;',
-                       case
-                           when p_data ? 'content' then format('''%s''', p_data ->> 'content')
-                           else 'content'
-                       end,
-                       p_id
-                );
-    raise notice '%s', sql_query;
-    execute sql_query into poem_id, language;
-
-    if poem_id is null or language is null then
-        raise exception 'lyrics not found';
-    end if;
-
-    call __update_post(p_id, p_user_id);
-
-    return find_lyrics_by_poem_id_and_lang(poem_id, language);
 end;
 $$ language plpgsql;
 

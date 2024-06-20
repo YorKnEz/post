@@ -23,21 +23,19 @@ do
 $$
     declare
         user_count       int := 10; -- configure number of users
-        post_count       int := 20; -- configure number of posts
+        post_count       int; -- configure number of posts
         reaction_count   int := 20; -- configure number of reactions
         album_count      int := 5; -- configure number of albums
         poem_count       int := 7; -- configure number of poems
         album_poem_count int := 10; -- configure number of album_poems
         annotation_count int := 10; -- configure number of annotations
-        lyrics_count     int := 10; -- configure number of lyrics
 
         i                int;
-        user_id          int;
-        post_id          int;
-        poem_id          int;
-        album_id         int;
-        annotation_id    int;
-        lyrics_id        int;
+        l_user_id        int;
+        l_post_id        int;
+        l_poem_id        int;
+        l_album_id       int;
+        l_annotation_id  int;
     begin
         -- populate users table
         for i in 0..user_count - 1
@@ -51,69 +49,52 @@ $$
         -- populate albums table
         for i in 0..album_count - 1
         loop
-            user_id := (i % user_count) + 1;
-            call add_post(user_id, 'album', i % 2 = 1, post_id);
+            l_user_id := (i % user_count) + 1;
+            call add_post(l_user_id, 'album', i % 2 = 1, l_post_id);
 
             -- add album
             insert into albums (id, author_id, title, publication_date)
-            values (post_id, user_id, 'album title ' || i, now());
+            values (l_post_id, l_user_id, 'album title ' || i, now());
         end loop;
 
         -- populate poems table
-        for i in 1..poem_count
+        for i in 0..poem_count - 1
         loop
-            user_id := (i % user_count) + 1;
-            call add_post(user_id, 'poem', i % 2 = 1, post_id);
+            l_user_id := (i % user_count) + 1;
+            call add_post(l_user_id, 'poem', i % 2 = 1, l_poem_id);
 
             -- add poem
-            insert into poems (id, author_id, title, publication_date)
-            values (post_id, user_id, 'poem title ' || i, now())
-            returning id into poem_id;
+            insert into poems (id, poem_id, author_id, title, main_annotation_id, content, language, publication_date)
+            values (l_poem_id, null, l_user_id, 'poem title ' || i, null, 'lyrical content ' || i,
+                    case when i % 3 = 0 then 'en' when i % 3 = 1 then 'es' when i % 3 = 2 then 'ro' end, now());
+
+            call add_post(l_user_id, 'annotation', i % 2 = 1, l_annotation_id);
+
+            -- add annotation
+            insert into annotations (id, poem_id, content, "offset", length)
+            values (l_annotation_id, l_poem_id, 'main annotation content ' || i, (i % 100), (i % 50) + 10);
+
+            update poems set main_annotation_id = l_annotation_id where id = l_poem_id;
         end loop;
 
         -- populate album_poems table
         for i in 0..album_poem_count - 1
         loop
-            select id into album_id from albums where id % album_count = i % album_count limit 1;
-            select id into poem_id from poems where id % poem_count = i % poem_count limit 1;
+            select id into l_album_id from albums where id % album_count = i % album_count limit 1;
+            select id into l_poem_id from poems where id % poem_count = i % poem_count limit 1;
             insert into album_poems (album_id, poem_id)
-            values (album_id, poem_id);
+            values (l_album_id, l_poem_id);
         end loop;
 
-        -- populate lyrics table
-        for i in 0..lyrics_count - 1
-        loop
-            user_id := (i % user_count) + 1;
-            call add_post(user_id, 'lyrics', i % 2 = 1, lyrics_id);
-
-            select id into poem_id from poems where id % poem_count = i % poem_count limit 1;
-            select id
-            into annotation_id
-            from annotations
-            where id % annotation_count = i % annotation_count
-            limit 1;
-
-            -- add lyrics
-            insert into lyrics (id, poem_id, title, main_annotation_id, content, language)
-            values (lyrics_id, poem_id, 'lyrics title ' || i, null, 'lyrics content ' || i,
-                    case when i % 3 = 0 then 'en' when i % 3 = 1 then 'es' when i % 3 = 2 then 'ro' end);
-
-            call add_post(user_id, 'annotation', i % 2 = 1, annotation_id);
-
-            -- add annotation
-            insert into annotations (id, lyrics_id, content, "offset", length)
-            values (annotation_id, lyrics_id, 'main annotation content ' || i, (i % 100), (i % 50) + 10);
-
-            update lyrics set main_annotation_id = annotation_id where id = lyrics_id;
-        end loop;
+        select count(*) into post_count from posts;
 
         -- populate reactions table
         for i in 0..reaction_count - 1
         loop
-            user_id := (i % user_count) + 1;
-            post_id := (i % post_count) + 1;
+            l_user_id := (i % user_count) + 1;
+            l_post_id := (i % post_count) + 1;
             insert into reactions (created_at, updated_at, post_id, user_id, type)
-            values (now(), now(), post_id, user_id, (i % 2));
+            values (now(), now(), l_post_id, l_user_id, (i % 2));
         end loop;
     end
 $$;
