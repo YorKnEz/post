@@ -29,7 +29,15 @@ router.get('/', async (req, res) => {
 
 router.get('/suggestions', async (req, res) => {
     try {
-        let result = await db.query('select find_album_cards($1)', [req.query])
+        let result = await db.query('select find_album_cards($1)', [
+            {
+                ...req.query,
+                start: 0,
+                count: 5,
+                sort: 'popular',
+                order: 'desc',
+            },
+        ])
 
         return new JSONResponse(200, toCamel(result.rows[0].find_album_cards))
     } catch (e) {
