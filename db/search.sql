@@ -135,26 +135,28 @@ begin
 
     if p_filters ? 'sort' then
         sort := p_filters ->> 'sort';
-        sort := case
-                    when sort = 'title' then 'title'
-                    when sort = 'poster' then 'poster ->> ''nickname'''
-                    when sort = 'author' then 'author ->> ''nickname'''
-                    when sort = 'publication' then 'publication_date'
-                    when sort = 'poems_count' then 'poems_count'
-                    when
-                        sort = 'popular'
-                        then '(0.3 * contributions_ratio + 0.3 * contributors_ratio + 0.4 * (likes / reactions))'
-                    when
-                        sort = 'trending'
-                        then '(0.7 * (0.3 * contributions_ratio + 0.3 * contributors_ratio + 0.4 * (likes / reactions)) + 0.3 * (extract(epoch from created_at) / extract(epoch from now())))'
-                    else 'created_at'
-                end;
     end if;
+
+    sort := case
+                when sort = 'title' then 'title'
+                when sort = 'poster' then 'poster ->> ''nickname'''
+                when sort = 'author' then 'author ->> ''nickname'''
+                when sort = 'publication' then 'publication_date'
+                when sort = 'poems_count' then 'poems_count'
+                when
+                    sort = 'popular'
+                    then '(0.3 * contributions_ratio + 0.3 * contributors_ratio + 0.4 * (likes / reactions))'
+                when
+                    sort = 'trending'
+                    then '(0.7 * (0.3 * contributions_ratio + 0.3 * contributors_ratio + 0.4 * (likes / reactions)) + 0.3 * (extract(epoch from created_at) / extract(epoch from now())))'
+                else 'created_at'
+            end;
 
     if p_filters ? 'order' then
         "order" := p_filters ->> 'order';
-        "order" := case when "order" = 'desc' then 'desc' else 'asc' end;
     end if;
+
+    "order" := case when "order" = 'desc' then 'desc' else 'asc' end;
 
     sql_query := format(
             '
@@ -236,22 +238,16 @@ begin
 end;
 $$ language plpgsql;
 
--- TODO
-create or replace function find_poems(p_filters jsonb) returns refcursor as
+create or replace function find_poem_cards(p_filters jsonb) returns jsonb as
 $$
 declare
-    query     text := '';
     start     int  := 0;
     count     int  := 10;
     sort      text := 'new';
     "order"   text := 'asc';
     sql_query text;
-    cursor    refcursor;
+    result    jsonb;
 begin
-    if p_filters ? 'query' then
-        query := lower(trim(p_filters ->> 'query'));
-    end if;
-
     if not p_filters ? 'start' or not p_filters ? 'count' then
         raise exception '`start` and `count` are missing';
     end if;
@@ -259,79 +255,71 @@ begin
     start := (p_filters -> 'start')::int;
     count := (p_filters -> 'count')::int;
 
-    raise notice '%d %d', start, count;
-
-    if p_filters ? 'sort' and p_filters ->> 'sort' in ('new', 'poster', 'title', 'author', 'publication') then
+    if p_filters ? 'sort' then
         sort := p_filters ->> 'sort';
     end if;
 
-    if p_filters ? 'order' and p_filters ->> 'order' in ('asc', 'desc') then
+    sort := case
+                when sort = 'title' then 'title'
+                when sort = 'poster' then 'poster ->> ''nickname'''
+                when sort = 'author' then 'author ->> ''nickname'''
+                when sort = 'publication' then 'publication_date'
+                when
+                    sort = 'popular'
+                    then '(0.3 * contributions_ratio + 0.3 * contributors_ratio + 0.4 * (likes / reactions))'
+                when
+                    sort = 'trending'
+                    then '(0.7 * (0.3 * contributions_ratio + 0.3 * contributors_ratio + 0.4 * (likes / reactions)) + 0.3 * (extract(epoch from created_at) / extract(epoch from now())))'
+                else 'created_at'
+            end;
+
+    if p_filters ? 'order' then
         "order" := p_filters ->> 'order';
     end if;
 
-    sql_query := format(
-            'select p.id,
-                p.created_at,
-                p.updated_at,
-                jsonb_build_object(
-                    ''first_name'', u2.first_name,
-                    ''last_name'', u2.last_name,
-                    ''nickname'', u2.nickname,
-                    ''roles'', u2.roles
-                ) poster,
-                jsonb_build_object(
-                    ''first_name'', u1.first_name,
-                    ''last_name'', u1.last_name,
-                    ''nickname'', u1.nickname,
-                    ''roles'', u1.roles
-                ) author,
-                a.title,
-                a.publication_date
-            from poems a
-                join posts p on a.id = p.id
-                join users u1 on p.poster_id = u1.id
-                join users u2 on a.author_id = u2.id
-            where (lower(u1.nickname) like ''%%'' || ''%s'' || ''%%''
-                or lower(u1.first_name) like ''%%'' || ''%s'' || ''%%''
-                or lower(u1.last_name) like ''%%'' || ''%s'' || ''%%''
-                or lower(u2.nickname) like ''%%'' || ''%s'' || ''%%''
-                or lower(u2.first_name) like ''%%'' || ''%s'' || ''%%''
-                or lower(u2.last_name) like ''%%'' || ''%s'' || ''%%''
-                or lower(a.title) like ''%%'' || ''%s'' || ''%%'')
-                and p.verified = 1
-            order by %s %s
-            offset %s limit %s;',
-            query, query, query, query, query, query, query,
-            case
-                when sort = 'poster' then 'u2.nickname'
-                when sort = 'title' then 'a.title'
-                when sort = 'author' then 'u1.nickname'
-                when sort = 'publication' then 'a.publication_date'
-                when sort = 'poems' then 'poems'
-                else 'created_at'
-            end, "order", start, count);
-    open cursor for execute sql_query;
-    return cursor;
-end;
-$$ language plpgsql;
+    "order" := case when "order" = 'desc' then 'desc' else 'asc' end;
 
-create or replace function find_poems_by_user_id(p_id integer) returns jsonb as
-$$
-declare
-    result jsonb;
-begin
-    select jsonb_build_object('id', p.id,
-                              'created_at', p.created_at,
-                              'updated_at', p.updated_at,
-                              'poster', find_user_card_by_id(p.poster_id),
-                              'author', find_user_card_by_id(po.author_id),
-                              'title', po.title,
-                              'publication_date', po.publication_date)
-    into result
-    from poems po
-             join posts p on po.id = p.id
-    where po.author_id = p_id
-       or p.poster_id = p_id;
+    sql_query := format(
+            '
+                select jsonb_agg(e)
+                from (select jsonb_build_object(''id'', id,
+                                                ''created_at'', created_at,
+                                                ''updated_at'', updated_at,
+                                                ''poster'', poster,
+                                                ''author'', author,
+                                                ''title'', title,
+                                                ''publication_date'', publication_date,
+                                                ''contributors'', contributors,
+                                                ''likes'', likes,
+                                                ''dislikes'', dislikes) e
+                      from poems_view
+                      where verified = true and (%s)
+                      order by %s %s
+                      offset %s limit %s) t;
+            ',
+            case -- only one of the following is allowed and the priority stands as follows: userId and then query
+                when p_filters ? 'userId' then format(
+                        '
+                            (author ->> ''id'')::int = %1$s or
+                            (poster ->> ''id'')::int = %1$s
+                        ', p_filters ->> 'userId')
+                when p_filters ? 'query' then format(
+                        '
+                            lower(author ->> ''nickname'') like ''%%'' || ''%1$s'' || ''%%''
+                            or lower(author ->> ''first_name'') like ''%%'' || ''%1$s'' || ''%%''
+                            or lower(author ->> ''last_name'') like ''%%'' || ''%1$s'' || ''%%''
+                            or lower(poster ->> ''nickname'') like ''%%'' || ''%1$s'' || ''%%''
+                            or lower(poster ->> ''first_name'') like ''%%'' || ''%1$s'' || ''%%''
+                            or lower(poster ->> ''last_name'') like ''%%'' || ''%1$s'' || ''%%''
+                            or lower(title) like ''%%'' || ''%1$s'' || ''%%''
+                        ', lower(trim(p_filters ->> 'query')))
+                else 'true'
+            end,
+            sort, "order",
+            start, count
+                 );
+    raise notice '%s', sql_query;
+    execute sql_query into result;
 
     if result is null then
         return '[]'::jsonb;
@@ -348,16 +336,18 @@ declare
 begin
     select jsonb_agg(e)
     into result
-    from (select jsonb_build_object('id', p.id,
-                                    'created_at', p.created_at,
-                                    'updated_at', p.updated_at,
-                                    'poster', find_user_card_by_id(p.poster_id),
-                                    'author', find_user_card_by_id(po.author_id),
-                                    'title', po.title,
-                                    'publication_date', po.publication_date) e
-          from poems po
-                   join posts p on po.id = p.id
-                   join album_poems ap on ap.poem_id = p.id
+    from (select jsonb_build_object('id', id,
+                                    'created_at', created_at,
+                                    'updated_at', updated_at,
+                                    'poster', poster,
+                                    'author', author,
+                                    'title', title,
+                                    'publication_date', publication_date,
+                                    'contributors', contributors,
+                                    'likes', likes,
+                                    'dislikes', dislikes) e
+          from poems_view
+                   join album_poems ap on ap.poem_id = id
           where ap.album_id = p_id) t;
 
     if result is null then
@@ -368,27 +358,34 @@ begin
 end;
 $$ language plpgsql;
 
-create or replace function find_poem_by_id(p_id integer, p_language text) returns jsonb as
+create or replace function find_poem_by_id(p_id integer) returns jsonb as
 $$
 declare
     result jsonb;
     lyrics jsonb;
 begin
-    lyrics := find_lyrics(p_id, p_language);
+    begin
+        lyrics := find_lyrics_by_poem_id(p_id);
+    exception
+        when others then
+            raise exception 'poem not found';
+    end;
 
     select jsonb_build_object(
-                   'id', p.id,
-                   'created_at', p.created_at,
-                   'updated_at', p.updated_at,
-                   'poster', find_user_card_by_id(p.poster_id),
-                   'author', find_user_card_by_id(po.author_id),
-                   'title', po.title,
-                   'publication_date', po.publication_date,
-                   'lyrics', lyrics)
+                   'id', id,
+                   'created_at', created_at,
+                   'updated_at', updated_at,
+                   'poster', poster,
+                   'author', author,
+                   'title', title,
+                   'publication_date', publication_date,
+                   'lyrics', lyrics,
+                   'contributors', contributors,
+                   'likes', likes,
+                   'dislikes', dislikes)
     into result
-    from poems po
-             join posts p on po.id = p.id
-    where p.id = p_id;
+    from poems_view
+    where id = p_id;
 
     if result is null then
         raise exception 'poem not found';
@@ -398,24 +395,109 @@ begin
 end;
 $$ language plpgsql;
 
-create or replace function find_lyrics(p_poem_id integer, p_language text) returns jsonb as
+create or replace function find_poem_by_id_and_lang(p_id integer, p_language text) returns jsonb as
+$$
+declare
+    result jsonb;
+    lyrics jsonb;
+begin
+    begin
+        lyrics := find_lyrics_by_poem_id_and_lang(p_id, p_language);
+    exception
+        when others then
+            raise exception 'poem not found';
+    end;
+
+    select jsonb_build_object(
+                   'id', id,
+                   'created_at', created_at,
+                   'updated_at', updated_at,
+                   'poster', poster,
+                   'author', author,
+                   'title', title,
+                   'publication_date', publication_date,
+                   'lyrics', lyrics,
+                   'contributors', contributors,
+                   'likes', likes,
+                   'dislikes', dislikes)
+    into result
+    from poems_view
+    where id = p_id;
+
+    if result is null then
+        raise exception 'poem not found';
+    end if;
+
+    return result;
+end;
+$$ language plpgsql;
+
+create or replace function find_poem_translations(p_id integer) returns jsonb as
 $$
 declare
     result jsonb;
 begin
-    select jsonb_build_object('id', l.id,
-                              'created_at', p.created_at,
-                              'updated_at', p.updated_at,
-                              'poster', find_user_card_by_id(p.poster_id),
-                              'title', l.title,
-                              'content', l.content,
-                              'language', l.language,
-                              'main_annotation', find_annotation_by_id(l.main_annotation_id),
-                              'annotations', find_annotations_metadata_by_lyrics_id(l.id, l.main_annotation_id)
-           )
+    select jsonb_agg(e)
     into result
-    from lyrics l
-             join posts p on p.id = l.id
+    from (select jsonb_build_object('id', id, 'language', language) e from lyrics_view where poem_id = p_id) t;
+
+    if result is null then
+        raise exception 'poem not found'; -- at least one language must be available
+    end if;
+
+    return result;
+end;
+$$ language plpgsql;
+
+create or replace function find_lyrics_by_poem_id(p_poem_id integer) returns jsonb as
+$$
+declare
+    result jsonb;
+begin
+    select jsonb_build_object('id', id,
+                              'created_at', created_at,
+                              'updated_at', updated_at,
+                              'poster', poster,
+                              'title', title,
+                              'main_annotation', main_annotation,
+                              'content', content,
+                              'language', language,
+                              'annotations', annotations,
+                              'contributors', contributors,
+                              'likes', likes,
+                              'dislikes', dislikes)
+    into result
+    from lyrics_view
+    where poem_id = p_poem_id
+    order by created_at;
+
+    if result is null then
+        raise exception 'lyrics not found';
+    end if;
+
+    return result;
+end;
+$$ language plpgsql;
+
+create or replace function find_lyrics_by_poem_id_and_lang(p_poem_id integer, p_language text) returns jsonb as
+$$
+declare
+    result jsonb;
+begin
+    select jsonb_build_object('id', id,
+                              'created_at', created_at,
+                              'updated_at', updated_at,
+                              'poster', poster,
+                              'title', title,
+                              'main_annotation', main_annotation,
+                              'content', content,
+                              'language', language,
+                              'annotations', annotations,
+                              'contributors', contributors,
+                              'likes', likes,
+                              'dislikes', dislikes)
+    into result
+    from lyrics_view
     where poem_id = p_poem_id
       and language = p_language;
 

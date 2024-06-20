@@ -51,6 +51,52 @@ paths:
                                     $ref: '#/components/schemas/AlbumCard'
                                 description: List of matched albums
 
+    /api/users/{id}/poems:
+        get:
+            summary: Get paginated poems that were authored or posted by a specified user
+            description: This route returns a paginated list of poems, based on some filtering criteria
+            tags:
+                - albums
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                  description: The id of the user
+                - name: start
+                  in: query
+                  required: true
+                  schema:
+                      type: integer
+                  description: Offset of results to start from
+                - name: count
+                  in: query
+                  required: true
+                  schema:
+                      type: integer
+                  description: Number of results to return
+                - name: sort
+                  in: query
+                  schema:
+                      type: string
+                  description: The sort criteria
+                - name: order
+                  in: query
+                  schema:
+                      type: string
+                  description: The order of the sorting
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/PoemCard'
+                                description: List of matched poems
+
     /api/albums:
         get:
             summary: Get paginated albums by specified filters
@@ -105,13 +151,6 @@ paths:
                 - auth
             security:
                 - cookieAuth: []
-            parameters:
-                - name: token
-                  in: cookie
-                  required: false
-                  schema:
-                      type: string
-                  description: The authentication token
             requestBody:
                 required: true
                 content:
@@ -133,7 +172,7 @@ paths:
                                 - authorId
                                 - title
             responses:
-                '200':
+                '201':
                     description: Successful response
                     content:
                         application/json:
@@ -210,12 +249,6 @@ paths:
                   schema:
                       type: integer
                   description: Id of the album
-                - name: token
-                  in: cookie
-                  required: false
-                  schema:
-                      type: string
-                  description: The authentication token
             requestBody:
                 required: true
                 content:
@@ -263,12 +296,6 @@ paths:
                   schema:
                       type: integer
                   description: Id of the album
-                - name: token
-                  in: cookie
-                  required: false
-                  schema:
-                      type: string
-                  description: The authentication token
             responses:
                 '200':
                     description: Successful response
@@ -298,12 +325,6 @@ paths:
                   schema:
                       type: integer
                   description: Id of the album
-                - name: token
-                  in: cookie
-                  required: false
-                  schema:
-                      type: string
-                  description: The authentication token
             requestBody:
                 required: true
                 content:
@@ -315,7 +336,7 @@ paths:
                                     type: integer
                                     description: The id of the poem to link to this album
             responses:
-                '200':
+                '201':
                     description: Successful response
                     content:
                         application/json:
@@ -355,12 +376,6 @@ paths:
                   schema:
                       type: integer
                   description: Id of the poem
-                - name: token
-                  in: cookie
-                  required: false
-                  schema:
-                      type: string
-                  description: The authentication token
             responses:
                 '200':
                     description: Successful response
@@ -387,7 +402,6 @@ paths:
             description: This route returns a paginated list of poems, based on some filtering criteria
             tags:
                 - poems
-                - TODO
             parameters:
                 - name: query
                   in: query
@@ -433,7 +447,40 @@ paths:
             summary: Create a new poem
             tags:
                 - poems
-                - TODO
+                - auth
+            security:
+                - cookieAuth: []
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                authorId:
+                                    type: integer
+                                    description: The id of the user that wrote this poem (optional). If not present, the id of the user that made the request is used.
+                                title:
+                                    type: string
+                                    description: The title of the poem
+                                publicationDate:
+                                    type: string
+                                    format: date-time
+                                    description: The publication date of the poem (optional). If not present, the current date is used
+                                language:
+                                    type: string
+                                    description: The language the poem is written in (and which the other fields must match)
+                                about:
+                                    type: string
+                                    description: A short description about the poem
+                                content:
+                                    type: string
+                                    description: The poem
+                            required:
+                                - title
+                                - about
+                                - language
+                                - content
             responses:
                 '201':
                     description: Successful response
@@ -441,13 +488,49 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Poem'
+                '400':
+                    description: Invalid data
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+
+                '404':
+                    description: Author not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+
+    /api/poems/suggestions:
+        get:
+            summary: Get 5 suggestions of poems based on the given query
+            description: This route returns a list of at most 5 poems that match the given query, this is like a mini version of search
+            tags:
+                - poems
+            parameters:
+                - name: query
+                  in: query
+                  required: false
+                  schema:
+                      type: string
+                  description: The query string to search by
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/PoemCard'
+                                description: List of matched poems
 
     /api/poems/{id}:
         get:
             summary: Get poem by id
             tags:
                 - poems
-                - TODO
             parameters:
                 - name: id
                   in: path
@@ -469,11 +552,14 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/Message'
         patch:
-            summary: Update some of the poem state
+            summary: Edit the 
             description: Update the first name and/or last name of the poem
             tags:
                 - poems
+                - auth
                 - TODO
+            security:
+                - cookieAuth: []
             parameters:
                 - name: id
                   in: path
@@ -481,6 +567,20 @@ paths:
                   schema:
                       type: string
                   description: Id of the poem
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                title:
+                                    type: string
+                                    description: The title of the poem
+                                publicationDate:
+                                    type: string
+                                    format: date-time
+                                    description: Timestamp when the poem has been officially released
             responses:
                 '200':
                     description: Successful response
@@ -495,10 +595,13 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/Message'
         delete:
-            summary: Delete a poem and it's work by id
+            summary: Delete a poem and all of the related lyrics and annotations by id
             tags:
                 - poems
+                - auth
                 - TODO
+            security:
+                - cookieAuth: []
             parameters:
                 - name: id
                   in: path
@@ -520,14 +623,116 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/Message'
 
-    /api/annotations:
-        post:
-            summary: Create a new annotation
+    /api/poems/{id}/{lang}:
+        get:
+            summary: Get poem translation by language
+            description: Given a poem id and a language, find a translation of the poem in that language
             tags:
-                - annotations
+                - poems
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                  description: Id of the poem
+                - name: lang
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                  description: Language of translation
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Poem'
+                '404':
+                    description: Lyrics not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+        delete:
+            summary: Delete a translation of a poem
+            description: Delete only the translation of the poem (i.e. only lyrics and annotations related to lyrics). If the translation happens to be the first one ever, the effect is similar to `DELETE /api/poems/{id}`.
+            tags:
+                - poems
                 - auth
+                - TODO
             security:
                 - cookieAuth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                  description: Id of the poem
+                - name: lang
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                  description: Language of translation
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+                '404':
+                    description: Poem not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+
+    /api/poems/{id}/lyrics:
+        get:
+            summary: Get a list of available translations for the given poem
+            tags:
+                - poems
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                  description: The id of the poem
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/LyricsMetadata'
+                '404':
+                    description: Poem not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+        post:
+            summary: Add a new translation to the poem
+            tags:
+                - poems
+                - auth
+                - TODO
+            security:
+                - cookieAuth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                  description: The id of the poem
             requestBody:
                 required: true
                 content:
@@ -535,9 +740,102 @@ paths:
                         schema:
                             type: object
                             properties:
-                                lyricsId:
-                                    type: integer
-                                    description: The id of the lyrics the annotation belongs to
+                                title:
+                                    type: string
+                                    description: The title of the poem
+                                language:
+                                    type: string
+                                    description: The language in which the poem is translated
+                                about:
+                                    type: string
+                                    description: A short description of the poem in the translation language
+                                content:
+                                    type: string
+                                    description: The translation
+                            required:
+                                - title
+                                - language
+                                - about
+                                - content
+            responses:
+                '201':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/Lyrics'
+                '404':
+                    description: Poem not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+
+    /api/lyrics/{id}:
+        patch:
+            summary: Update lyrics content
+            tags:
+                - auth
+                - lyrics
+            security:
+                - cookieAuth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                  description: Id of the lyrics
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                content:
+                                    type: string
+                                    description: The new content of the lyrics
+                            required:
+                                - content
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Lyrics'
+                '404':
+                    description: Lyrics not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+
+    /api/lyrics/{id}/annotations:
+        post:
+            summary: Create a new annotation associated with the lyrics
+            tags:
+                - lyrics
+                - auth
+            security:
+                - cookieAuth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                  description: The id of the lyrics to annotate
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
                                 content:
                                     type: string
                                     description: The content of the annotation (not the part of lyrics that is annotated!)
@@ -548,7 +846,6 @@ paths:
                                     type: integer
                                     description: The length of the annotated content
                             required:
-                                - lyricsId
                                 - content
                                 - offset
                                 - length
@@ -611,12 +908,6 @@ paths:
                   schema:
                       type: integer
                   description: Id of the annotation
-                - name: token
-                  in: cookie
-                  required: false
-                  schema:
-                      type: string
-                  description: The authentication token
             requestBody:
                 required: true
                 content:
@@ -656,12 +947,6 @@ paths:
                   schema:
                       type: integer
                   description: Id of the annotation
-                - name: token
-                  in: cookie
-                  required: false
-                  schema:
-                      type: string
-                  description: The authentication token
             responses:
                 '200':
                     description: Successful response
@@ -727,6 +1012,13 @@ components:
                     items:
                         $ref: '#/components/schemas/PoemCard'
                     description: The list of poems part of this album
+                contributors:
+                    type: integer
+                    description: The number of people that contributed to this annotation
+                likes:
+                    type: integer
+                dislikes:
+                    type: integer
             required:
                 - id
                 - createdAt
@@ -736,6 +1028,9 @@ components:
                 - title
                 - publicationDate
                 - poems
+                - contributors
+                - likes
+                - dislikes
         AlbumCard:
             type: object
             properties:
@@ -763,6 +1058,13 @@ components:
                     type: string
                     format: date-time
                     description: Timestamp when the album has been officially released
+                contributors:
+                    type: integer
+                    description: The number of people that contributed to this annotation
+                likes:
+                    type: integer
+                dislikes:
+                    type: integer
                 poemsCount:
                     type: integer
                     description: The number of poems part of this album
@@ -774,6 +1076,9 @@ components:
                 - author
                 - title
                 - publicationDate
+                - contributors
+                - likes
+                - dislikes
                 - poemsCount
         Poem:
             type: object
@@ -876,13 +1181,20 @@ components:
                     type: string
                     description: The language the lyrics are written in
                 mainAnnotation:
-                    $ref: '#/components/schemas/MainAnnotation'
+                    $ref: '#/components/schemas/Annotation'
                     description: The main information about this poem
                 annotations:
                     type: array
                     items:
-                        $ref: '#/components/schemas/Annotation'
+                        $ref: '#/components/schemas/AnnotationMetadata'
                         description: An annotation of a segment of the lyrics
+                contributors:
+                    type: integer
+                    description: The number of people that contributed to this annotation
+                likes:
+                    type: integer
+                dislikes:
+                    type: integer
             required:
                 - id
                 - createdAt
@@ -893,19 +1205,57 @@ components:
                 - language
                 - mainAnnotation
                 - annotations
-        MainAnnotation:
+                - contributors
+                - likes
+                - dislikes
+        LyricsMetadata:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: Unique identifier of the lyrics
+                language:
+                    type: string
+                    description: The language the lyrics are written in
+            required:
+                - id
+                - language
+        Annotation:
             type: object
             properties:
                 id:
                     type: integer
                     description: Unique identifier of the annotation
+                createdAt:
+                    type: string
+                    format: date-time
+                    description: Timestamp when the annotation has been added to the site
+                updatedAt:
+                    type: string
+                    format: date-time
+                    description: Timestamp when the annotation has been last updated on the site
+                poster:
+                    $ref: '#/components/schemas/UserCard'
+                    description: The information of the user that posted the annotation
                 content:
                     type: string
-                    description: The annotation
+                    description: The content of the annotation
+                contributors:
+                    type: integer
+                    description: The number of people that contributed to this annotation
+                likes:
+                    type: integer
+                dislikes:
+                    type: integer
             required:
                 - id
+                - createdAt
+                - updatedAt
+                - poster
                 - content
-        Annotation:
+                - likes
+                - dislikes
+        AnnotationMetadata:
             type: object
             properties:
                 id:

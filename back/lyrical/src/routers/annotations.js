@@ -46,34 +46,6 @@ router.use('/', auth_router)
 
 auth_router.middleware(authMiddleware)
 
-auth_router.post('/', async (req, res) => {
-    try {
-        // validate the user data
-        validate(req.body, annotationSchema)
-    } catch (e) {
-        return new JSONResponse(400, e.obj())
-    }
-
-    try {
-        let result = await db.query('select add_annotation($1, $2)', [
-            req.locals.userId,
-            req.body,
-        ])
-
-        return new JSONResponse(200, toCamel(result.rows[0].add_annotation))
-    } catch (e) {
-        if (e.code == 23503 && e.constraint == 'annotations_f2') {
-            return new JSONResponse(404, {
-                code: ErrorCodes.LYRICS_NOT_FOUND,
-                message: 'Lyrics not found',
-            })
-        }
-
-        console.error(e)
-        return new InternalError()
-    }
-})
-
 auth_router.patch('/:id', async (req, res) => {
     try {
         // validate the user data
