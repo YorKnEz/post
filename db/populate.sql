@@ -51,34 +51,27 @@ $$
         for i in 0..album_count - 1
         loop
             l_user_id := (i % user_count) + 1;
-            call add_post(l_user_id, 'album', i % 2 = 1, l_post_id);
-
-            -- add album
-            insert into albums (id, author_id, cover, title, publication_date)
-            values (l_post_id, l_user_id, 'http://localhost:4001/api/images/default-album-cover', 'album title ' || i,
-                    now());
+            perform add_album(l_user_id, format(
+                    '{"authorId": "%s", "cover": "%s", "title": "%s", "publicationDate": "%s"}',
+                    l_user_id,
+                    'http://localhost:4001/api/images/default-album-cover',
+                    'album title ' || i,
+                    now()::text)::jsonb);
         end loop;
 
         -- populate poems table
         for i in 0..poem_count - 1
         loop
             l_user_id := (i % user_count) + 1;
-            call add_post(l_user_id, 'poem', i % 2 = 1, l_poem_id);
-
-            -- add poem
-            insert into poems (id, poem_id, author_id, cover, title, main_annotation_id, content, language,
-                               publication_date)
-            values (l_poem_id, null, l_user_id, 'http://localhost:4001/api/images/default-poem-cover',
-                    'poem title ' || i, null, 'lyrical content ' || i,
-                    case when i % 3 = 0 then 'en' when i % 3 = 1 then 'es' when i % 3 = 2 then 'ro' end, now());
-
-            call add_post(l_user_id, 'annotation', i % 2 = 1, l_annotation_id);
-
-            -- add annotation
-            insert into annotations (id, poem_id, content, "offset", length)
-            values (l_annotation_id, l_poem_id, 'main annotation content ' || i, (i % 100), (i % 50) + 10);
-
-            update poems set main_annotation_id = l_annotation_id where id = l_poem_id;
+            perform add_poem(l_user_id, format(
+                    '{"authorId": "%s", "language": "%s", "cover": "%s", "title": "%s", "publicationDate": "%s", "about": "%s", "content": "%s"}',
+                    l_user_id,
+                    case when i % 3 = 0 then 'en' when i % 3 = 1 then 'es' when i % 3 = 2 then 'ro' end,
+                    'http://localhost:4001/api/images/default-poem-cover',
+                    'poem title ' || i,
+                    now()::text,
+                    'main annotation content ' || i,
+                    'lyrical content ' || i)::jsonb);
         end loop;
 
         -- populate album_poems table
@@ -97,8 +90,7 @@ $$
         loop
             l_user_id := (i % user_count) + 1;
             l_post_id := (i % post_count) + 1;
-            insert into reactions (created_at, updated_at, post_id, user_id, type)
-            values (now(), now(), l_post_id, l_user_id, (i % 2));
+            call add_reaction(l_post_id, l_user_id, i % 2);
         end loop;
     end
 $$;

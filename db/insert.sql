@@ -95,13 +95,13 @@ begin
     -- increment poems_count of user
     if not p_data ? 'poemId' then
         update users
-        set translated_poems_count = translated_poems_count + 1,
-            poems_contributions    = poems_contributions + 1
+        set created_poems_count = created_poems_count + 1,
+            poems_contributions = poems_contributions + 1
         where id = p_poster_id;
     else
         update users
-        set created_poems_count = created_poems_count + 1,
-            poems_contributions = poems_contributions + 1
+        set translated_poems_count = translated_poems_count + 1,
+            poems_contributions    = poems_contributions + 1
         where id = p_poster_id;
     end if;
 
