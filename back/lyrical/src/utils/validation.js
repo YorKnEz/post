@@ -28,6 +28,10 @@ export const poemSchema = {
     authorId: {
         optional: true,
     },
+    poemId: {
+        optional: true,
+    },
+    language: {},
     title: {
         min: 4,
         max: 256,
@@ -35,7 +39,6 @@ export const poemSchema = {
     publicationDate: {
         optional: true,
     },
-    language: {},
     about: {
         min: 16,
         max: 32678,
@@ -55,12 +58,10 @@ export const poemUpdateSchema = {
     publicationDate: {
         optional: true,
     }, // TODO: validate?
-}
-
-export const lyricsUpdateSchema = {
     content: {
         min: 16,
         max: 32678,
+        optional: true,
     },
 }
 

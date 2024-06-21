@@ -47,11 +47,11 @@ $$ language plpgsql;
 create or replace function add_poem(p_poster_id integer, p_data jsonb) returns jsonb as
 $$
 declare
-    poem_id            integer;
+    l_poem_id            integer;
     translated_poem_id integer;
     annotation_id      integer;
 begin
-    poem_id := __add_post(p_poster_id, 'poem'::text);
+    l_poem_id := __add_post(p_poster_id, 'poem'::text);
 
     if not p_data ? 'publicationDate' then
         p_data['publicationDate'] := now()::jsonb;
@@ -65,18 +65,18 @@ begin
 
     -- add poem
     insert into poems(id, author_id, poem_id, language, title, publication_date, content)
-    values (poem_id, (p_data ->> 'authorId')::int, translated_poem_id, p_data ->> 'language', p_data ->> 'title',
+    values (l_poem_id, (p_data ->> 'authorId')::int, translated_poem_id, p_data ->> 'language', p_data ->> 'title',
             (p_data ->> 'publicationDate')::timestamp, p_data ->> 'content');
 
     -- add main annotation
-    select (add_annotation(poem_id, p_poster_id,
+    select (add_annotation(l_poem_id, p_poster_id,
                            jsonb_build_object('content', p_data ->> 'about', 'offset', 0, 'length', 0)) ->> 'id')::int
     into annotation_id;
 
     -- update poem
-    update poems set main_annotation_id = annotation_id where id = poem_id;
+    update poems set main_annotation_id = annotation_id where id = l_poem_id;
 
-    return find_poem_by_id(poem_id);
+    return find_poem_by_id(l_poem_id);
 end;
 $$ language plpgsql;
 

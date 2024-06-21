@@ -2,7 +2,7 @@
     "name": "lyrical-service",
     "type": "module",
     "version": "1.0.0",
-    "description": "Lyrical service responsible with albums, poems, lyrics and annotations",
+    "description": "Lyrical service responsible with albums, poems and annotations",
     "main": "src/index.js",
     "scripts": {
         "dev": "nodemon --watch . --watch ../../lib src/index.js",

@@ -5,7 +5,6 @@ import { App, WebServer, getCorsMiddleware } from 'web-lib'
 import {
     albums_router,
     annotations_router,
-    lyrics_router,
     poems_router,
     posts_router,
     users_router,
@@ -26,7 +25,6 @@ app.middleware(getCorsMiddleware(allowList))
 
 app.use('/api/albums', albums_router)
 app.use('/api/annotations', annotations_router)
-app.use('/api/lyrics', lyrics_router)
 app.use('/api/poems', poems_router)
 app.use('/api/posts', posts_router)
 app.use('/api/users', users_router)

@@ -248,3 +248,4 @@ select p.id,
        (select count(*)::numeric from reactions where post_id = a.id and type = 1)        dislikes
 from annotations a
          join posts p on p.id = a.id;
+

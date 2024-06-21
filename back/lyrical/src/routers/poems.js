@@ -7,7 +7,12 @@ import {
     toCamel,
     validate,
 } from 'web-lib'
-import { authMiddleware, poemSchema, poemUpdateSchema } from '../utils/index.js'
+import {
+    annotationSchema,
+    authMiddleware,
+    poemSchema,
+    poemUpdateSchema,
+} from '../utils/index.js'
 import db from '../db/index.js'
 
 export const router = new Router('Poems Router')
@@ -66,7 +71,7 @@ router.get('/:id', async (req, res) => {
     }
 })
 
-router.get('/:id/lyrics', async (req, res) => {
+router.get('/:id/translations', async (req, res) => {
     try {
         let result = await db.query('select find_poem_translations($1)', [
             req.params.id,
@@ -78,31 +83,6 @@ router.get('/:id/lyrics', async (req, res) => {
         )
     } catch (e) {
         console.error(e)
-        // db threw 404
-        if (e.code == 'P0001' && e.message == 'poem not found') {
-            return new JSONResponse(404, {
-                code: ErrorCodes.POEM_NOT_FOUND,
-                message: 'Poem not found',
-            })
-        }
-
-        console.error(e)
-        return new InternalError()
-    }
-})
-
-router.get('/:id/:lang', async (req, res) => {
-    try {
-        let result = await db.query('select find_poem_by_id_and_lang($1, $2)', [
-            req.params.id,
-            req.params.lang,
-        ])
-
-        return new JSONResponse(
-            200,
-            toCamel(result.rows[0].find_poem_by_id_and_lang)
-        )
-    } catch (e) {
         // db threw 404
         if (e.code == 'P0001' && e.message == 'poem not found') {
             return new JSONResponse(404, {
@@ -143,6 +123,13 @@ auth_router.post('/', async (req, res) => {
         return new JSONResponse(200, toCamel(result.rows[0].add_poem))
     } catch (e) {
         if (e.code == 23503 && e.constraint == 'poems_f2') {
+            return new JSONResponse(404, {
+                code: ErrorCodes.POEM_NOT_FOUND,
+                message: 'Poem not found',
+            })
+        }
+
+        if (e.code == 23503 && e.constraint == 'poems_f4') {
             return new JSONResponse(404, {
                 code: ErrorCodes.USER_NOT_FOUND,
                 message: 'Author not found',
@@ -204,6 +191,79 @@ auth_router.delete('/:id', async (req, res) => {
     }
 })
 
-auth_router.delete('/:id/:lang', async (req, res) => {})
+auth_router.post('/:id/translations', async (req, res) => {
+    try {
+        // validate the user data
+        validate(req.body, poemSchema)
+    } catch (e) {
+        return new JSONResponse(400, e.obj())
+    }
 
-auth_router.post('/:id/lyrics', async (req, res) => {})
+    try {
+        if (!req.body.authorId) {
+            req.body.authorId = req.locals.userId
+        }
+
+        let result = await db.query('select add_poem($1, $2)', [
+            req.locals.userId,
+            { ...req.body, poemId: req.params.id },
+        ])
+
+        return new JSONResponse(200, toCamel(result.rows[0].add_poem))
+    } catch (e) {
+        if ((e.code = 23503)) {
+            if (e.constraint == 'poems_u1') {
+                return new JSONResponse(400, {
+                    code: ErrorCodes.ALREADY_TRANSLATED,
+                    message: 'Poem already has a translation in this language',
+                })
+            }
+
+            if (e.constraint == 'poems_f2') {
+                return new JSONResponse(404, {
+                    code: ErrorCodes.POEM_NOT_FOUND,
+                    message: 'Poem not found',
+                })
+            }
+
+            if (e.constraint == 'poems_f4') {
+                return new JSONResponse(404, {
+                    code: ErrorCodes.USER_NOT_FOUND,
+                    message: 'Author not found',
+                })
+            }
+        }
+
+        console.error(e)
+        return new InternalError()
+    }
+})
+
+auth_router.post('/:id/annotations', async (req, res) => {
+    try {
+        // validate the user data
+        validate(req.body, annotationSchema)
+    } catch (e) {
+        return new JSONResponse(400, e.obj())
+    }
+
+    try {
+        let result = await db.query('select add_annotation($1, $2, $3)', [
+            req.params.id,
+            req.locals.userId,
+            req.body,
+        ])
+
+        return new JSONResponse(200, toCamel(result.rows[0].add_annotation))
+    } catch (e) {
+        if (e.code == 23503 && e.constraint == 'annotations_f2') {
+            return new JSONResponse(404, {
+                code: ErrorCodes.POEM_NOT_FOUND,
+                message: 'Poem not found',
+            })
+        }
+
+        console.error(e)
+        return new InternalError()
+    }
+})

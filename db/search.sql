@@ -143,10 +143,10 @@ begin
                 when sort = 'poems_count' then 'poems_count'
                 when
                     sort = 'popular'
-                    then '(0.3 * contributions_ratio + 0.3 * contributors_ratio + 0.4 * (likes / reactions))'
+                    then '(0.3 * contributions_ratio + 0.3 * contributors_ratio + case when reactions = 0 then 0 else 0.4 * (likes / reactions) end)'
                 when
                     sort = 'trending'
-                    then '(0.7 * (0.3 * contributions_ratio + 0.3 * contributors_ratio + 0.4 * (likes / reactions)) + 0.3 * (extract(epoch from created_at) / extract(epoch from now())))'
+                    then '(0.7 * (0.3 * contributions_ratio + 0.3 * contributors_ratio + case when reactions = 0 then 0 else 0.4 * (likes / reactions) end) + 0.3 * (extract(epoch from created_at) / extract(epoch from now())))'
                 else 'created_at'
             end;
 
@@ -265,10 +265,10 @@ begin
                 when sort = 'publication' then 'publication_date'
                 when
                     sort = 'popular'
-                    then '(0.3 * contributions_ratio + 0.3 * contributors_ratio + 0.4 * (likes / reactions))'
+                    then '(0.3 * contributions_ratio + 0.3 * contributors_ratio + case when reactions = 0 then 0 else 0.4 * (likes / reactions) end)'
                 when
                     sort = 'trending'
-                    then '(0.7 * (0.3 * contributions_ratio + 0.3 * contributors_ratio + 0.4 * (likes / reactions)) + 0.3 * (extract(epoch from created_at) / extract(epoch from now())))'
+                    then '(0.7 * (0.3 * contributions_ratio + 0.3 * contributors_ratio + case when reactions = 0 then 0 else 0.4 * (likes / reactions) end) + 0.3 * (extract(epoch from created_at) / extract(epoch from now())))'
                 else 'created_at'
             end;
 
