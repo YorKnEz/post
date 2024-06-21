@@ -1,7 +1,7 @@
 create or replace function __add_post(p_user_id integer, p_type text) returns integer as
 $$
 declare
-    post_id integer;
+    post_id   integer;
 begin
     -- add post
     insert into posts (created_at, updated_at, poster_id, type)
@@ -49,6 +49,12 @@ begin
     values (album_id, (p_data ->> 'authorId')::int, p_data ->> 'cover', p_data ->> 'title',
             (p_data ->> 'publicationDate')::timestamp);
 
+    -- increment albums_count of user
+    update users
+    set albums_count         = albums_count + 1,
+        albums_contributions = albums_contributions + 1
+    where id = p_poster_id;
+
     return find_album_by_id(album_id);
 end;
 $$ language plpgsql;
@@ -56,7 +62,7 @@ $$ language plpgsql;
 create or replace function add_poem(p_poster_id integer, p_data jsonb) returns jsonb as
 $$
 declare
-    l_poem_id            integer;
+    l_poem_id          integer;
     translated_poem_id integer;
     annotation_id      integer;
 begin
@@ -86,6 +92,19 @@ begin
     -- update poem
     update poems set main_annotation_id = annotation_id where id = l_poem_id;
 
+    -- increment poems_count of user
+    if not p_data ? 'poemId' then
+        update users
+        set translated_poems_count = translated_poems_count + 1,
+            poems_contributions    = poems_contributions + 1
+        where id = p_poster_id;
+    else
+        update users
+        set created_poems_count = created_poems_count + 1,
+            poems_contributions = poems_contributions + 1
+        where id = p_poster_id;
+    end if;
+
     return find_poem_by_id(l_poem_id);
 end;
 $$ language plpgsql;
@@ -101,6 +120,12 @@ begin
     insert into annotations(id, poem_id, content, "offset", length)
     values (annotation_id, p_poem_id, p_data ->> 'content', (p_data ->> 'offset')::int,
             (p_data ->> 'length')::int);
+
+    -- increment annotations_count of user
+    update users
+    set annotations_count         = annotations_count + 1,
+        annotations_contributions = annotations_contributions + 1
+    where id = p_poster_id;
 
     return find_annotation_by_id(annotation_id);
 end;

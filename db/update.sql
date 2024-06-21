@@ -44,6 +44,11 @@ begin
 
     call __update_post(p_id, p_user_id);
 
+    -- increment albums_contributions of user
+    update users
+    set albums_contributions = albums_contributions + 1
+    where id = p_user_id;
+
     return find_album_by_id(p_id);
 end;
 $$ language plpgsql;
@@ -90,6 +95,11 @@ begin
 
     call __update_post(p_id, p_user_id);
 
+    -- increment poems_contributions of user
+    update users
+    set poems_contributions = poems_contributions + 1
+    where id = p_user_id;
+
     return find_poem_by_id(p_id);
 end;
 $$ language plpgsql;
@@ -119,6 +129,11 @@ begin
     end if;
 
     call __update_post(p_id, p_user_id);
+
+    -- increment annotations_contributions of user
+    update users
+    set annotations_contributions = annotations_contributions + 1
+    where id = p_user_id;
 
     return find_annotation_by_id(p_id);
 end;
