@@ -24,7 +24,7 @@ app.use('/api/images', images_router)
 const web_routes = {
     '': 'index.html',
     '/favicon.ico': 'favicon-32x32.png',
-    '*': '',
+    '\\*': '',
 }
 
 app.use('/docs', new WebServer(process.env.DOCS_LOCATION, web_routes))

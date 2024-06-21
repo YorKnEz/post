@@ -14,23 +14,23 @@ const app = new App({
 })
 
 const web_routes = {
-    '/assets': { '*': 'assets' },
-    '/css': { '*': 'css' },
+    '/assets': { '\\*': 'assets' },
+    '/css': { '\\*': 'css' },
     '/docs': {
         '': 'docs/index.html',
-        '*': 'docs',
+        '\\*': 'docs',
     },
     '/favicon.ico': 'assets/favicon.ico',
     '': 'src/pages/home/index.html',
     '/add-poem': 'src/pages/add_poem/index.html',
     '/dashboard': 'src/pages/dashboard/index.html',
     '/login': 'src/pages/login/index.html',
-    '/poem': 'src/pages/poem/index.html',
+    '/poem/\\w+': 'src/pages/poem/index.html',
     '/profile': 'src/pages/profile/index.html',
     '/register': 'src/pages/register/index.html',
     '/reset-password': 'src/pages/reset_password/index.html',
     '/verify': 'src/pages/verify/index.html',
-    '/src': { '*': 'src' },
+    '/src': { '\\*': 'src' },
 }
 
 app.use(
