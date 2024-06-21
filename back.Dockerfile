@@ -6,11 +6,11 @@ WORKDIR /app
 
 COPY lib lib
 
-WORKDIR /app/$name
+WORKDIR /app/back/$name
 
-COPY $name/package*.json .
+COPY back/$name/package*.json .
 RUN npm install
 
-COPY $name/dist $name/src .
+COPY back/$name/docs back/$name/src .
 
 CMD npm run dev

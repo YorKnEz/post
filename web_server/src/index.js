@@ -37,7 +37,11 @@ app.use(
     '/',
     new WebServer(process.env.CONTENT_LOCATION, web_routes, {
         envLocation: `${process.env.CONTENT_LOCATION}/src/env.js`,
-        env: { API_URL: process.env.API_URL },
+        env: {
+            AUTH_SERVICE_API_URL: process.env.AUTH_SERVICE_API_URL,
+            LYRICAL_SERVICE_API_URL: process.env.LYRICAL_SERVICE_API_URL,
+            USER_SERVICE_API_URL: process.env.USER_SERVICE_API_URL,
+        },
     })
 )
 

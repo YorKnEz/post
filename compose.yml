@@ -2,44 +2,129 @@ name: post
 services:
     db:
         image: postgres:alpine
+        networks:
+            - post-network
         ports:
-            - "$DB_PORT:$DB_PORT"
+            - '$DB_PORT:5432'
         environment:
             - POSTGRES_DB=$DB_NAME
-            - POSTGRES_USER=$DB_USER 
-            - POSTGRES_PASSWORD=$DB_PASSWORD
+            - POSTGRES_USER=$DB_USER
+            - POSTGRES_PASSWORD=$DB_PASS
+        volumes:
+            - ./db/entrypoint.sql:/docker-entrypoint-initdb.d/entrypoint.sql
+            - pgdata:/var/lib/postgresql/data
+
     front:
-        build: 
+        build:
             context: .
             dockerfile: web_server.Dockerfile
+        networks:
+            - post-network
         ports:
-            - "3000:3000"
-        env_file: web_server/.env
+            - '$FRONT_PORT:$FRONT_PORT'
         environment:
-            - POSTGRES_USER=$DB_USER 
-            - POSTGRES_PASSWORD=$DB_PASSWORD
+            - HOST=0.0.0.0
+            - PORT=$FRONT_PORT
             - CONTENT_LOCATION=/app/front
+            - AUTH_SERVICE_API_URL=$AUTH_SERVICE_API_URL
+            - LYRICAL_SERVICE_API_URL=$LYRICAL_SERVICE_API_URL
+            - USER_SERVICE_API_URL=$USER_SERVICE_API_URL
         volumes:
             - ./front:/app/front
             - ./lib:/app/lib
             - ./web_server:/app/web_server
             - /app/web_server/node_modules
-    back:
+
+    auth:
         build:
             context: .
             dockerfile: back.Dockerfile
             args:
-                name: back
+                name: auth
+        networks:
+            - post-network
+        depends_on:
+            - db
         ports:
-            - "4000:4000"
-        env_file: back/.env
+            - '$AUTH_SERVICE_PORT:$AUTH_SERVICE_PORT'
         environment:
-            - DB_HOST=$DB_HOST
-            - DB_PORT=$DB_PORT
+            - HOST=0.0.0.0
+            - PORT=$AUTH_SERVICE_PORT
+            - DOCS_LOCATION=/app/back/auth/docs/
+            - DB_HOST=db
+            - DB_PORT=5432
             - DB_NAME=$DB_NAME
             - DB_USER=$DB_USER
             - DB_PASS=$DB_PASS
+            - EMAIL_USER=$EMAIL_USER
+            - EMAIL_PASS=$EMAIL_PASS
+            - FRONTEND_URL=$FRONTEND_URL
         volumes:
             - ./lib:/app/lib
-            - ./back:/app/back
-            - /app/back/node_modules
+            - ./back/auth:/app/back/auth
+            - /app/back/auth/node_modules
+
+    lyrical:
+        build:
+            context: .
+            dockerfile: back.Dockerfile
+            args:
+                name: lyrical
+        networks:
+            - post-network
+        depends_on:
+            - db
+        ports:
+            - '$LYRICAL_SERVICE_PORT:$LYRICAL_SERVICE_PORT'
+        environment:
+            - HOST=0.0.0.0
+            - PORT=$LYRICAL_SERVICE_PORT
+            - DOCS_LOCATION=/app/back/lyrical/docs/
+            - DB_HOST=db
+            - DB_PORT=5432
+            - DB_NAME=$DB_NAME
+            - DB_USER=$DB_USER
+            - DB_PASS=$DB_PASS
+            - EMAIL_USER=$EMAIL_USER
+            - EMAIL_PASS=$EMAIL_PASS
+            - FRONTEND_URL=$FRONTEND_URL
+        volumes:
+            - ./lib:/app/lib
+            - ./back/lyrical:/app/back/lyrical
+            - /app/back/lyrical/node_modules
+
+    user:
+        build:
+            context: .
+            dockerfile: back.Dockerfile
+            args:
+                name: user
+        networks:
+            - post-network
+        depends_on:
+            - db
+        ports:
+            - '$USER_SERVICE_PORT:$USER_SERVICE_PORT'
+        environment:
+            - HOST=0.0.0.0
+            - PORT=$USER_SERVICE_PORT
+            - DOCS_LOCATION=/app/back/user/docs/
+            - DB_HOST=db
+            - DB_PORT=5432
+            - DB_NAME=$DB_NAME
+            - DB_USER=$DB_USER
+            - DB_PASS=$DB_PASS
+            - EMAIL_USER=$EMAIL_USER
+            - EMAIL_PASS=$EMAIL_PASS
+            - FRONTEND_URL=$FRONTEND_URL
+        volumes:
+            - ./lib:/app/lib
+            - ./back/user:/app/back/user
+            - /app/back/user/node_modules
+
+networks:
+    post-network:
+        driver: bridge
+
+volumes:
+    pgdata:
