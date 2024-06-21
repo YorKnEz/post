@@ -859,6 +859,101 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/Message'
 
+    /api/posts/{id}/reactions:
+        post:
+            summary: Add or remove a reaction
+            tags:
+                - posts
+                - auth
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                  description: The id of the post
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                action:
+                                    type: integer
+                                    description: -1 for removing and 1 for adding
+                                type:
+                                    type: integer
+                                    description: 0 for like, 1 for dislike
+                            required:
+                                - action
+                                - type
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+                '400':
+                    description: Already reacted to this post
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+                '404':
+                    description: Post not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+
+    /api/posts/{id}/reactions/{userId}:
+        get:
+            summary: Get the reaction of a user for a specific post
+            description: This route returns the reaction the user has, can be -1 for no reaction, 0 like, 1 dislike
+            tags:
+                - posts
+                - auth
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                  description: The id of the post
+                - name: userId
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                  description: The id of the user
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    type:
+                                        type: integer
+                                        description: The id of the reaction, -1, 0 or 1
+                                required:
+                                    - properties
+                '400':
+                    description: Already reacted to this post
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+                '404':
+                    description: Post not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+
 components:
     securitySchemes:
         cookieAuth:

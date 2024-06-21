@@ -24,11 +24,23 @@ begin
 end;
 $$;
 
-create or replace procedure delete_reaction(p_post_id integer, p_user_id integer)
+create or replace procedure delete_reaction(p_post_id integer, p_user_id integer, p_type integer)
     language plpgsql as
 $$
+declare
+    deleted integer;
 begin
-    delete from reactions where post_id = p_post_id and user_id = p_user_id;
+    select id into deleted from posts where id = p_post_id;
+
+    if deleted is null then
+        raise exception 'post not found';
+    end if;
+
+    delete from reactions where post_id = p_post_id and user_id = p_user_id and type = p_type returning post_id into deleted;
+
+    if deleted is null then
+        raise exception 'reaction not found';
+    end if;
 end;
 $$;
 

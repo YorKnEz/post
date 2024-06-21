@@ -114,6 +114,26 @@ begin
 end;
 $$ language plpgsql;
 
+create or replace function find_reaction(p_post_id integer, p_user_id integer) returns jsonb as
+$$
+declare
+    result jsonb;
+begin
+    select jsonb_build_object('type', type)
+    into result
+    from reactions
+    where post_id = p_post_id and user_id = p_user_id;
+
+    if result is null then
+        result := '{
+          "type": -1
+        }'::jsonb;
+    end if;
+
+    return result;
+end;
+$$ language plpgsql;
+
 create or replace function find_album_cards(p_filters jsonb) returns jsonb as
 $$
 declare

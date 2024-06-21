@@ -22,7 +22,15 @@ $$ language plpgsql;
 
 create or replace procedure add_reaction(p_id integer, p_user_id integer, p_type integer) as
 $$
+declare
+    exists integer;
 begin
+    select post_id into exists from reactions where post_id = p_id and user_id = p_user_id and type = p_type;
+
+    if exists is not null then
+        raise exception 'already reacted';
+    end if;
+
     insert into reactions(user_id, post_id, type)
     values (p_user_id, p_id, p_type)
     on conflict(user_id, post_id) do update set type = p_type;
