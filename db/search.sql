@@ -156,7 +156,7 @@ begin
 
     "order" := case when "order" = 'desc' then 'desc' else 'asc' end;
 
-    sql_query := format(
+    sql_query :=
             '
                 select jsonb_agg(e)
                 from (select jsonb_build_object(''id'', id,
@@ -174,30 +174,31 @@ begin
                       where verified = true and (%s)
                       order by %s %s
                       offset %s limit %s) t;
-            ',
-            case -- when user id is used, query is ignored
-                when p_filters ? 'userId' then format(
-                        '
-                            (author ->> ''id'')::int = %1$s or
-                            (poster ->> ''id'')::int = %1$s
-                        ', p_filters ->> 'userId')
-                when p_filters ? 'query' then format(
-                        '
-                            lower(author ->> ''nickname'') like ''%%'' || ''%1$s'' || ''%%''
-                            or lower(author ->> ''first_name'') like ''%%'' || ''%1$s'' || ''%%''
-                            or lower(author ->> ''last_name'') like ''%%'' || ''%1$s'' || ''%%''
-                            or lower(poster ->> ''nickname'') like ''%%'' || ''%1$s'' || ''%%''
-                            or lower(poster ->> ''first_name'') like ''%%'' || ''%1$s'' || ''%%''
-                            or lower(poster ->> ''last_name'') like ''%%'' || ''%1$s'' || ''%%''
-                            or lower(title) like ''%%'' || ''%1$s'' || ''%%''
-                        ', lower(trim(p_filters ->> 'query')))
-                else 'true'
-            end,
-            sort, "order",
-            start, count
-                 );
-    raise notice '%s', sql_query;
-    execute sql_query into result;
+            ';
+
+    if p_filters ? 'userId' then -- when user id is used, query is ignored
+        sql_query := format(sql_query,
+                            '
+                                (author ->> ''id'')::int = $1 or
+                                (poster ->> ''id'')::int = $1
+                            ', sort, "order", start, count);
+        execute sql_query into result using (p_filters ->> 'userId')::int;
+    elsif p_filters ? 'query' then
+        sql_query := format(sql_query,
+                            '
+                                lower(author ->> ''nickname'') like ''%%'' || $1 || ''%%''
+                                or lower(author ->> ''first_name'') like ''%%'' || $1 || ''%%''
+                                or lower(author ->> ''last_name'') like ''%%'' || $1 || ''%%''
+                                or lower(poster ->> ''nickname'') like ''%%'' || $1 || ''%%''
+                                or lower(poster ->> ''first_name'') like ''%%'' || $1 || ''%%''
+                                or lower(poster ->> ''last_name'') like ''%%'' || $1 || ''%%''
+                                or lower(title) like ''%%'' || $1 || ''%%''
+                            ', sort, "order", start, count);
+        execute sql_query into result using lower(trim(p_filters ->> 'query'));
+    else
+        sql_query := format(sql_query, 'true', sort, "order", start, count);
+        execute sql_query into result;
+    end if;
 
     if result is null then
         return '[]'::jsonb;
@@ -277,7 +278,7 @@ begin
 
     "order" := case when "order" = 'desc' then 'desc' else 'asc' end;
 
-    sql_query := format(
+    sql_query :=
             '
                 select jsonb_agg(e)
                 from (select jsonb_build_object(''id'', id,
@@ -285,6 +286,8 @@ begin
                                                 ''updated_at'', updated_at,
                                                 ''author'', author,
                                                 ''poster'', poster,
+                                                ''poem_id'', poem_id,
+                                                ''language'', language,
                                                 ''title'', title,
                                                 ''publication_date'', publication_date,
                                                 ''contributors'', contributors,
@@ -294,30 +297,31 @@ begin
                       where verified = true and (%s)
                       order by %s %s
                       offset %s limit %s) t;
-            ',
-            case -- only one of the following is allowed and the priority stands as follows: userId and then query
-                when p_filters ? 'userId' then format(
-                        '
-                            (author ->> ''id'')::int = %1$s or
-                            (poster ->> ''id'')::int = %1$s
-                        ', p_filters ->> 'userId')
-                when p_filters ? 'query' then format(
-                        '
-                            lower(author ->> ''nickname'') like ''%%'' || ''%1$s'' || ''%%''
-                            or lower(author ->> ''first_name'') like ''%%'' || ''%1$s'' || ''%%''
-                            or lower(author ->> ''last_name'') like ''%%'' || ''%1$s'' || ''%%''
-                            or lower(poster ->> ''nickname'') like ''%%'' || ''%1$s'' || ''%%''
-                            or lower(poster ->> ''first_name'') like ''%%'' || ''%1$s'' || ''%%''
-                            or lower(poster ->> ''last_name'') like ''%%'' || ''%1$s'' || ''%%''
-                            or lower(title) like ''%%'' || ''%1$s'' || ''%%''
-                        ', lower(trim(p_filters ->> 'query')))
-                else 'true'
-            end,
-            sort, "order",
-            start, count
-                 );
-    raise notice '%s', sql_query;
-    execute sql_query into result;
+            ';
+
+    if p_filters ? 'userId' then -- only one of the following is allowed and the priority stands as follows: userId and then query
+        sql_query := format(sql_query,
+                            '
+                                (author ->> ''id'')::int = $1 or
+                                (poster ->> ''id'')::int = $1
+                            ', sort, "order", start, count);
+        execute sql_query into result using (p_filters ->> 'userId')::int;
+    elsif p_filters ? 'query' then
+        sql_query := format(sql_query,
+                            '
+                                lower(author ->> ''nickname'') like ''%%'' || $1 || ''%%''
+                                or lower(author ->> ''first_name'') like ''%%'' || $1 || ''%%''
+                                or lower(author ->> ''last_name'') like ''%%'' || $1 || ''%%''
+                                or lower(poster ->> ''nickname'') like ''%%'' || $1 || ''%%''
+                                or lower(poster ->> ''first_name'') like ''%%'' || $1 || ''%%''
+                                or lower(poster ->> ''last_name'') like ''%%'' || $1 || ''%%''
+                                or lower(title) like ''%%'' || $1 || ''%%''
+                            ', sort, "order", start, count);
+        execute sql_query into result using lower(trim(p_filters ->> 'query'));
+    else
+        sql_query := format(sql_query, 'true', sort, "order", start, count);
+        execute sql_query into result;
+    end if;
 
     if result is null then
         return '[]'::jsonb;
@@ -339,12 +343,14 @@ begin
                                     'updated_at', updated_at,
                                     'author', author,
                                     'poster', poster,
+                                    'poem_id', po.poem_id,
+                                    'language', language,
                                     'title', title,
                                     'publication_date', publication_date,
                                     'contributors', contributors,
                                     'likes', likes,
                                     'dislikes', dislikes) e
-          from poems_view
+          from poems_view po
                    join album_poems ap on ap.poem_id = id
           where ap.album_id = p_id) t;
 
