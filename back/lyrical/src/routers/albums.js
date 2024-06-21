@@ -81,6 +81,10 @@ auth_router.post('/', async (req, res) => {
         return new JSONResponse(400, e.obj())
     }
 
+    if (!req.body.cover) {
+        req.body.cover = `${process.env.IMAGE_SERVICE_API_URL}/images/default-album-cover`
+    }
+
     try {
         let result = await db.query('select add_album($1, $2)', [
             req.locals.userId,

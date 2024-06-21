@@ -40,6 +40,10 @@ router.post('/register', async (req, res) => {
         return new JSONResponse(400, e.obj())
     }
 
+    if (!req.body.cover) {
+        req.body.cover = `${process.env.IMAGE_SERVICE_API_URL}/images/default-avatar`
+    }
+
     // check if the nickname exists
     let result = await client.query(
         'select nickname from users where nickname = $1',
@@ -61,7 +65,7 @@ router.post('/register', async (req, res) => {
 
             // TODO: maybe call user service to do this step
             let result = await client.query(
-                'insert into users(first_name, last_name, nickname, new_email, password_hash, password_salt) values($1, $2, $3, $4, $5, $6) returning *',
+                'insert into users(first_name, last_name, nickname, cover, new_email, password_hash, password_salt) values($1, $2, $3, $4, $5, $6) returning *',
                 [
                     req.body.firstName,
                     req.body.lastName,

@@ -1,4 +1,4 @@
-create schema post;
+-- create schema post;
 
 set search_path to post;
 
@@ -11,9 +11,10 @@ create table users
     first_name                varchar(32),                 -- between 2 and 32 characters
     last_name                 varchar(32),                 -- between 2 and 32 characters
     nickname                  varchar(32) unique not null, -- between 4 and 32 characters
+    avatar                    varchar(256)       not null,
+    -- auth information
     email                     varchar(256) unique,         -- valid email
     new_email                 varchar(256),                -- valid email
-    -- auth information
     verified                  boolean   default false,     -- whether or not the account is verified
     password_hash             varchar(256),
     password_salt             varchar(256),
@@ -88,6 +89,7 @@ create table albums
     id               integer primary key,
     -- primary information
     author_id        integer      not null,
+    cover            varchar(256) not null,
     title            varchar(256) not null, -- between 4 and 256 characters
     -- optional
     publication_date timestamp,
@@ -116,6 +118,7 @@ create table poems
     author_id          integer      not null,
     poem_id            integer,               -- an id of a poem IF this poem is a translation, otherwise null
     language           varchar(2)   not null, -- exactly 2 characters representing a valid language (!)
+    cover              varchar(256) not null,
     title              varchar(256) not null, -- between 4 and 256 characters
     publication_date   timestamp,
     main_annotation_id integer,
@@ -164,6 +167,7 @@ begin
                    'first_name', u.first_name,
                    'last_name', u.last_name,
                    'nickname', u.nickname,
+                   'avatar', u.avatar,
                    'roles', u.roles
            )
     into result
@@ -187,6 +191,7 @@ select p.id,
        find_user_card_by_id(p.poster_id)                                                  poster,
        find_user_card_by_id(a.author_id)                                                  author,
        p.verified,
+       a.cover,
        a.title,
        a.publication_date,
        (select count(*) from contributions where post_id = a.id)                          contributions,
@@ -263,6 +268,7 @@ select p.id,
        find_user_card_by_id(p.poster_id)                                                  poster,
        po.poem_id,
        po.language,
+       po.cover,
        po.title,
        po.publication_date,
        find_annotation_by_id(po.main_annotation_id)                                       main_annotation,
@@ -353,6 +359,7 @@ begin
                                     ''first_name'', u.first_name,
                                     ''last_name'', u.last_name,
                                     ''nickname'', u.nickname,
+                                    ''avatar'', u.avatar,
                                     ''roles'', u.roles) e
           from users u
           order by %s %s) t
@@ -383,6 +390,7 @@ begin
                    'first_name', u.first_name,
                    'last_name', u.last_name,
                    'nickname', u.nickname,
+                   'avatar', u.avatar,
                    'roles', u.roles,
                    'albums_count', u.albums_count,
                    'albums_contributions', u.albums_contributions,
@@ -412,7 +420,8 @@ begin
     select jsonb_build_object('type', type)
     into result
     from reactions
-    where post_id = p_post_id and user_id = p_user_id;
+    where post_id = p_post_id
+      and user_id = p_user_id;
 
     if result is null then
         result := '{
@@ -474,6 +483,7 @@ begin
                                                 ''updated_at'', updated_at,
                                                 ''poster'', poster,
                                                 ''author'', author,
+                                                ''cover'', cover,
                                                 ''title'', title,
                                                 ''publication_date'', publication_date,
                                                 ''contributors'', contributors,
@@ -529,6 +539,7 @@ begin
                    'updated_at', updated_at,
                    'poster', poster,
                    'author', author,
+                   'cover', cover,
                    'title', title,
                    'publication_date', publication_date,
                    'contributors', contributors,
@@ -598,6 +609,7 @@ begin
                                                 ''poster'', poster,
                                                 ''poem_id'', poem_id,
                                                 ''language'', language,
+                                                ''cover'', cover,
                                                 ''title'', title,
                                                 ''publication_date'', publication_date,
                                                 ''contributors'', contributors,
@@ -655,6 +667,7 @@ begin
                                     'poster', poster,
                                     'poem_id', po.poem_id,
                                     'language', language,
+                                    'cover', cover,
                                     'title', title,
                                     'publication_date', publication_date,
                                     'contributors', contributors,
@@ -685,6 +698,7 @@ begin
                    'poster', poster,
                    'poem_id', poem_id,
                    'language', language,
+                   'cover', cover,
                    'title', title,
                    'publication_date', publication_date,
                    'main_annotation', main_annotation,
@@ -774,8 +788,9 @@ begin
     album_id := __add_post(p_poster_id, 'album'::text);
 
     -- add album
-    insert into albums(id, author_id, title, publication_date)
-    values (album_id, (p_data ->> 'authorId')::int, p_data ->> 'title', (p_data ->> 'publicationDate')::timestamp);
+    insert into albums(id, author_id, cover, title, publication_date)
+    values (album_id, (p_data ->> 'authorId')::int, p_data ->> 'cover', p_data ->> 'title',
+            (p_data ->> 'publicationDate')::timestamp);
 
     return find_album_by_id(album_id);
 end;
@@ -784,7 +799,7 @@ $$ language plpgsql;
 create or replace function add_poem(p_poster_id integer, p_data jsonb) returns jsonb as
 $$
 declare
-    l_poem_id            integer;
+    l_poem_id          integer;
     translated_poem_id integer;
     annotation_id      integer;
 begin
@@ -801,8 +816,9 @@ begin
     end if;
 
     -- add poem
-    insert into poems(id, author_id, poem_id, language, title, publication_date, content)
-    values (l_poem_id, (p_data ->> 'authorId')::int, translated_poem_id, p_data ->> 'language', p_data ->> 'title',
+    insert into poems(id, author_id, poem_id, language, cover, title, publication_date, content)
+    values (l_poem_id, (p_data ->> 'authorId')::int, translated_poem_id, p_data ->> 'language', p_data ->> 'cover',
+            p_data ->> 'title',
             (p_data ->> 'publicationDate')::timestamp, p_data ->> 'content');
 
     -- add main annotation
@@ -853,10 +869,15 @@ begin
 
     sql_query = format('
         update albums set
+            cover = %s,
             title = %s,
             publication_date = %s
         where id = %s returning id;
     ',
+                       case
+                           when p_data ? 'cover' then format('''%s''', p_data ->> 'cover')
+                           else 'cover'
+                       end,
                        case
                            when p_data ? 'title' then format('''%s''', p_data ->> 'title')
                            else 'title'
@@ -889,11 +910,16 @@ begin
 
     sql_query = format('
         update poems set
+        cover = %s,
             title = %s,
             publication_date = %s,
             content = %s
         where id = %s returning id;
     ',
+                       case
+                           when p_data ? 'cover' then format('''%s''', p_data ->> 'cover')
+                           else 'cover'
+                       end,
                        case
                            when p_data ? 'title' then format('''%s''', p_data ->> 'title')
                            else 'title'
@@ -991,7 +1017,12 @@ begin
         raise exception 'post not found';
     end if;
 
-    delete from reactions where post_id = p_post_id and user_id = p_user_id and type = p_type returning post_id into deleted;
+    delete
+    from reactions
+    where post_id = p_post_id
+      and user_id = p_user_id
+      and type = p_type
+    returning post_id into deleted;
 
     if deleted is null then
         raise exception 'reaction not found';

@@ -2,6 +2,9 @@ export const albumSchema = {
     authorId: {
         type: 'int',
     },
+    cover: {
+        optional: true,
+    },
     title: {
         min: 4,
         max: 256,
@@ -13,6 +16,9 @@ export const albumSchema = {
 }
 
 export const albumUpdateSchema = {
+    cover: {
+        optional: true,
+    },
     title: {
         min: 4,
         max: 256,
@@ -40,6 +46,9 @@ export const poemSchema = {
         optional: true,
     },
     language: {},
+    cover: {
+        optional: true,
+    },
     title: {
         min: 4,
         max: 256,
@@ -59,6 +68,9 @@ export const poemSchema = {
 }
 
 export const poemUpdateSchema = {
+    cover: {
+        optional: true,
+    },
     title: {
         min: 4,
         max: 256,

@@ -40,9 +40,10 @@ $$
         -- populate users table
         for i in 0..user_count - 1
         loop
-            insert into users (created_at, updated_at, first_name, last_name, nickname, email, verified,
+            insert into users (created_at, updated_at, first_name, last_name, nickname, avatar, email, verified,
                                password_hash, password_salt, roles)
-            values (now(), now(), 'firstname' || i, 'lastname' || i, 'nickname' || i, 'user' || i || '@example.com',
+            values (now(), now(), 'firstname' || i, 'lastname' || i, 'nickname' || i,
+                    'http://localhost:4001/api/images/default-avatar', 'user' || i || '@example.com',
                     i % 2 = 1, 'hash' || i, 'salt' || i, (i % 3));
         end loop;
 
@@ -53,8 +54,9 @@ $$
             call add_post(l_user_id, 'album', i % 2 = 1, l_post_id);
 
             -- add album
-            insert into albums (id, author_id, title, publication_date)
-            values (l_post_id, l_user_id, 'album title ' || i, now());
+            insert into albums (id, author_id, cover, title, publication_date)
+            values (l_post_id, l_user_id, 'http://localhost:4001/api/images/default-album-cover', 'album title ' || i,
+                    now());
         end loop;
 
         -- populate poems table
@@ -64,8 +66,10 @@ $$
             call add_post(l_user_id, 'poem', i % 2 = 1, l_poem_id);
 
             -- add poem
-            insert into poems (id, poem_id, author_id, title, main_annotation_id, content, language, publication_date)
-            values (l_poem_id, null, l_user_id, 'poem title ' || i, null, 'lyrical content ' || i,
+            insert into poems (id, poem_id, author_id, cover, title, main_annotation_id, content, language,
+                               publication_date)
+            values (l_poem_id, null, l_user_id, 'http://localhost:4001/api/images/default-album-cover',
+                    'poem title ' || i, null, 'lyrical content ' || i,
                     case when i % 3 = 0 then 'en' when i % 3 = 1 then 'es' when i % 3 = 2 then 'ro' end, now());
 
             call add_post(l_user_id, 'annotation', i % 2 = 1, l_annotation_id);

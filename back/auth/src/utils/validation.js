@@ -14,6 +14,9 @@ export const registerSchema = {
         max: 32,
         regex: /^[a-zA-Z0-9]*$/,
     },
+    cover: {
+        optional: true,
+    },
     email: {
         min: 4,
         max: 256,

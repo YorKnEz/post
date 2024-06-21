@@ -161,6 +161,9 @@ paths:
                                 authorId:
                                     type: integer
                                     description: The id of the user that authored the album
+                                cover:
+                                    type: string
+                                    description: URL of an album cover
                                 title:
                                     type: string
                                     description: The title of the album
@@ -256,6 +259,9 @@ paths:
                         schema:
                             type: object
                             properties:
+                                cover:
+                                    type: string
+                                    description: An URL of the new cover of the album
                                 title:
                                     type: string
                                     description: The title of the album
@@ -463,6 +469,9 @@ paths:
                                 language:
                                     type: string
                                     description: The language the poem is written in (and which the other fields must match)
+                                cover:
+                                    type: string
+                                    description: An URL to the cover of the poem
                                 title:
                                     type: string
                                     description: The title of the poem
@@ -573,6 +582,9 @@ paths:
                         schema:
                             type: object
                             properties:
+                                cover:
+                                    type: string
+                                    description: An URL to the new cover of the poem
                                 title:
                                     type: string
                                     description: The title of the poem
@@ -678,6 +690,9 @@ paths:
                                 language:
                                     type: string
                                     description: The language the poem is written in (and which the other fields must match)
+                                cover:
+                                    type: string
+                                    description: An URL to the cover of the translation
                                 title:
                                     type: string
                                     description: The title of the poem
@@ -993,6 +1008,9 @@ components:
                 author:
                     $ref: '#/components/schemas/UserCard'
                     description: The information of the user that authored the album
+                cover:
+                    type: string
+                    description: An URL of the cover of the album
                 title:
                     type: string
                     description: The title of the album
@@ -1018,6 +1036,7 @@ components:
                 - updatedAt
                 - poster
                 - author
+                - cover
                 - title
                 - publicationDate
                 - poems
@@ -1044,6 +1063,9 @@ components:
                 author:
                     $ref: '#/components/schemas/UserCard'
                     description: The information of the user that authored the album
+                cover:
+                    type: string
+                    description: An URL of the cover of the album
                 title:
                     type: string
                     description: The title of the album
@@ -1067,6 +1089,7 @@ components:
                 - updatedAt
                 - poster
                 - author
+                - cover
                 - title
                 - publicationDate
                 - contributors
@@ -1096,6 +1119,9 @@ components:
                 language:
                     type: string
                     description: The language of the poem
+                cover:
+                    type: string
+                    description: An URL of the cover of the poem
                 title:
                     type: string
                     description: The title of the poem
@@ -1128,6 +1154,7 @@ components:
                 - author
                 - poster
                 - language
+                - cover
                 - title
                 - publicationDate
                 - mainAnnotation
@@ -1159,6 +1186,9 @@ components:
                 language:
                     type: string
                     description: The language of the poem
+                cover:
+                    type: string
+                    description: An URL of the cover of the poem
                 title:
                     type: string
                     description: The title of the poem
@@ -1180,6 +1210,7 @@ components:
                 - author
                 - poster
                 - language
+                - cover
                 - title
                 - publicationDate
                 - contributors

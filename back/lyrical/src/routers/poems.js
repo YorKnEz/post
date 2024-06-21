@@ -110,6 +110,10 @@ auth_router.post('/', async (req, res) => {
         return new JSONResponse(400, e.obj())
     }
 
+    if (!req.body.cover) {
+        req.body.cover = `${process.env.IMAGE_SERVICE_API_URL}/images/default-poem-cover`
+    }
+
     try {
         if (!req.body.authorId) {
             req.body.authorId = req.locals.userId
@@ -197,6 +201,10 @@ auth_router.post('/:id/translations', async (req, res) => {
         validate(req.body, poemSchema)
     } catch (e) {
         return new JSONResponse(400, e.obj())
+    }
+
+    if (!req.body.cover) {
+        req.body.cover = `${process.env.IMAGE_SERVICE_API_URL}/images/default-poem-cover`
     }
 
     try {

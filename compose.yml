@@ -21,10 +21,10 @@ services:
         networks:
             - post-network
         ports:
-            - '$FRONT_PORT:$FRONT_PORT'
+            - '$FRONTEND_PORT:$FRONTEND_PORT'
         environment:
             - HOST=0.0.0.0
-            - PORT=$FRONT_PORT
+            - PORT=$FRONTEND_PORT
             - CONTENT_LOCATION=/app/front
             - AUTH_SERVICE_API_URL=$AUTH_SERVICE_API_URL
             - LYRICAL_SERVICE_API_URL=$LYRICAL_SERVICE_API_URL
@@ -63,6 +63,28 @@ services:
             - ./lib:/app/lib
             - ./back/auth:/app/back/auth
             - /app/back/auth/node_modules
+
+    image:
+        build:
+            context: .
+            dockerfile: back.Dockerfile
+            args:
+                name: image
+        networks:
+            - post-network
+        depends_on:
+            - db
+        ports:
+            - '$IMAGE_SERVICE_PORT:$IMAGE_SERVICE_PORT'
+        environment:
+            - HOST=0.0.0.0
+            - PORT=$IMAGE_SERVICE_PORT
+            - DOCS_LOCATION=/app/back/image/docs/
+            - IMAGE_SERVICE_API_URL=$IMAGE_SERVICE_API_URL
+        volumes:
+            - ./lib:/app/lib
+            - ./back/image:/app/back/image
+            - /app/back/image/node_modules
 
     lyrical:
         build:
