@@ -1,12 +1,15 @@
 export const albumSchema = {
-    authorId: {},
+    authorId: {
+        type: 'int',
+    },
     title: {
         min: 4,
         max: 256,
     },
     publicationDate: {
+        type: 'date',
         optional: true,
-    }, // TODO: validate?
+    },
 }
 
 export const albumUpdateSchema = {
@@ -16,19 +19,24 @@ export const albumUpdateSchema = {
         optional: true,
     },
     publicationDate: {
+        type: 'date',
         optional: true,
-    }, // TODO: validate?
+    },
 }
 
 export const albumAddPoemSchema = {
-    poemId: {},
+    poemId: {
+        type: 'int',
+    },
 }
 
 export const poemSchema = {
     authorId: {
+        type: 'int',
         optional: true,
     },
     poemId: {
+        type: 'int',
         optional: true,
     },
     language: {},
@@ -37,6 +45,7 @@ export const poemSchema = {
         max: 256,
     },
     publicationDate: {
+        type: 'date',
         optional: true,
     },
     about: {
@@ -56,8 +65,9 @@ export const poemUpdateSchema = {
         optional: true,
     },
     publicationDate: {
+        type: 'date',
         optional: true,
-    }, // TODO: validate?
+    },
     content: {
         min: 16,
         max: 32678,
@@ -70,13 +80,28 @@ export const annotationSchema = {
         min: 16,
         max: 32678,
     },
-    offset: {},
-    length: {},
+    offset: {
+        type: 'int',
+    },
+    length: {
+        type: 'int',
+    },
 }
 
 export const annotationUpdateSchema = {
     content: {
         min: 16,
         max: 32678,
+    },
+}
+
+export const reactionSchema = {
+    action: {
+        type: 'int',
+        in: [-1, 1],
+    },
+    type: {
+        type: 'int',
+        in: [0, 1],
     },
 }
