@@ -36,7 +36,12 @@ begin
         raise exception 'post not found';
     end if;
 
-    delete from reactions where post_id = p_post_id and user_id = p_user_id and type = p_type returning post_id into deleted;
+    delete
+    from reactions
+    where post_id = p_post_id
+      and user_id = p_user_id
+      and type = p_type
+    returning post_id into deleted;
 
     if deleted is null then
         raise exception 'reaction not found';
@@ -129,8 +134,3 @@ begin
     call __delete_post(p_album_id);
 end;
 $$;
-
--- tests
--- call delete_poem(8);
-
--- call delete_user(10);

@@ -1,5 +1,5 @@
--- create schema post;
 
+-- create schema post;
 set search_path to post;
 
 create table users
@@ -612,6 +612,7 @@ begin
                                                 ''cover'', cover,
                                                 ''title'', title,
                                                 ''publication_date'', publication_date,
+                                                ''main_annotation'', main_annotation,
                                                 ''contributors'', contributors,
                                                 ''likes'', likes,
                                                 ''dislikes'', dislikes) e
@@ -670,6 +671,7 @@ begin
                                     'cover', cover,
                                     'title', title,
                                     'publication_date', publication_date,
+                                    'main_annotation', main_annotation,
                                     'contributors', contributors,
                                     'likes', likes,
                                     'dislikes', dislikes) e

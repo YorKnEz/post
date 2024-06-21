@@ -119,6 +119,7 @@ begin
                    'nickname', u.nickname,
                    'avatar', u.avatar,
                    'roles', u.roles,
+                   'contributions', (u.albums_contributions + u.poems_contributions + u.annotations_contributions)
            )
     into result
     from users u
@@ -332,6 +333,7 @@ begin
                                                 ''cover'', cover,
                                                 ''title'', title,
                                                 ''publication_date'', publication_date,
+                                                ''main_annotation'', main_annotation,
                                                 ''contributors'', contributors,
                                                 ''likes'', likes,
                                                 ''dislikes'', dislikes) e
@@ -390,6 +392,7 @@ begin
                                     'cover', cover,
                                     'title', title,
                                     'publication_date', publication_date,
+                                    'main_annotation', main_annotation,
                                     'contributors', contributors,
                                     'likes', likes,
                                     'dislikes', dislikes) e
