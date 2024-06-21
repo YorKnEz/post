@@ -20,34 +20,50 @@ begin
     start := (p_filters -> 'start')::int;
     count := (p_filters -> 'count')::int;
 
-    if p_filters ? 'sort' and p_filters ->> 'sort' in ('new', 'activity') then
+    if p_filters ? 'sort' then
         sort := p_filters ->> 'sort';
-        sort := case
-                    when sort = 'activity' then
-                        '(u.albums_contributions + u.poems_contributions + u.annotations_contributions)'
-                    else 'created_at'
-                end;
     end if;
 
-    if p_filters ? 'order' and p_filters ->> 'order' in ('asc', 'desc') then
+    sort := case
+                when sort = 'activity' then
+                    '(u.albums_contributions + u.poems_contributions + u.annotations_contributions)'
+                else 'created_at'
+            end;
+
+    if p_filters ? 'order' then
         "order" := p_filters ->> 'order';
     end if;
 
-    sql_query := format('
-    select jsonb_agg(e)
-    from (select jsonb_build_object(''id'', u.id,
-                                    ''first_name'', u.first_name,
-                                    ''last_name'', u.last_name,
-                                    ''nickname'', u.nickname,
-                                    ''roles'', u.roles) e
-          from users u
-          order by %s %s) t
-    where lower(e ->> ''nickname'') like ''%%'' || ''%s'' || ''%%''
-       or lower(e ->> ''first_name'') like ''%%'' || ''%s'' || ''%%''
-       or lower(e ->> ''last_name'') like ''%%'' || ''%s'' || ''%%''
-    offset %s limit %s;
-    ', sort, "order", query, query, query, start, count);
-    execute sql_query into result;
+    "order" := case when "order" = 'desc' then 'desc' else 'asc' end;
+
+    sql_query :=
+            '
+                select jsonb_agg(e)
+                from (select jsonb_build_object(''id'', u.id,
+                                                ''first_name'', u.first_name,
+                                                ''last_name'', u.last_name,
+                                                ''nickname'', u.nickname,
+                                                ''avatar'', u.avatar,
+                                                ''roles'', u.roles
+                                                ''contributions'', (u.albums_contributions + u.poems_contributions + u.annotations_contributions)) e
+                      from users u
+                      where u.verified = true and (%s)
+                      order by %s %s
+                      offset %s limit %s) t;
+            ';
+
+    if p_filters ? 'query' then
+        sql_query := format(sql_query,
+                            '
+                                lower(e ->> ''nickname'') like ''%%'' || $1 || ''%%''
+                                or lower(e ->> ''first_name'') like ''%%'' || $1 || ''%%''
+                                or lower(e ->> ''last_name'') like ''%%'' || $1 || ''%%''
+                            ', sort, "order", start, count);
+        execute sql_query into result using lower(trim(p_filters ->> 'query'));
+    else
+        sql_query := format(sql_query, 'true', sort, "order", start, count);
+        execute sql_query into result;
+    end if;
 
     if result is null then
         return '[]'::jsonb;
@@ -124,7 +140,8 @@ begin
     select jsonb_build_object('type', type)
     into result
     from reactions
-    where post_id = p_post_id and user_id = p_user_id;
+    where post_id = p_post_id
+      and user_id = p_user_id;
 
     if result is null then
         result := '{
