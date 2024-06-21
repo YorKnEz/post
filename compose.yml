@@ -8,8 +8,7 @@ services:
             - '$DB_PORT:5432'
         environment:
             - POSTGRES_DB=$DB_NAME
-            - POSTGRES_USER=$DB_USER
-            - POSTGRES_PASSWORD=$DB_PASS
+            - POSTGRES_USER=$DB_USER - POSTGRES_PASSWORD=$DB_PASS
         volumes:
             - ./db/entrypoint.sql:/docker-entrypoint-initdb.d/entrypoint.sql
             - pgdata:/var/lib/postgresql/data
@@ -110,6 +109,8 @@ services:
             - EMAIL_USER=$EMAIL_USER
             - EMAIL_PASS=$EMAIL_PASS
             - FRONTEND_URL=$FRONTEND_URL
+            - AUTH_SERVICE_API_URL=http://auth:$AUTH_SERVICE_PORT
+            - IMAGE_SERVICE_API_URL=$IMAGE_SERVICE_API_URL
         volumes:
             - ./lib:/app/lib
             - ./back/lyrical:/app/back/lyrical
@@ -139,6 +140,8 @@ services:
             - EMAIL_USER=$EMAIL_USER
             - EMAIL_PASS=$EMAIL_PASS
             - FRONTEND_URL=$FRONTEND_URL
+            - AUTH_SERVICE_API_URL=http://auth:$AUTH_SERVICE_PORT
+            - IMAGE_SERVICE_API_URL=$IMAGE_SERVICE_API_URL
         volumes:
             - ./lib:/app/lib
             - ./back/user:/app/back/user
