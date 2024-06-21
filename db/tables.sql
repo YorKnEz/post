@@ -22,9 +22,10 @@ create table users
     first_name                varchar(32),                 -- between 2 and 32 characters
     last_name                 varchar(32),                 -- between 2 and 32 characters
     nickname                  varchar(32) unique not null, -- between 4 and 32 characters
+    avatar                    varchar(256)       not null,
+    -- auth information
     email                     varchar(256) unique,         -- valid email
     new_email                 varchar(256),                -- valid email
-    -- auth information
     verified                  boolean   default false,     -- whether or not the account is verified
     password_hash             varchar(256),
     password_salt             varchar(256),
@@ -99,6 +100,7 @@ create table albums
     id               integer primary key,
     -- primary information
     author_id        integer      not null,
+    cover            varchar(256) not null,
     title            varchar(256) not null, -- between 4 and 256 characters
     -- optional
     publication_date timestamp,
@@ -127,6 +129,7 @@ create table poems
     author_id          integer      not null,
     poem_id            integer,               -- an id of a poem IF this poem is a translation, otherwise null
     language           varchar(2)   not null, -- exactly 2 characters representing a valid language (!)
+    cover              varchar(256) not null,
     title              varchar(256) not null, -- between 4 and 256 characters
     publication_date   timestamp,
     main_annotation_id integer,
@@ -174,6 +177,7 @@ select p.id,
        find_user_card_by_id(p.poster_id)                                                  poster,
        find_user_card_by_id(a.author_id)                                                  author,
        p.verified,
+       a.cover,
        a.title,
        a.publication_date,
        (select count(*) from contributions where post_id = a.id)                          contributions,
@@ -202,6 +206,7 @@ select p.id,
        find_user_card_by_id(p.poster_id)                                                  poster,
        po.poem_id,
        po.language,
+       po.cover,
        po.title,
        po.publication_date,
        find_annotation_by_id(po.main_annotation_id)                                       main_annotation,
@@ -248,4 +253,3 @@ select p.id,
        (select count(*)::numeric from reactions where post_id = a.id and type = 1)        dislikes
 from annotations a
          join posts p on p.id = a.id;
-

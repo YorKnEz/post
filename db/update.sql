@@ -16,10 +16,15 @@ begin
 
     sql_query = format('
         update albums set
+            cover = %s,
             title = %s,
             publication_date = %s
         where id = %s returning id;
     ',
+                       case
+                           when p_data ? 'cover' then format('''%s''', p_data ->> 'cover')
+                           else 'cover'
+                       end,
                        case
                            when p_data ? 'title' then format('''%s''', p_data ->> 'title')
                            else 'title'
@@ -52,11 +57,16 @@ begin
 
     sql_query = format('
         update poems set
+        cover = %s,
             title = %s,
             publication_date = %s,
             content = %s
         where id = %s returning id;
     ',
+                       case
+                           when p_data ? 'cover' then format('''%s''', p_data ->> 'cover')
+                           else 'cover'
+                       end,
                        case
                            when p_data ? 'title' then format('''%s''', p_data ->> 'title')
                            else 'title'

@@ -45,8 +45,9 @@ begin
     album_id := __add_post(p_poster_id, 'album'::text);
 
     -- add album
-    insert into albums(id, author_id, title, publication_date)
-    values (album_id, (p_data ->> 'authorId')::int, p_data ->> 'title', (p_data ->> 'publicationDate')::timestamp);
+    insert into albums(id, author_id, cover, title, publication_date)
+    values (album_id, (p_data ->> 'authorId')::int, p_data ->> 'cover', p_data ->> 'title',
+            (p_data ->> 'publicationDate')::timestamp);
 
     return find_album_by_id(album_id);
 end;
@@ -72,8 +73,9 @@ begin
     end if;
 
     -- add poem
-    insert into poems(id, author_id, poem_id, language, title, publication_date, content)
-    values (l_poem_id, (p_data ->> 'authorId')::int, translated_poem_id, p_data ->> 'language', p_data ->> 'title',
+    insert into poems(id, author_id, poem_id, language, cover, title, publication_date, content)
+    values (l_poem_id, (p_data ->> 'authorId')::int, translated_poem_id, p_data ->> 'language', p_data ->> 'cover',
+            p_data ->> 'title',
             (p_data ->> 'publicationDate')::timestamp, p_data ->> 'content');
 
     -- add main annotation

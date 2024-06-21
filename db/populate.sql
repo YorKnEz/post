@@ -68,7 +68,7 @@ $$
             -- add poem
             insert into poems (id, poem_id, author_id, cover, title, main_annotation_id, content, language,
                                publication_date)
-            values (l_poem_id, null, l_user_id, 'http://localhost:4001/api/images/default-album-cover',
+            values (l_poem_id, null, l_user_id, 'http://localhost:4001/api/images/default-poem-cover',
                     'poem title ' || i, null, 'lyrical content ' || i,
                     case when i % 3 = 0 then 'en' when i % 3 = 1 then 'es' when i % 3 = 2 then 'ro' end, now());
 

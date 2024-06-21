@@ -69,6 +69,7 @@ begin
                    'first_name', u.first_name,
                    'last_name', u.last_name,
                    'nickname', u.nickname,
+                   'avatar', u.avatar,
                    'roles', u.roles,
                    'albums_count', u.albums_count,
                    'albums_contributions', u.albums_contributions,
@@ -100,7 +101,8 @@ begin
                    'first_name', u.first_name,
                    'last_name', u.last_name,
                    'nickname', u.nickname,
-                   'roles', u.roles
+                   'avatar', u.avatar,
+                   'roles', u.roles,
            )
     into result
     from users u
@@ -184,6 +186,7 @@ begin
                                                 ''updated_at'', updated_at,
                                                 ''poster'', poster,
                                                 ''author'', author,
+                                                ''cover'', cover,
                                                 ''title'', title,
                                                 ''publication_date'', publication_date,
                                                 ''contributors'', contributors,
@@ -239,6 +242,7 @@ begin
                    'updated_at', updated_at,
                    'poster', poster,
                    'author', author,
+                   'cover', cover,
                    'title', title,
                    'publication_date', publication_date,
                    'contributors', contributors,
@@ -308,6 +312,7 @@ begin
                                                 ''poster'', poster,
                                                 ''poem_id'', poem_id,
                                                 ''language'', language,
+                                                ''cover'', cover,
                                                 ''title'', title,
                                                 ''publication_date'', publication_date,
                                                 ''contributors'', contributors,
@@ -365,6 +370,7 @@ begin
                                     'poster', poster,
                                     'poem_id', po.poem_id,
                                     'language', language,
+                                    'cover', cover,
                                     'title', title,
                                     'publication_date', publication_date,
                                     'contributors', contributors,
@@ -395,6 +401,7 @@ begin
                    'poster', poster,
                    'poem_id', poem_id,
                    'language', language,
+                   'cover', cover,
                    'title', title,
                    'publication_date', publication_date,
                    'main_annotation', main_annotation,
