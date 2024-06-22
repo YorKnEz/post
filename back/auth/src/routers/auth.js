@@ -5,7 +5,6 @@ import {
     Router,
     SuccessCodes,
     base36token,
-    hash,
     toCamel,
     validate,
 } from 'web-lib'
@@ -20,6 +19,7 @@ import {
     changeEmailSchema,
     changeNicknameSchema,
     changePasswordSchema,
+    __hash,
 } from '../utils/index.js'
 
 export const router = new Router('Auth Router')
@@ -62,11 +62,10 @@ router.post('/register', async (req, res) => {
     const task = async () => {
         try {
             await client.query('begin')
-            const pass = hash(req.body.password)
+            const pass = __hash(req.body.password)
 
-            // TODO: maybe call user service to do this step
             let result = await client.query(
-                'insert into users(first_name, last_name, nickname, avatar, new_email, password_hash, password_salt) values($1, $2, $3, $4, $5, $6) returning *',
+                'insert into users(first_name, last_name, nickname, avatar, new_email, password_hash, password_salt) values($1, $2, $3, $4, $5, $6, $7) returning *',
                 [
                     req.body.firstName,
                     req.body.lastName,
@@ -191,7 +190,7 @@ router.post('/login', async (req, res) => {
         const user = toCamel(result.rows[0])
 
         // check password
-        let pass = hash(req.body.password, user.passwordSalt)
+        let pass = __hash(req.body.password, user.passwordSalt)
 
         if (pass.hash != user.passwordHash) {
             throw new JSONResponse(401, {
@@ -495,7 +494,10 @@ router.post('/change-nickname', async (req, res) => {
         ])
 
         // invalidate all sessions after having made the change
-        await client.query("delete from tokens where user_id = $1 and type = 'session'", [token.userId])
+        await client.query(
+            "delete from tokens where user_id = $1 and type = 'session'",
+            [token.userId]
+        )
 
         return new JSONResponse(200, {
             code: SuccessCodes.NICKNAME_CHANGED,
@@ -541,7 +543,7 @@ router.post('/change-password', async (req, res) => {
     const token = toCamel(result.rows[0])
 
     try {
-        const pass = hash(req.body.password)
+        const pass = __hash(req.body.password)
 
         await client.query(
             'update users set password_hash = $1, password_salt = $2 where id = $3',
@@ -549,7 +551,10 @@ router.post('/change-password', async (req, res) => {
         )
 
         // invalidate all sessions after having made the change
-        await client.query("delete from tokens where user_id = $1 and type = 'session'", [token.userId])
+        await client.query(
+            "delete from tokens where user_id = $1 and type = 'session'",
+            [token.userId]
+        )
 
         return new JSONResponse(200, {
             code: SuccessCodes.PASSWORD_CHANGED,

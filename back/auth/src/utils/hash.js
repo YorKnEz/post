@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt'
 
-export const hash = (text, salt) => {
+export const __hash = (text, salt) => {
     if (!salt) {
         salt = bcrypt.genSaltSync(10)
     }
