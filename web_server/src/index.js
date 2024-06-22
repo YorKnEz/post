@@ -5,9 +5,6 @@ import { App, WebServer } from 'web-lib'
 
 dotenv.config()
 
-const hostname = process.env.HOST
-const port = process.env.PORT
-
 const app = new App({
     key: fs.readFileSync('./cert.key'),
     cert: fs.readFileSync('./cert.pem'),
@@ -46,4 +43,4 @@ app.use(
     })
 )
 
-app.listen(port, hostname)
+app.listen(process.env.PORT, process.env.HOST)

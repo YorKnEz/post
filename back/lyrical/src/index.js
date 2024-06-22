@@ -10,18 +10,9 @@ import {
     users_router,
 } from './routers/index.js'
 
-const hostname = process.env.HOST
-const port = process.env.PORT
-
 const app = new App()
 
-const allowList = [
-    'http://localhost:3000',
-    'https://localhost:3000',
-    // `http://${process.env.HOST}:${process.env.PORT}`,
-]
-
-app.middleware(getCorsMiddleware(allowList))
+app.middleware(getCorsMiddleware([process.env.FRONTEND_URL]))
 
 app.use('/api/albums', albums_router)
 app.use('/api/annotations', annotations_router)
@@ -37,4 +28,4 @@ const web_routes = {
 
 app.use('/docs', new WebServer(process.env.DOCS_LOCATION, web_routes))
 
-app.listen(port, hostname)
+app.listen(process.env.PORT, process.env.HOST)
