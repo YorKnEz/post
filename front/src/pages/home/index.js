@@ -1,6 +1,12 @@
-import { Navbar, PoemCard, PoemRow, UserRow } from '../../components/index.js'
-import env from '../../env.js'
-import { getErrorMessage, success } from '../../utils/api.js'
+import {
+    Loader,
+    Navbar,
+    PoemCard,
+    PoemRow,
+    UserRow,
+} from '../../components/index.js'
+import { getPoems, getUsers } from '../../services/index.js'
+import { getErrorMessage, getElement } from '../../utils/index.js'
 
 window.navbar = new Navbar()
 
@@ -8,113 +14,99 @@ window.onresize = () => {
     window.navbar.resize()
 }
 
-const loadTrendingPoems = async () => {
-    try {
-        const response = await fetch(
-            `${env.LYRICAL_SERVICE_API_URL}/poems?start=0&count=5&sort=trending&order=desc`,
-            { method: 'GET' }
+const loadTrendingPoems = async (content) => {
+    const response = await getPoems({
+        start: 0,
+        count: 5,
+        sort: 'trending',
+        order: 'desc',
+    })
+
+    for (const index in response) {
+        content.appendChild(
+            new PoemCard(response[index], 'Trending', index > 0).card
         )
-
-        const json = await response.json()
-
-        if (!success(response.status)) {
-            throw json
-        }
-
-        console.log(json)
-
-        const newsSection = document.getElementById('trending')
-        for (const index in json) {
-            newsSection.appendChild(
-                new PoemCard(json[index], 'Trending', index > 0).card
-            )
-        }
-    } catch (e) {
-        console.error(getErrorMessage(e))
     }
 }
 
-const loadPoemChart = async () => {
-    try {
-        const response = await fetch(
-            `${env.LYRICAL_SERVICE_API_URL}/poems?start=0&count=5&sort=popular&order=desc`,
-            { method: 'GET' }
+const loadPoemChart = async (content) => {
+    const response = await getPoems({
+        start: 0,
+        count: 5,
+        sort: 'popular',
+        order: 'desc',
+    })
+
+    for (const index in response) {
+        content.appendChild(
+            new PoemRow(parseInt(index) + 1, response[index]).row
         )
-
-        const json = await response.json()
-
-        if (!success(response.status)) {
-            throw json
-        }
-
-        console.log(json)
-
-        const newsSection = document.getElementById('poem-chart')
-        for (const index in json) {
-            newsSection.appendChild(
-                new PoemRow(parseInt(index) + 1, json[index]).row
-            )
-        }
-    } catch (e) {
-        console.error(getErrorMessage(e))
     }
 }
 
-const loadNewPoems = async () => {
-    try {
-        const response = await fetch(
-            `${env.LYRICAL_SERVICE_API_URL}/poems?start=0&count=5&sort=new&order=desc`,
-            { method: 'GET' }
-        )
+const loadNews = async (content) => {
+    const response = await getPoems({
+        start: 0,
+        count: 5,
+        sort: 'new',
+        order: 'desc',
+    })
 
-        const json = await response.json()
-
-        if (!success(response.status)) {
-            throw json
-        }
-
-        console.log(json)
-
-        const newsSection = document.getElementById('news')
-        for (const index in json) {
-            newsSection.appendChild(
-                new PoemCard(json[index], 'News', true).card
-            )
-        }
-    } catch (e) {
-        console.error(getErrorMessage(e))
+    for (const index in response) {
+        content.appendChild(new PoemCard(response[index], 'News', true).card)
     }
 }
 
-const loadTopContributors = async () => {
-    try {
-        const response = await fetch(
-            `${env.USER_SERVICE_API_URL}/users?start=0&count=5&sort=activity&order=desc`,
-            { method: 'GET' }
+const loadTopContributors = async (content) => {
+    const response = await getUsers({
+        start: 0,
+        count: 5,
+        sort: 'activity',
+        order: 'desc',
+    })
+
+    for (const index in response) {
+        content.appendChild(
+            new UserRow(parseInt(index) + 1, response[index]).row
         )
+    }
+}
 
-        const json = await response.json()
+const loaders = {
+    trending: {
+        loader: new Loader('trending'),
+        cb: loadTrendingPoems,
+    },
+    'poem-chart': {
+        loader: new Loader('poem-chart'),
+        cb: loadPoemChart,
+    },
+    news: { loader: new Loader('news'), cb: loadNews },
+    'top-contributors': {
+        loader: new Loader('top-contributors'),
+        cb: loadTopContributors,
+    },
+}
 
-        if (!success(response.status)) {
-            throw json
-        }
+const load = async ({ loader, cb }) => {
+    const content = loader.getContent()
 
-        console.log(json)
-
-        const topContributors = document.getElementById('top-contributors')
-        for (const index in json) {
-            topContributors.appendChild(
-                new UserRow(parseInt(index) + 1, json[index]).row
-            )
-        }
+    try {
+        await cb(content)
     } catch (e) {
         console.error(getErrorMessage(e))
+        content.appendChild(
+            getElement('span', { class: 'col-xs-4 col-sm-8 col-md-12' }, [
+                document.createTextNode(getErrorMessage(e)),
+            ])
+        )
     }
+
+    loader.loaded()
 }
 
 window.onload = async () => {
-    await loadTrendingPoems()
-    await loadPoemChart()
-    await loadNewPoems()
-    await loadTopContributors()
+    for (const [_, data] of Object.entries(loaders)) {
+        load(data)
+    }
 }

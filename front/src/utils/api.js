@@ -3,6 +3,7 @@ export const success = (status) => status / 100 == 2
 
 // if key == value, it tells `getErrorMessage` to keep the original message
 const errors = {
+    1001: 'Internal server error',
     1021: 'Nickname already in use',
     1025: 'The given token is invalid',
     1027: 'Invalid credentials',
