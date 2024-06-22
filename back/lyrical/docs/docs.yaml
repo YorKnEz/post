@@ -450,7 +450,7 @@ paths:
                                     $ref: '#/components/schemas/PoemCard'
                                 description: List of matched poems
         post:
-            summary: Create a new poem or translation of a poem
+            summary: Create a new poem
             tags:
                 - poems
                 - auth

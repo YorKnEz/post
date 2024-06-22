@@ -64,39 +64,14 @@
         }
     }
 
-    &__user {
-        width: 100%;
-        margin-bottom: 1rem;
-        display: flex;
-        border-radius: 100px;
-    }
-
-    &__info {
-        display: flex;
-        flex-direction: column;
-        margin-left: 0.7rem;
-        justify-content: center;
-    }
-
-    &__pfp {
-        aspect-ratio: 1;
-        width: 2.8rem;
-        border-radius: 8px;
-        object-fit: cover;
-        object-position: top;
+    &__profile {
+        text-decoration: none;
+        color: inherit;
     }
 
     &__icon {
         width: 10%;
         cursor: pointer;
-    }
-
-    &__username {
-    }
-
-    &__role {
-        font-size: 0.65rem;
-        font-weight: 400;
     }
 
     &__separator {

@@ -9,6 +9,10 @@ export const getElement = (element, attributes = {}, children = []) => {
         elem.setAttribute(attr, value)
     }
     for (const child of children) {
+        if (!child) {
+            continue
+        }
+
         elem.appendChild(child)
     }
     return elem

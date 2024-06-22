@@ -114,7 +114,7 @@ services:
             - EMAIL_USER=$EMAIL_USER
             - EMAIL_PASS=$EMAIL_PASS
             - FRONTEND_URL=$FRONTEND_URL
-            - AUTH_SERVICE_API_URL=http://auth:$AUTH_SERVICE_PORT
+            - AUTH_SERVICE_API_URL=http://auth:$AUTH_SERVICE_PORT/api
             - IMAGE_SERVICE_API_URL=$IMAGE_SERVICE_API_URL
         volumes:
             - ./lib:/app/lib
@@ -145,7 +145,7 @@ services:
             - EMAIL_USER=$EMAIL_USER
             - EMAIL_PASS=$EMAIL_PASS
             - FRONTEND_URL=$FRONTEND_URL
-            - AUTH_SERVICE_API_URL=http://auth:$AUTH_SERVICE_PORT
+            - AUTH_SERVICE_API_URL=http://auth:$AUTH_SERVICE_PORT/api
         volumes:
             - ./lib:/app/lib
             - ./back/user:/app/back/user

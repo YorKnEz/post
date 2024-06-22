@@ -13,7 +13,9 @@ window.form = new Form(
     ['identifier', 'password'],
     async (data, setError) => {
         try {
-            await login(data)
+            const user = await login(data)
+
+            localStorage.setItem('user', JSON.stringify(user))
 
             // navigate to home after being logged in
             location.assign('/')

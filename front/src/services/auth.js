@@ -15,9 +15,16 @@ export const verify = async (token) => {
 }
 
 export const login = async (data) => {
-    await __fetch(`${API_URL}/auth/login`, {
+    return await __fetch(`${API_URL}/auth/login`, {
         method: 'POST',
         credentials: 'include',
         body: JSON.stringify(data),
+    })
+}
+
+export const logout = async () => {
+    await __fetch(`${API_URL}/auth/logout`, {
+        method: 'POST',
+        credentials: 'include',
     })
 }

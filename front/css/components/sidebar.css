@@ -88,32 +88,13 @@
 .sidebar__item:last-child {
   margin-bottom: 0;
 }
-.sidebar__user {
-  width: 100%;
-  margin-bottom: 1rem;
-  display: flex;
-  border-radius: 100px;
-}
-.sidebar__info {
-  display: flex;
-  flex-direction: column;
-  margin-left: 0.7rem;
-  justify-content: center;
-}
-.sidebar__pfp {
-  aspect-ratio: 1;
-  width: 2.8rem;
-  border-radius: 8px;
-  object-fit: cover;
-  object-position: top;
+.sidebar__profile {
+  text-decoration: none;
+  color: inherit;
 }
 .sidebar__icon {
   width: 10%;
   cursor: pointer;
-}
-.sidebar__role {
-  font-size: 0.65rem;
-  font-weight: 400;
 }
 .sidebar__separator {
   width: 100%;
