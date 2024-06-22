@@ -56,7 +56,7 @@ paths:
             summary: Get paginated poems that were authored or posted by a specified user
             description: This route returns a paginated list of poems, based on some filtering criteria
             tags:
-                - albums
+                - poems
             parameters:
                 - name: id
                   in: path
@@ -96,6 +96,52 @@ paths:
                                 items:
                                     $ref: '#/components/schemas/PoemCard'
                                 description: List of matched poems
+
+    /api/users/{id}/contributions:
+        get:
+            summary: Get paginated contributions that were made by the user
+            description: This route returns a paginated list of contributions, based on some filtering criteria, sorted by creation date of contribution
+            tags:
+                - posts
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                  description: The id of the user
+                - name: start
+                  in: query
+                  required: true
+                  schema:
+                      type: integer
+                  description: Offset of results to start from
+                - name: count
+                  in: query
+                  required: true
+                  schema:
+                      type: integer
+                  description: Number of results to return
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: object
+                                    properties:
+                                        date:
+                                            type: string
+                                            format: date-time
+                                            description: The date of the contribution
+                                        contributions:
+                                            type: array
+                                            items:
+                                                $ref: '#/components/schemas/ContributionCard'
+                                            description: List of contributions
+                                description: List of contributions, grouped by date
 
     /api/albums:
         get:
@@ -734,7 +780,7 @@ paths:
                 - poems
                 - auth
             security:
-                - cookieAuth: []
+                - cookieauth: []
             parameters:
                 - name: id
                   in: path
@@ -874,12 +920,62 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/Message'
 
+    /api/posts:
+        get:
+            summary: Get paginated posts by specified filters
+            description: This route returns a paginated list of posts, based on some filtering criteria
+            tags:
+                - posts
+            parameters:
+                - name: query
+                  in: query
+                  required: false
+                  schema:
+                      type: string
+                  description: The query string to search by
+                - name: start
+                  in: query
+                  required: true
+                  schema:
+                      type: integer
+                  description: Offset of results to start from
+                - name: count
+                  in: query
+                  required: true
+                  schema:
+                      type: integer
+                  description: Number of results to return
+                - name: sort
+                  in: query
+                  required: false
+                  schema:
+                      type: string
+                  description: The sort criteria
+                - name: order
+                  in: query
+                  required: false
+                  schema:
+                      type: string
+                  description: The order of the sorting
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/PostCard'
+                                description: List of matched posts
+
     /api/posts/{id}/reactions:
         post:
             summary: Add or remove a reaction
             tags:
                 - posts
                 - auth
+            security:
+                - cookieauth: []
             parameters:
                 - name: id
                   in: path
@@ -930,6 +1026,8 @@ paths:
             tags:
                 - posts
                 - auth
+            security:
+                - cookieauth: []
             parameters:
                 - name: id
                   in: path
@@ -1096,6 +1194,70 @@ components:
                 - likes
                 - dislikes
                 - poemsCount
+        Annotation:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: Unique identifier of the annotation
+                createdAt:
+                    type: string
+                    format: date-time
+                    description: Timestamp when the annotation has been added to the site
+                updatedAt:
+                    type: string
+                    format: date-time
+                    description: Timestamp when the annotation has been last updated on the site
+                poster:
+                    $ref: '#/components/schemas/UserCard'
+                    description: The information of the user that posted the annotation
+                content:
+                    type: string
+                    description: The content of the annotation
+                contributors:
+                    type: integer
+                    description: The number of people that contributed to this annotation
+                likes:
+                    type: integer
+                dislikes:
+                    type: integer
+            required:
+                - id
+                - createdAt
+                - updatedAt
+                - poster
+                - content
+                - likes
+                - dislikes
+        AnnotationMetadata:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: Unique identifier of the annotation
+                offset:
+                    type: integer
+                    description: The position in the content where the annotation begins
+                length:
+                    type: integer
+                    description: The length of the annotation
+            required:
+                - id
+                - offset
+                - length
+        ContributionCard:
+            allOf:
+                - anyOf:
+                      - $ref: '#/components/schemas/AlbumCard'
+                      - $ref: '#/components/schemas/Annotation'
+                      - $ref: '#/components/schemas/PoemCard'
+                - type: object
+                  properties:
+                      type:
+                          type: string
+                          description: poem, album or annotation
+                  required:
+                      - type
         Poem:
             type: object
             properties:
@@ -1228,57 +1390,18 @@ components:
             required:
                 - id
                 - language
-        Annotation:
-            type: object
-            properties:
-                id:
-                    type: integer
-                    description: Unique identifier of the annotation
-                createdAt:
-                    type: string
-                    format: date-time
-                    description: Timestamp when the annotation has been added to the site
-                updatedAt:
-                    type: string
-                    format: date-time
-                    description: Timestamp when the annotation has been last updated on the site
-                poster:
-                    $ref: '#/components/schemas/UserCard'
-                    description: The information of the user that posted the annotation
-                content:
-                    type: string
-                    description: The content of the annotation
-                contributors:
-                    type: integer
-                    description: The number of people that contributed to this annotation
-                likes:
-                    type: integer
-                dislikes:
-                    type: integer
-            required:
-                - id
-                - createdAt
-                - updatedAt
-                - poster
-                - content
-                - likes
-                - dislikes
-        AnnotationMetadata:
-            type: object
-            properties:
-                id:
-                    type: integer
-                    description: Unique identifier of the annotation
-                offset:
-                    type: integer
-                    description: The position in the content where the annotation begins
-                length:
-                    type: integer
-                    description: The length of the annotation
-            required:
-                - id
-                - offset
-                - length
+        PostCard:
+            allOf:
+                - anyOf:
+                      - $ref: '#/components/schemas/AlbumCard'
+                      - $ref: '#/components/schemas/PoemCard'
+                - type: object
+                  properties:
+                      type:
+                          type: string
+                          description: poem or album
+                  required:
+                      - type
         User:
             type: object
             properties:

@@ -133,6 +133,252 @@ begin
 end;
 $$ language plpgsql;
 
+create or replace function find_post_cards(p_filters jsonb) returns jsonb as
+$$
+declare
+    start     int  := 0;
+    count     int  := 10;
+    sort      text := 'new';
+    "order"   text := 'asc';
+    sql_query text;
+    result    jsonb;
+begin
+    if not p_filters ? 'start' or not p_filters ? 'count' then
+        raise exception '`start` and `count` are missing';
+    end if;
+
+    start := (p_filters -> 'start')::int;
+    count := (p_filters -> 'count')::int;
+
+    if p_filters ? 'sort' then
+        sort := p_filters ->> 'sort';
+    end if;
+
+    sort := case
+                when sort = 'title' then 'coalesce(av.title, pv.title)'
+                when sort = 'poster' then 'coalesce(av.poster ->> ''nickname'', pv.poster ->> ''nickname'')'
+                when sort = 'author' then 'coalesce(av.author ->> ''nickname'', pv.author ->> ''nickname'')'
+                when sort = 'publication' then 'coalesce(av.publication_date, pv.publication_date)'
+                when
+                    sort = 'popular'
+                    then
+                    '
+                        coalesce(
+                            (0.3 * av.contributions_ratio + 0.3 * av.contributors_ratio + case when av.reactions = 0 then 0 else 0.4 * (av.likes / av.reactions) end),
+                            (0.3 * pv.contributions_ratio + 0.3 * pv.contributors_ratio + case when pv.reactions = 0 then 0 else 0.4 * (pv.likes / pv.reactions) end)
+                        )
+                    '
+                when
+                    sort = 'trending'
+                    then
+                    '
+                        coalesce(
+                            (0.7 * (0.3 * av.contributions_ratio + 0.3 * av.contributors_ratio + case when av.reactions = 0 then 0 else 0.4 * (av.likes / av.reactions) end) + 0.3 * (extract(epoch from av.created_at) / extract(epoch from now()))),
+                            (0.7 * (0.3 * pv.contributions_ratio + 0.3 * pv.contributors_ratio + case when pv.reactions = 0 then 0 else 0.4 * (pv.likes / pv.reactions) end) + 0.3 * (extract(epoch from pv.created_at) / extract(epoch from now())))
+                        )
+                    '
+                else 'p.created_at'
+            end;
+
+    if p_filters ? 'order' then
+        "order" := p_filters ->> 'order';
+    end if;
+
+    "order" := case when "order" = 'desc' then 'desc' else 'asc' end;
+
+    sql_query :=
+            '
+                select jsonb_agg(e)
+                from (select case
+                                 when p.type = ''album'' then
+                                     jsonb_build_object(
+                                             ''id'', av.id,
+                                             ''type'', p.type,
+                                             ''created_at'', av.created_at,
+                                             ''updated_at'', av.updated_at,
+                                             ''poster'', av.poster,
+                                             ''author'', av.author,
+                                             ''cover'', av.cover,
+                                             ''title'', av.title,
+                                             ''publication_date'', av.publication_date,
+                                             ''contributors'', av.contributors,
+                                             ''likes'', av.likes,
+                                             ''dislikes'', av.dislikes,
+                                             ''poems_count'', poems_count
+                                     )
+                                 when p.type = ''poem'' then
+                                     jsonb_build_object(
+                                             ''id'', pv.id,
+                                             ''type'', p.type,
+                                             ''created_at'', pv.created_at,
+                                             ''updated_at'', pv.updated_at,
+                                             ''author'', pv.author,
+                                             ''poster'', pv.poster,
+                                             ''poem_id'', poem_id,
+                                             ''language'', language,
+                                             ''cover'', pv.cover,
+                                             ''title'', pv.title,
+                                             ''publication_date'', pv.publication_date,
+                                             ''main_annotation'', main_annotation,
+                                             ''contributors'', pv.contributors,
+                                             ''likes'', pv.likes,
+                                             ''dislikes'', pv.dislikes
+                                     )
+                             end e
+                      from posts p
+                               left join albums_view av on av.id = p.id
+                               left join poems_view pv on pv.id = p.id
+                      where (p.type = ''album'' and av.verified = true) or (p.type = ''poem'' and pv.verified = true) and (%s)
+                      order by %s %s
+                      offset %s limit %s) t;
+            ';
+
+    if p_filters ? 'userId' then -- when user id is used, query is ignored
+        sql_query := format(sql_query,
+                            '
+                                (p.type = ''album'' and (
+                                    (av.author ->> ''id'')::int = $1 or (av.poster ->> ''id'')::int = $1
+                                ))
+                                or
+                                (p.type = ''poem'' and (
+                                    (pv.author ->> ''id'')::int = $1 or (pv.poster ->> ''id'')::int = $1
+                                ))
+                            ', sort, "order", start, count);
+        execute sql_query into result using (p_filters ->> 'userId')::int;
+    elsif p_filters ? 'query' then
+        sql_query := format(sql_query,
+                            '
+                                (p.type = ''album'' and (
+                                    lower(av.author ->> ''nickname'') like ''%%'' || $1 || ''%%''
+                                    or lower(av.author ->> ''first_name'') like ''%%'' || $1 || ''%%''
+                                    or lower(av.author ->> ''last_name'') like ''%%'' || $1 || ''%%''
+                                    or lower(av.poster ->> ''nickname'') like ''%%'' || $1 || ''%%''
+                                    or lower(av.poster ->> ''first_name'') like ''%%'' || $1 || ''%%''
+                                    or lower(av.poster ->> ''last_name'') like ''%%'' || $1 || ''%%''
+                                    or lower(av.title) like ''%%'' || $1 || ''%%''
+                                ))
+                                or
+                                (p.type = ''poem'' and (
+                                    lower(pv.author ->> ''nickname'') like ''%%'' || $1 || ''%%''
+                                    or lower(pv.author ->> ''first_name'') like ''%%'' || $1 || ''%%''
+                                    or lower(pv.author ->> ''last_name'') like ''%%'' || $1 || ''%%''
+                                    or lower(pv.poster ->> ''nickname'') like ''%%'' || $1 || ''%%''
+                                    or lower(pv.poster ->> ''first_name'') like ''%%'' || $1 || ''%%''
+                                    or lower(pv.poster ->> ''last_name'') like ''%%'' || $1 || ''%%''
+                                    or lower(pv.title) like ''%%'' || $1 || ''%%''
+                                ))
+                            ', sort, "order", start, count);
+        execute sql_query into result using lower(trim(p_filters ->> 'query'));
+    else
+        sql_query := format(sql_query, 'true', sort, "order", start, count);
+        execute sql_query into result;
+    end if;
+
+    raise notice '%s', sql_query;
+
+    if result is null then
+        return '[]'::jsonb;
+    end if;
+
+    return result;
+end;
+$$ language plpgsql;
+
+create or replace function find_contribution_cards(p_filters jsonb) returns jsonb as
+$$
+declare
+    start  int := 0;
+    count  int := 10;
+    result jsonb;
+begin
+    if not p_filters ? 'start' or not p_filters ? 'count' then
+        raise exception '`start` and `count` are missing';
+    end if;
+
+    start := (p_filters -> 'start')::int;
+    count := (p_filters -> 'count')::int;
+
+    select jsonb_agg(e)
+    into result
+    from (select jsonb_build_object('date', created_at::date, 'contributions', json_agg(e)) e
+          from (select c.created_at,
+                       case
+                           when p.type = 'album' then
+                               jsonb_build_object(
+                                       'id', p.id,
+                                       'type', p.type,
+                                       'created_at', av.created_at,
+                                       'updated_at', av.updated_at,
+                                       'poster', av.poster,
+                                       'author', av.author,
+                                       'cover', av.cover,
+                                       'title', av.title,
+                                       'publication_date', av.publication_date,
+                                       'contributors', av.contributors,
+                                       'likes', av.likes,
+                                       'dislikes', av.dislikes,
+                                       'poems_count', av.poems_count
+                               )
+                           when p.type = 'poem' then
+                               jsonb_build_object(
+                                       'id', p.id,
+                                       'type', p.type,
+                                       'created_at', pv.created_at,
+                                       'updated_at', pv.updated_at,
+                                       'author', pv.author,
+                                       'poster', pv.poster,
+                                       'poem_id', pv.poem_id,
+                                       'language', pv.language,
+                                       'cover', pv.cover,
+                                       'title', pv.title,
+                                       'publication_date', pv.publication_date,
+                                       'main_annotation', pv.main_annotation,
+                                       'contributors', pv.contributors,
+                                       'likes', pv.likes,
+                                       'dislikes', pv.dislikes
+                               )
+                           when p.type = 'annotation' then
+                               jsonb_build_object(
+                                       'id', p.id,
+                                       'type', p.type,
+                                       'created_at', anv.created_at,
+                                       'updated_at', anv.updated_at,
+                                       'poster', anv.poster,
+                                       'content', anv.content,
+                                       'contributors', anv.contributors,
+                                       'likes', anv.likes,
+                                       'dislikes', anv.dislikes
+                               )
+                       end e
+                from contributions c
+                         join posts p on c.post_id = p.id
+                         left join albums_view av on av.id = p.id
+                         left join poems_view pv on pv.id = p.id
+                         left join annotations_view anv on anv.id = p.id
+                where (case
+                           when p_filters ? 'userId' then c.contributor_id = (p_filters ->> 'userId')::int
+                           else true
+                       end)
+                  and (case
+                           when p_filters ? 'type' then
+                               (case
+                                    when (p_filters ->> 'type') = 'pending' then p.verified = false
+                                    else p.type = p_filters ->> 'type'
+                                end)
+                           else true
+                       end)
+                order by c.created_at desc
+                offset start limit count) t
+          group by created_at::date) t;
+
+    if result is null then
+        return '[]'::jsonb;
+    end if;
+
+    return result;
+end;
+$$ language plpgsql;
+
 create or replace function find_reaction(p_post_id integer, p_user_id integer) returns jsonb as
 $$
 declare

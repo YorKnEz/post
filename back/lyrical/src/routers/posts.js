@@ -12,9 +12,27 @@ import db from '../db/index.js'
 
 export const router = new Router('Posts Router')
 
-router.middleware(authMiddleware)
+router.get('/', async (req, res) => {
+    req.query.start = parseInt(req.query.start)
+    req.query.count = parseInt(req.query.count)
 
-router.post('/:id/reactions', async (req, res) => {
+    try {
+        let result = await db.query('select find_post_cards($1)', [req.query])
+
+        return new JSONResponse(200, toCamel(result.rows[0].find_post_cards))
+    } catch (e) {
+        console.error(e)
+        return new InternalError()
+    }
+})
+
+export const auth_router = new Router('Posts Router')
+
+router.use('/', auth_router)
+
+auth_router.middleware(authMiddleware)
+
+auth_router.post('/:id/reactions', async (req, res) => {
     try {
         validate(req.body, reactionSchema)
     } catch (e) {
@@ -83,7 +101,7 @@ router.post('/:id/reactions', async (req, res) => {
     }
 })
 
-router.get('/:id/reactions/:userId', async (req, res) => {
+auth_router.get('/:id/reactions/:userId', async (req, res) => {
     if (req.params.userId != req.locals.userId) {
         return new JSONResponse(403, {
             code: ErrorCodes.UNAUTHORIZED,
