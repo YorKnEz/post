@@ -5,12 +5,10 @@ import {
     Dropdown,
     LyricsEdit,
     Navbar,
-    Search,
     Share,
 } from '../../components/index.js'
 
 window.navbar = new Navbar()
-window.searchBar = new Search()
 
 window.lyricsEdit = new LyricsEdit()
 window.autoGrow = autoGrow
@@ -34,14 +32,14 @@ window.scrollToAbout = () => {
 }
 
 document.onclick = (ev) => {
-    dropdown.disappear(ev)
-    annotation.disappearAnnotation(ev)
+    window.dropdown.disappear(ev)
+    window.annotation.disappearAnnotation(ev)
 }
 
 window.onresize = (ev) => {
-    dropdown.align()
-    annotation.align()
-    navbar.copySearchInput()
+    window.dropdown.align()
+    window.annotation.align()
+    window.navbar.resize()
 }
 
 const scrollToNewAnnotation = (annotation) => {

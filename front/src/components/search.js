@@ -1,18 +1,33 @@
+import { getElement } from '../utils/index.js'
+
 export class Search {
-    constructor() {}
+    constructor(id, style = 'nav') {
+        this.id = id
+        this.input = getElement('input', {
+            id: id + '_input',
+            class: 'search__input',
+            placeholder: 'Search',
+            onkeydown: this.handleKeyDown,
+        })
+
+        this.inner = getElement(
+            'div',
+            {
+                id,
+                class: `search ${style == 'nav' ? 'search--nav nav__item' : 'search--sidebar'}`,
+            },
+            [
+                getElement('i', {
+                    class: `fa-solid fa-magnifying-glass ${style == 'nav' ? 'search__icon' : 'sidebar__icon'}`,
+                    onclick: this.search,
+                }),
+                this.input,
+            ]
+        )
+    }
 
     search = () => {
-        const searchInput = Array.from(
-            document.getElementsByClassName('search')
-        )
-            .filter(
-                (element) => window.getComputedStyle(element).display != 'none'
-            )[0]
-            .querySelector('.search__input')
-
-        //const searchInput = document.getElementById('searchInput')
-
-        console.log(searchInput.value)
+        console.log(this.input.value)
     }
 
     handleKeyDown = (event) => {

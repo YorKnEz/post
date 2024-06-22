@@ -1,25 +1,54 @@
-import { toggleTheme } from '../utils/index.js'
+import { getElement, toggleTheme } from '../utils/index.js'
+import { Search, Sidebar } from './index.js'
 
 export class Navbar {
     constructor() {
-        this.sidebar = document.getElementById('sidebar')
+        this.search = new Search('search', 'nav')
 
-        this.navSearchInput =
-            document.getElementsByClassName('search__input')[0]
-        this.sideSearchInput =
-            document.getElementsByClassName('search__input')[1]
+        this.inner = getElement('nav', { id: 'nav', class: 'nav' }, [
+            getElement('div', { class: 'nav__item' }, [
+                getElement(
+                    'button',
+                    { class: 'nav__button', onclick: this.toggleMenu },
+                    [getElement('i', { class: 'fa-solid fa-bars' })]
+                ),
+                getElement('a', { href: '/', class: 'nav__brand' }, [
+                    document.createTextNode('PoST'),
+                ]),
+            ]),
+            this.search.inner,
+            getElement('div', { class: 'nav__buttons nav__item' }, [
+                getElement('a', { class: 'nav__button', href: '/add-poem' }, [
+                    getElement('i', { class: 'fa-solid fa-plus' }),
+                ]),
+                getElement('a', { class: 'nav__button', href: '/rss' }, [
+                    getElement('i', { class: 'fa-solid fa-rss' }),
+                ]),
+                getElement(
+                    'button',
+                    { class: 'nav__button', onclick: this.changeTheme },
+                    [getElement('i', { class: 'fa-solid fa-sun' })]
+                ),
+            ]),
+        ])
+
+        this.sidebar = new Sidebar()
 
         this.previousWindowWidth = window.innerWidth
+
+        // attach components
+        document.getElementById('nav').replaceWith(this.inner)
+        document.getElementById('sidebar').replaceWith(this.sidebar.inner)
     }
 
     toggleMenu = () => {
         //const sidebar = document.getElementById('sidebar')
-        const sidebarRect = this.sidebar.getBoundingClientRect()
+        const sidebarRect = this.sidebar.inner.getBoundingClientRect()
 
         if (sidebarRect.left != 0) {
-            this.sidebar.style.left = '0px'
+            this.sidebar.inner.style.left = '0px'
         } else {
-            this.sidebar.style.left = '-300px'
+            this.sidebar.inner.style.left = '-300px'
         }
     }
 
@@ -27,14 +56,21 @@ export class Navbar {
         toggleTheme()
     }
 
-    copySearchInput = () => {
+    resize = () => {
+        // from big to small screen
         if (window.innerWidth <= 599 && 599 < this.previousWindowWidth) {
-            console.log(this.navSearchInput.value)
-            this.sideSearchInput.value = this.navSearchInput.value
+            ;[this.search.input.value, this.sidebar.search.input.value] = [
+                this.sidebar.search.input.value,
+                this.search.input.value,
+            ]
         }
 
+        // from small to big screen
         if (this.previousWindowWidth <= 599 && 599 < window.innerWidth) {
-            this.navSearchInput.value = this.sideSearchInput.value
+            ;[this.search.input.value, this.sidebar.search.input.value] = [
+                this.sidebar.search.input.value,
+                this.search.input.value,
+            ]
         }
 
         this.previousWindowWidth = window.innerWidth

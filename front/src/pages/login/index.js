@@ -1,12 +1,11 @@
-import { Form, Navbar, Search } from '../../components/index.js'
+import { Form, Navbar } from '../../components/index.js'
 import env from '../../env.js'
 import { getErrorMessage, success } from '../../utils/index.js'
 
 window.navbar = new Navbar()
-window.searchBar = new Search()
 
 window.onresize = () => {
-    window.navbar.copySearchInput()
+    window.navbar.resize()
 }
 
 window.form = new Form(

@@ -1,10 +1,9 @@
-import { Form, Navbar, Search } from '../../components/index.js'
+import { Form, Navbar } from '../../components/index.js'
 
 window.navbar = new Navbar()
-window.searchBar = new Search()
 
 window.onresize = () => {
-    navbar.copySearchInput()
+    window.navbar.resize()
 }
 
 window.form = new Form(

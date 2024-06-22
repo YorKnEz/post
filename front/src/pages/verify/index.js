@@ -1,13 +1,12 @@
-import { Loader, Navbar, Search } from '../../components/index.js'
+import { Loader, Navbar } from '../../components/index.js'
 import env from '../../env.js'
 import { getErrorMessage, success } from '../../utils/index.js'
 
 window.navbar = new Navbar()
-window.searchBar = new Search()
 window.loader = new Loader('loader')
 
 window.onresize = () => {
-    window.navbar.copySearchInput()
+    window.navbar.resize()
 }
 
 window.onload = async () => {

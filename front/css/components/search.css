@@ -35,5 +35,10 @@
     display: none;
   }
 }
+@media only screen and (max-width: 599px) {
+  .search--nav {
+    display: none;
+  }
+}
 
 /*# sourceMappingURL=search.css.map */

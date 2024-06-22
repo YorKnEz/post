@@ -629,6 +629,50 @@
     grid-column-start: 12;
   }
 }
+:root {
+  --primary: #ffc857;
+  --secondary: #55868c;
+  --gradient-1: #32a852;
+  --gradient-2: #7132a8;
+  --text-white: #eee;
+  --text-full-white: #fff;
+  --text-black: #111;
+  --text-full-black: #000;
+  --highlight: #ccc;
+  --active-highlight: #32a85250;
+}
+
+.theme-dark {
+  --primary: #55868c;
+  --secondary: #ffc857;
+  --gradient-1: #7132a8;
+  --gradient-2: #32a852;
+  --text-white: #111;
+  --text-full-white: #000;
+  --text-black: #eee;
+  --text-full-black: #fff;
+  --highlight: #333;
+  --active-highlight: #7132a850;
+}
+
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 700;
+  src: url("/assets/fonts/Montserrat-Bold.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 500;
+  src: url("/assets/fonts/Montserrat-Medium.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 400;
+  src: url("/assets/fonts/Montserrat-Regular.ttf") format("truetype");
+}
 .nav {
   position: sticky;
   top: 0px;
@@ -684,50 +728,6 @@
   .nav__item:nth-child(3) {
     display: none;
   }
-}
-:root {
-  --primary: #ffc857;
-  --secondary: #55868c;
-  --gradient-1: #32a852;
-  --gradient-2: #7132a8;
-  --text-white: #eee;
-  --text-full-white: #fff;
-  --text-black: #111;
-  --text-full-black: #000;
-  --highlight: #ccc;
-  --active-highlight: #32a85250;
-}
-
-.theme-dark {
-  --primary: #55868c;
-  --secondary: #ffc857;
-  --gradient-1: #7132a8;
-  --gradient-2: #32a852;
-  --text-white: #111;
-  --text-full-white: #000;
-  --text-black: #eee;
-  --text-full-black: #fff;
-  --highlight: #333;
-  --active-highlight: #7132a850;
-}
-
-@font-face {
-  font-family: "Montserrat";
-  font-style: normal;
-  font-weight: 700;
-  src: url("/assets/fonts/Montserrat-Bold.ttf") format("truetype");
-}
-@font-face {
-  font-family: "Montserrat";
-  font-style: normal;
-  font-weight: 500;
-  src: url("/assets/fonts/Montserrat-Medium.ttf") format("truetype");
-}
-@font-face {
-  font-family: "Montserrat";
-  font-style: normal;
-  font-weight: 400;
-  src: url("/assets/fonts/Montserrat-Regular.ttf") format("truetype");
 }
 .sidebar {
   position: fixed;
@@ -863,6 +863,11 @@
     display: none;
   }
 }
+@media only screen and (max-width: 599px) {
+  .search--nav {
+    display: none;
+  }
+}
 body {
   margin: 0;
   font-family: "Montserrat", sans-serif;
@@ -901,6 +906,11 @@ i {
   object-fit: cover;
 }
 
+.footer {
+  background-color: var(--text-black);
+  height: 400px;
+}
+
 .poemCard {
   width: 100%;
   display: flex;
@@ -909,6 +919,7 @@ i {
   align-items: center;
   padding: 0.5rem 0 0.5rem 0;
   margin-bottom: 2rem;
+  text-decoration: none;
 }
 .poemCard__type {
   font-size: 0.5rem;
@@ -1000,42 +1011,6 @@ i {
     display: block;
   }
 }
-.poemRow {
-  width: 100%;
-  float: left;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.poemRow h3 {
-  margin: 0;
-}
-.poemRow h4 {
-  margin: 0;
-  font-weight: 500;
-}
-.poemRow__image {
-  width: 10%;
-  aspect-ratio: 1;
-  margin-right: 1rem;
-}
-.poemRow__image--heading {
-  height: 0;
-}
-.poemRow__views {
-  font-size: 0.8rem;
-  font-weight: 400;
-  color: grey;
-}
-
-@media only screen and (max-width: 300px) {
-  .poemRow__image {
-    display: none;
-  }
-  .poemRow__author {
-    display: none;
-  }
-}
 @media only screen and (max-width: 299px) {
   .poemCard--small .poemCard__description {
     display: none;
@@ -1044,76 +1019,70 @@ i {
     display: none;
   }
 }
-.userRow {
-  width: 100%;
-  float: left;
+.table {
   display: flex;
-  justify-content: flex-start;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.table__row {
+  display: grid;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+  color: inherit;
+}
+.table__row--top {
+  font-weight: bold;
+}
+.table__row--top-contributors {
+  grid-template-columns: 3rem minmax(0, 1fr) 4rem;
+}
+.table__row--poem-chart {
+  grid-template-columns: 3rem minmax(0, 1fr) 10% 15%;
+}
+.table__row div {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-row__score {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-small-card {
+  display: flex;
   align-items: center;
 }
-.userRow > div h3, .userRow > div h4 {
-  margin: 0;
-}
-.userRow__image {
-  width: 10%;
+.user-small-card__image {
+  width: 3.5rem;
   aspect-ratio: 1;
   margin-right: 1rem;
 }
-.userRow__score {
-  margin-left: auto;
+.user-small-card__info {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
-.userRow__role {
+.user-small-card__name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 1rem;
+}
+.user-small-card__role {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-size: 0.8rem;
   font-weight: 400;
   color: grey;
 }
 
 @media only screen and (max-width: 300px) {
-  .userRow__image {
-    display: none;
-  }
-}
-.listing {
-  display: flex;
-  flex-direction: column;
-  margin: 0 0 5rem 0;
-}
-.listing ol {
-  padding: 0 1rem;
-  line-gap-override: 0;
-}
-.listing ol a {
-  text-decoration: none;
-  color: var(--text-black);
-}
-.listing__item {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid var(--text-black);
-}
-.listing__item:nth-child(2) {
-  margin-top: 0;
-}
-.listing__item:last-child {
-  margin-bottom: 0;
-}
-.listing__item--heading {
-  font-size: 0.7rem;
-}
-.listing__position {
-  width: 15%;
-  align-self: center;
-}
-.listing__date {
-  width: fit-content;
-  font-size: 0.8rem;
-  font-weight: 400;
-}
-
-@media only screen and (max-width: 600px) {
-  .listing__item--heading {
+  .user-small-card__image {
     display: none;
   }
 }

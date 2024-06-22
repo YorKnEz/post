@@ -629,6 +629,50 @@
     grid-column-start: 12;
   }
 }
+:root {
+  --primary: #ffc857;
+  --secondary: #55868c;
+  --gradient-1: #32a852;
+  --gradient-2: #7132a8;
+  --text-white: #eee;
+  --text-full-white: #fff;
+  --text-black: #111;
+  --text-full-black: #000;
+  --highlight: #ccc;
+  --active-highlight: #32a85250;
+}
+
+.theme-dark {
+  --primary: #55868c;
+  --secondary: #ffc857;
+  --gradient-1: #7132a8;
+  --gradient-2: #32a852;
+  --text-white: #111;
+  --text-full-white: #000;
+  --text-black: #eee;
+  --text-full-black: #fff;
+  --highlight: #333;
+  --active-highlight: #7132a850;
+}
+
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 700;
+  src: url("/assets/fonts/Montserrat-Bold.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 500;
+  src: url("/assets/fonts/Montserrat-Medium.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 400;
+  src: url("/assets/fonts/Montserrat-Regular.ttf") format("truetype");
+}
 .nav {
   position: sticky;
   top: 0px;
@@ -684,50 +728,6 @@
   .nav__item:nth-child(3) {
     display: none;
   }
-}
-:root {
-  --primary: #ffc857;
-  --secondary: #55868c;
-  --gradient-1: #32a852;
-  --gradient-2: #7132a8;
-  --text-white: #eee;
-  --text-full-white: #fff;
-  --text-black: #111;
-  --text-full-black: #000;
-  --highlight: #ccc;
-  --active-highlight: #32a85250;
-}
-
-.theme-dark {
-  --primary: #55868c;
-  --secondary: #ffc857;
-  --gradient-1: #7132a8;
-  --gradient-2: #32a852;
-  --text-white: #111;
-  --text-full-white: #000;
-  --text-black: #eee;
-  --text-full-black: #fff;
-  --highlight: #333;
-  --active-highlight: #7132a850;
-}
-
-@font-face {
-  font-family: "Montserrat";
-  font-style: normal;
-  font-weight: 700;
-  src: url("/assets/fonts/Montserrat-Bold.ttf") format("truetype");
-}
-@font-face {
-  font-family: "Montserrat";
-  font-style: normal;
-  font-weight: 500;
-  src: url("/assets/fonts/Montserrat-Medium.ttf") format("truetype");
-}
-@font-face {
-  font-family: "Montserrat";
-  font-style: normal;
-  font-weight: 400;
-  src: url("/assets/fonts/Montserrat-Regular.ttf") format("truetype");
 }
 .sidebar {
   position: fixed;
@@ -863,6 +863,11 @@
     display: none;
   }
 }
+@media only screen and (max-width: 599px) {
+  .search--nav {
+    display: none;
+  }
+}
 body {
   margin: 0;
   font-family: "Montserrat", sans-serif;
@@ -899,6 +904,11 @@ i {
   border-radius: 5px;
   filter: blur(0px) grayscale(40%) contrast(130%);
   object-fit: cover;
+}
+
+.footer {
+  background-color: var(--text-black);
+  height: 400px;
 }
 
 .annotation {
@@ -1217,11 +1227,6 @@ i {
 }
 .poem__annotated--active {
   background-color: var(--active-highlight);
-}
-
-.footer {
-  background-color: var(--text-black);
-  height: 400px;
 }
 
 @media (max-width: 1239px) {

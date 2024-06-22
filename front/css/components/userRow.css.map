@@ -1,1 +1,1 @@
-{"version":3,"sourceRoot":"","sources":["../../src/components/userRow.scss"],"names":[],"mappings":"AAAA;EACI;EACA;EAEA;EACA;EACA;;AAGQ;EACI;;AAIZ;EACI;EACA;EACA;;AAGJ;EAEI;;AAMJ;EACI;EACA;EACA;;;AAIR;EACI;IACI","file":"userRow.css"}
+{"version":3,"sourceRoot":"","sources":["../../src/components/userRow.scss"],"names":[],"mappings":"AACI;EACI;EACA;EACA","file":"userRow.css"}

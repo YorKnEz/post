@@ -1,9 +1,10 @@
 @import 'common/layout.scss';
-@import 'common/navbar.scss';
 @import 'common/theme.scss';
 @import 'common/typography.scss';
-@import 'common/sidebar.scss';
-@import 'common/search.scss';
+
+@import 'components/navbar.scss';
+@import 'components/sidebar.scss';
+@import 'components/search.scss';
 
 body {
     margin: 0;
@@ -12,10 +13,6 @@ body {
     font-size: 1rem;
     background-color: var(--text-white);
     color: var(--text-black);
-
-    // hr {
-    //     margin: 10rem 0;
-    // }
 }
 
 i {
@@ -47,4 +44,9 @@ i {
         filter:blur(0px) grayscale(40%) contrast(130%);
         object-fit: cover;
     }
+}
+
+.footer {
+    background-color: var(--text-black);
+    height: 400px;
 }

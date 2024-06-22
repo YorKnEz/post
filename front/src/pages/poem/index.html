@@ -11,70 +11,10 @@
 
 <body>
     <nav class="nav" id="nav">
-        <div class="nav__item">
-            <button class="nav__button">
-                <i class="fa-solid fa-bars" onclick="navbar.toggleMenu()"></i>
-            </button>
-            <a href="/" class="nav__brand">PoST</a>
-        </div>
-
-        <div class="search nav__item" id="search">
-            <i class="fa-solid fa-magnifying-glass search__icon" onclick="searchBar.search()"></i>
-            <input class="search__input" placeholder="Search" type="text" id="searchInput"
-                onkeydown="searchBar.handleKeyDown(event)">
-        </div>
-
-        <div class="nav__buttons nav__item" id="buttons">
-            <a class="nav__button" href="/add-poem">
-                <i class="fa-solid fa-plus"></i>
-            </a>
-            <a class="nav__button" href="/rss">
-                <i class="fa-solid fa-rss"></i>
-            </a>
-            <button class="nav__button">
-                <i class="fa-solid fa-sun" onclick="navbar.changeTheme()"></i>
-            </button>
-        </div>
     </nav>
     <nav class="sidebar" id="sidebar">
-        <div class="sidebar__user">
-            <img class="sidebar__pfp" src="/assets/avatar.png" alt="Profile picture of user">
-            <div class="sidebar__info">
-                <span class="sidebar__username">Eminem</span>
-                <span class="sidebar__role">Poet</span>
-            </div>
-        </div>
-        <div class="search search--sidebar" id="search2">
-            <i class="fa-solid fa-magnifying-glass sidebar__icon" onclick="searchBar.search()"></i>
-            <input class="search__input" placeholder="Search" type="text" id="searchInput2"
-                onkeydown="searchBar.handleKeyDown(event)">
-        </div>
-        <!-- <div class="sidebar__toggle"></div> -->
-        <a class="sidebar__item" href="/login">
-            <i class="fa-solid fa-right-to-bracket sidebar__icon"></i><span>Log in</span>
-        </a>
-        <a class="sidebar__item" href="/register">
-            <i class="fa-solid fa-user-plus sidebar__icon"></i>
-            <span>Register</span>
-        </a>
-        <a class="sidebar__item sidebar__item--nav" href="/add-poem">
-            <i class="fa-solid fa-plus sidebar__icon"></i>
-            <span>Add Poem</span>
-        </a>
-        <a class="sidebar__item sidebar__item--nav" href="/rss" onclick="navbar.showRss()">
-            <i class="fa-solid fa-rss sidebar__icon"></i>
-            <span>RSS</span>
-        </a>
-        <div class="sidebar__separator"></div>
-        <button class="sidebar__item sidebar__item--button">
-            <i class="fa-solid fa-right-from-bracket sidebar__icon"></i>
-            <span>Log Out</span>
-        </button>
-        <button class="sidebar__item sidebar__item--button sidebar__item--nav" onclick="navbar.changeTheme()">
-            <i class="fa-solid fa-sun sidebar__icon"></i>
-            <span>Toggle Theme</span>
-        </button>
     </nav>
+
     <header class="container gradient">
         <div class="row">
             <div class="col-xs-4 col-sm-3 col-md-4 col-lg-5 poem__avatar-container">
@@ -105,6 +45,7 @@
             </div>
         </div>
     </header>
+
     <main class="container poem__content">
         <div class="row">
             <div class="col-xs-4 col-sm-8 col-md-12 poem__controls">
@@ -454,6 +395,7 @@
             </aside>
         </div>
     </main>
+
     <div class="container gradient">
         <div class="row">
             <section id="about" class="col-xs-4 col-sm-4 col-md-7 annotation">
@@ -565,6 +507,7 @@
             </section>
         </div>
     </div>
+
     <footer class="container footer"></footer>
 
     <script type="module" src="/src/pages/poem/index.js"></script>

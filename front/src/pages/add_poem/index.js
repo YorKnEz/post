@@ -1,15 +1,9 @@
-import {
-    Navbar,
-    Search,
-    SuggestionInput,
-    Form,
-} from '../../components/index.js'
+import { Navbar, SuggestionInput, Form } from '../../components/index.js'
 
 window.navbar = new Navbar()
-window.searchBar = new Search()
 
 window.onresize = () => {
-    navbar.copySearchInput()
+    window.navbar.resize()
 }
 
 window.byInput = new SuggestionInput('by', 'by-suggestions')

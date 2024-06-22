@@ -1,16 +1,15 @@
-import { Form, Modal, Navbar, Search } from '../../components/index.js'
+import { Form, Modal, Navbar } from '../../components/index.js'
 import env from '../../env.js'
 import { getErrorMessage, success } from '../../utils/index.js'
 
 window.navbar = new Navbar()
-window.searchBar = new Search()
 window.modal = new Modal('modal', () => {
     // navigate to login page when modal is closed
     location.assign('/login')
 })
 
 window.onresize = () => {
-    window.navbar.copySearchInput()
+    window.navbar.resize()
 }
 
 window.form = new Form(
