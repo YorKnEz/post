@@ -1,0 +1,138 @@
+.poemCard {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0 0.5rem 0;
+    margin-bottom: 2rem;
+    text-decoration: none;
+
+    &__type {
+        font-size: 0.5rem;
+        text-transform: uppercase;
+        font-weight: bold;
+    }
+
+    &--border_top {
+        border-right: none;
+        border-top: 0.025rem solid var(--text-black);
+    }
+
+    &--border_right {
+        border-top: none;
+        border-right: 0.025rem solid var(--text-black);
+    }
+
+    &__image {
+        border: #36353750 0.5pt solid;
+        //height: 100%;
+        width: 40%;
+        aspect-ratio: 1;
+        margin-left: 1rem;
+        object-fit: cover;
+        object-position: top;
+    }
+
+    &__text {
+        align-self: flex-start;
+        //padding: 1rem;
+        //margin-left: 20px;
+        color: var(--text-black);
+        margin: 0;
+    }
+
+    &__title {
+        font-weight: 600;
+        font-size: 1rem;
+        //margin-bottom: 10%;
+    }
+
+    &__description {
+        margin-top: 10%;
+        font-size: 0.7rem;
+        display: block;
+        max-height: 4rem;
+    }
+
+    &__author {
+        font-size: 0.6rem;
+        margin-bottom: 10%;
+    }
+
+    &__date {
+        color: gray;
+        font-size: 0.6rem;
+        margin-bottom: 10%;
+    }
+
+    h2 {
+        margin: 0;
+    }
+
+    &--small {
+        flex-direction: column;
+        padding: 0 8% 0 0;
+        width: calc(100% - 0.5rem);
+        aspect-ratio: 1;
+        //border-right: 1px solid black;
+        margin: 0 0 2rem;
+
+        &:last-child {
+            border: none;
+            padding: none;
+        }
+
+        .poemCard__image {
+            width: 100%;
+            aspect-ratio: 1;
+            margin: 1rem 0 0 0;
+        }
+
+        .poemCard__description {
+            display: none;
+        }
+    }
+
+    &--xs {
+        justify-content: flex-start;
+    }
+}
+
+@media only screen and (max-width: 599px) {
+    .poemCard {
+        width: calc(100% - 1rem);
+        flex-direction: column;
+        margin: 2rem 0 0 0;
+        padding: 0;
+        border: none;
+    }
+
+    .poemCard__image {
+        width: 100%;
+        margin: 3rem 0 0 0;
+    }
+
+    .poemCard--small {
+        .poemCard__image {
+            margin: 3rem 0 0 0;
+        }
+
+        .poemCard__description {
+            display: block;
+        }
+    }
+}
+
+
+@media only screen and (max-width: 299px) {
+    .poemCard--small {
+        .poemCard__description {
+            display: none;
+        }
+    }
+
+    .poemCard__description {
+        display: none;
+    }
+}

@@ -1,0 +1,46 @@
+.user-small-card {
+    display: flex;
+    align-items: center;
+
+    &__image {
+        width: 3.5rem;
+        margin-right: 1rem;
+
+        aspect-ratio: 1;
+        background-size: cover;
+        background-position: center;
+        object-fit: cover;
+        border-radius: 100%;
+    }
+
+    &__info {
+        overflow: hidden;
+
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__name {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        font-size: 1rem;
+    }
+
+    &__role {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        font-size: 0.8rem;
+        font-weight: 400;
+        color: grey;
+    }
+}
+
+@media only screen and (max-width: 300px) {
+    .user-small-card__image {
+        display: none;
+    }
+}

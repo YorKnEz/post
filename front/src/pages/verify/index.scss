@@ -1,0 +1,28 @@
+@import '../../index.scss';
+
+@import '../../components/button.scss';
+@import '../../components/input.scss';
+@import '../../components/form.scss';
+@import '../../components/modal.scss';
+@import '../../components//loader/loader.scss';
+
+.verify-message {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+
+    &__content {
+        box-sizing: border-box;
+
+        max-height: 70vh;
+        padding: 1rem;
+        background-color: var(--text-white);
+        border-radius: 10px;
+        border: 1px solid var(--text-black);
+
+        h1 {
+            margin-top: 0;
+        }
+    }
+}

@@ -1,0 +1,454 @@
+openapi: 3.0.0
+info:
+    title: Auth Service
+    version: 1.0.0
+    description: Auth Service API Documentation
+
+paths:
+    /api/auth/register:
+        post:
+            summary: Register an account
+            description: This route registers a new user to our database
+            tags:
+                - auth
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                firstName:
+                                    type: string
+                                    description: The first name of the user
+                                lastName:
+                                    type: string
+                                    description: The last name of the user
+                                nickname:
+                                    type: string
+                                    description: The nickname of the user
+                                avatar:
+                                    type: string
+                                    description: The URL of the user's avatar
+                                email:
+                                    type: string
+                                    description: The email of the user
+                                password:
+                                    type: string
+                                    description: The password in plaintext
+                            required:
+                                - firstName
+                                - lastName
+                                - nickname
+                                - avatar
+                                - email
+                                - password
+            responses:
+                '201':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/User'
+                '400':
+                    description: Invalid data
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+
+    /api/auth/verify:
+        post:
+            summary: Verify an account
+            description: Upon registration, a user must call this route with the provided token in order to verify it's account
+            tags:
+                - auth
+            parameters:
+                - name: token
+                  in: query
+                  required: true
+                  schema:
+                      type: string
+                  description: The verification token
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+                '404':
+                    description: The token provided doesn't exist
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+
+    /api/auth/login:
+        post:
+            summary: Login to account
+            description: This route logins the user in their account, returning a session token through cookies. Identifier is either the email or nickname of the user
+            tags:
+                - auth
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - identifier
+                                - password
+                            properties:
+                                identifier:
+                                    type: string
+                                    description: The email or nickname of the user
+                                password:
+                                    type: string
+                                    description: The password in plaintext
+            responses:
+                '200':
+                    description: Successful response
+                    headers:
+                        Set-Cookie:
+                            description: This header contains the session token
+                            schema:
+                                type: string
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UserCard'
+                '400':
+                    description: Invalid data
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+                '401':
+                    description: Invalid credentials provided
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+
+    /api/auth/authenticated:
+        post:
+            summary: Verify that a given token is indeed valid
+            description: This route is used by services that must check the authenticity of a token given by a user
+            tags:
+                - auth
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - token
+                            properties:
+                                token:
+                                    type: string
+                                    description: The token to validate
+            responses:
+                '200':
+                    description: The token is valid
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                required:
+                                    - userId
+                                    - userRoles
+                                properties:
+                                    userId:
+                                        type: integer
+                                        description: The id of the token's owner
+                                    userRoles:
+                                        type: integer
+                                        description: The roles of the token's owner
+                '401':
+                    description: The token is not valid
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+
+    /api/auth/logout:
+        post:
+            summary: Logout of account
+            description: This route logouts the user from their account, destroying the existing session
+            tags:
+                - auth
+            responses:
+                '200':
+                    description: Successful response
+                    headers:
+                        Set-Cookie:
+                            description: This header contains deletes the existing session cookie
+                            schema:
+                                type: string
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+                '400':
+                    description: The user is not authenticated or the token given is invalid
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+
+    /api/auth/request-change:
+        post:
+            summary: Send a credentials change request to the server
+            description: This route will initiate a credential change process on the specified resource by sending a confirmation email to the user
+            tags:
+                - auth
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - email
+                                - type
+                            properties:
+                                email:
+                                    type: string
+                                    description: The email of the user
+                                type:
+                                    type: string
+                                    description: The resource to change, can be one of email, nickname, password
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+                '400':
+                    description: Invalid data
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+
+    /api/auth/change-email:
+        post:
+            summary: Step 2 in the email changing process
+            description: This route will send a confirmation email to the new email provided in order to validate the authenticity of it. Until that email is accessed, the old email remains valid, after validating the new one, the old one is deleted.
+            tags:
+                - auth
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - email
+                                - token
+                            properties:
+                                email:
+                                    type: string
+                                    description: The new email of the user
+                                token:
+                                    type: string
+                                    description: The token received in the email from the preivous step (change request)
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+                '400':
+                    description: Invalid data
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+
+    /api/auth/change-nickname:
+        post:
+            summary: Changes the nickname of the user
+            description: This route will change the nickname of the user with the one provided, checking if it is unique and valid
+            tags:
+                - auth
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - email
+                            properties:
+                                nickname:
+                                    type: string
+                                    description: The new nickname of the user
+                                token:
+                                    type: string
+                                    description: The token received in the email from the preivous step (change request)
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+                '400':
+                    description: Invalid data
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+
+    /api/auth/change-password:
+        post:
+            summary: Changes the password of the user
+            description: This route will change the password of the user with the one provided, checking if it is valid
+            tags:
+                - auth
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - email
+                            properties:
+                                password:
+                                    type: string
+                                    description: The new password of the user, in plaintext
+                                token:
+                                    type: string
+                                    description: The token received in the email from the preivous step (change request)
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+                '400':
+                    description: Invalid data
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+        
+components:
+    schemas:
+        Message:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    description: The code of the message received (an error or a success message)
+                message:
+                    type: string
+                    description: The english message associated with the code
+            required:
+                - code
+        User:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: Unique identifier for the user
+                createdAt:
+                    type: string
+                    format: date-time
+                    description: Timestamp when the user was created
+                updatedAt:
+                    type: string
+                    format: date-time
+                    description: Timestamp when the user was last updated
+                firstName:
+                    type: string
+                    description: First name of the user
+                lastName:
+                    type: string
+                    description: Last name of the user
+                nickname:
+                    type: string
+                    description: Nickname of the user
+                avatar:
+                    type: string
+                    description: URL of the user's avatar
+                roles:
+                    type: integer
+                    description: Roles assigned to the user
+                albumsCount:
+                    type: integer
+                    description: Count of albums created by the user
+                albumsContributions:
+                    type: integer
+                    description: Number of albums the user has contributed to
+                createdPoemsCount:
+                    type: integer
+                    description: Count of poems created by the user
+                translatedPoemsCount:
+                    type: integer
+                    description: Count of poems translated by the user
+                poemsContributions:
+                    type: integer
+                    description: Number of poems the user has contributed to
+                annotationsCount:
+                    type: integer
+                    description: Count of annotations created by the user
+                annotationsContributions:
+                    type: integer
+                    description: Number of annotations the user has contributed to
+            required:
+                - id
+                - createdAt
+                - updatedAt
+                - firstName
+                - lastName
+                - nickname
+                - avatar
+                - roles
+                - albumsCount
+                - albumsContributions
+                - poemsContributions
+                - createdPoemsCount
+                - translatedPoemsCount
+                - annotationsCount
+                - annotationsContributions
+        UserCard:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: Unique identifier for the user
+                firstName:
+                    type: string
+                    description: First name of the user
+                lastName:
+                    type: string
+                    description: Last name of the user
+                nickname:
+                    type: string
+                    description: Nickname of the user
+                avatar:
+                    type: string
+                    description: URL of the user's avatar
+                roles:
+                    type: integer
+                    description: Roles assigned to the user
+                contributions:
+                    type: integer
+                    description: The contributions of the user
+            required:
+                - id
+                - firstName
+                - lastName
+                - nickname
+                - avatar
+                - roles
+                - contributions
+                - message

@@ -1,40 +1,46 @@
 import dotenv from 'dotenv'
+import fs from 'fs'
 
-import { App, WebServer } from '../../lib/routing/index.js'
+import { App, WebServer } from 'web-lib'
 
 dotenv.config()
 
-const hostname = process.env.HOST
-const port = process.env.PORT
+const app = new App({
+    key: fs.readFileSync('./cert.key'),
+    cert: fs.readFileSync('./cert.pem'),
+})
 
 const web_routes = {
-    '/css': { '*': 'css' },
+    '/assets': { '\\*': 'assets' },
+    '/css': { '\\*': 'css' },
     '/docs': {
         '': 'docs/index.html',
-        '*': 'docs',
+        '\\*': 'docs',
     },
-    '/fonts': { '*': 'fonts' },
-    '/img': { '*': 'img' },
-    '/js': { '*': 'js' },
-    '/favicon.ico': 'favicon.ico',
-    '/': 'pages/index.html',
-    '/add_poem': 'pages/add_poem/index.html',
-    '/dashboard': 'pages/dashboard/index.html',
-    '/login': 'pages/login/index.html',
-    '/poem': 'pages/poem/index.html',
-    '/profile': 'pages/profile/index.html',
-    '/register': 'pages/register/index.html',
-    '/reset-password': 'pages/reset-password/index.html',
+    '/favicon.ico': 'assets/favicon.ico',
+    '': 'src/pages/home/index.html',
+    '/add-poem': 'src/pages/add_poem/index.html',
+    '/dashboard': 'src/pages/dashboard/index.html',
+    '/login': 'src/pages/login/index.html',
+    '/poem/\\w+': 'src/pages/poem/index.html',
+    '/profile': 'src/pages/profile/index.html',
+    '/register': 'src/pages/register/index.html',
+    '/reset-password': 'src/pages/reset_password/index.html',
+    '/verify': 'src/pages/verify/index.html',
+    '/src': { '\\*': 'src' },
 }
 
-const app = new App()
-
-app.add(
+app.use(
+    '/',
     new WebServer(process.env.CONTENT_LOCATION, web_routes, {
-        env: { TEST: 'testy' },
+        envLocation: `${process.env.CONTENT_LOCATION}/src/env.js`,
+        env: {
+            AUTH_SERVICE_API_URL: process.env.AUTH_SERVICE_API_URL,
+            IMAGE_SERVICE_API_URL: process.env.IMAGE_SERVICE_API_URL,
+            LYRICAL_SERVICE_API_URL: process.env.LYRICAL_SERVICE_API_URL,
+            USER_SERVICE_API_URL: process.env.USER_SERVICE_API_URL,
+        },
     })
 )
 
-app.listen(port, hostname, () => {
-    console.log(`Server running at http://${hostname}:${port}/`)
-})
+app.listen(process.env.PORT, process.env.HOST)

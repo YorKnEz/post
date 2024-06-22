@@ -1,0 +1,96 @@
+@import '../components/user/userSmallCard.scss';
+
+.sidebar {
+    position: fixed;
+    z-index: 998;
+    left: -300px;
+    top: 48px;
+    height: calc(100vh - 48px - 1rem);
+    width: 250px;
+    padding: 0 1rem 1rem 1rem;
+    font-size: 0.8rem;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow-y: scroll;
+    overflow-x: none;
+
+    background: linear-gradient(var(--primary), var(--gradient-1));
+    transition: left 0.4s ease;
+
+    &__toggle {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+
+        right: -10px;
+        background-color: black;
+    }
+
+    &__item {
+        text-decoration: none;
+        background-color: transparent;
+        border: none;
+        color: inherit;
+        padding: 0.6rem 1rem;
+        border-radius: 100px;
+        width: calc(100% - 2rem);
+        font: inherit;
+        text-align: start;
+        margin: 0.2rem 0;
+
+        display: flex;
+        align-items: center;
+
+        &--button {
+            width: 100%;
+        }
+
+        &--active {
+            background-color: #00000010;
+        }
+
+        &:hover {
+            background-color: #00000010;
+        }
+
+        &:first-child {
+            margin-top: 0;
+        }
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    &__profile {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    &__icon {
+        width: 10%;
+        cursor: pointer;
+    }
+
+    &__separator {
+        width: 100%;
+        height: 1px;
+        background-color: var(--text-black);
+        margin-top: auto;
+    }
+}
+
+@media only screen and (max-width: 300px) {
+    .sidebar {
+        width: calc(100vw - 2rem);
+        left: -300px;
+    }
+}
+
+@media only screen and (min-width: 300px) {
+    .sidebar__item--nav {
+        display: none;
+    }
+}

@@ -1,0 +1,36 @@
+.modal {
+  box-sizing: border-box;
+  width: 300px;
+  max-height: 70vh;
+  padding: 1rem;
+  background-color: var(--text-white);
+  border-radius: 10px;
+  border: 1px solid var(--text-black);
+}
+.modal__overlay {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.3137254902);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+}
+.modal__header {
+  display: flex;
+  flex-direction: row;
+  border-bottom: 1;
+}
+.modal__title {
+  flex: 1;
+  text-overflow: ellipsis;
+  margin: 0;
+}
+.modal__hr {
+  margin: 1rem 0;
+}
+
+/*# sourceMappingURL=modal.css.map */

@@ -1,0 +1,299 @@
+openapi: 3.0.0
+info:
+    title: User Service
+    version: 1.0.0
+    description: User Service API Documentation
+
+paths:
+    /api/users:
+        get:
+            summary: Get paginated users by specified filters
+            description: This route returns a paginated list of users, based on some filtering criteria
+            tags:
+                - users
+            parameters:
+                - name: query
+                  in: query
+                  required: false
+                  schema:
+                      type: string
+                  description: The query string to search by
+                - name: start
+                  in: query
+                  required: true
+                  schema:
+                      type: integer
+                  description: Offset of results to start from
+                - name: count
+                  in: query
+                  required: true
+                  schema:
+                      type: integer
+                  description: Number of results to return
+                - name: sort
+                  in: query
+                  required: false
+                  schema:
+                      type: string
+                  description: The sort criteria
+                - name: order
+                  in: query
+                  required: false
+                  schema:
+                      type: string
+                  description: The order of the sorting
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/UserCard'
+                                description: List of matched users
+        post:
+            summary: Create a new user
+            tags:
+                - users
+                - TODO
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - nickname
+                                - newEmail
+                                - roles
+                                - verified
+                                - passwordHash
+                                - passwordSalt
+                            properties:
+                                firstName:
+                                    type: string
+                                    description: The first name of the user
+                                lastName:
+                                    type: string
+                                    description: The last name of the user
+                                nickname:
+                                    type: string
+                                    description: The nickname of the user
+                                newEmail:
+                                    type: string
+                                    description: The email of the user
+                                passwordHash:
+                                    type: string
+                                    description: The hash of the password of the user
+                                passwordSalt:
+                                    type: string
+                                    description: The salt of the password of the user
+            responses:
+                '201':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/User'
+
+    /api/users/{id}:
+        get:
+            summary: Get user by id
+            tags:
+                - users
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                  description: Id of the user
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/User'
+                '404':
+                    description: User not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+        patch:
+            summary: Update some of the user state
+            description: Update the first name and/or last name of the user
+            tags:
+                - users
+                - TODO
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                  description: Id of the user
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                firstName:
+                                    type: string
+                                    description: The first name of the user
+                                lastName:
+                                    type: string
+                                    description: The last name of the user
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/User'
+                '404':
+                    description: User not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+        delete:
+            summary: Delete a user and it's work by id
+            tags:
+                - users
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                  description: Id of the user
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+                '404':
+                    description: User not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+
+components:
+    schemas:
+        Message:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    description: The code of the message received (an error or a success message)
+                message:
+                    type: string
+                    description: The english message associated with the code
+            required:
+                - code
+        User:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: Unique identifier for the user
+                createdAt:
+                    type: string
+                    format: date-time
+                    description: Timestamp when the user was created
+                updatedAt:
+                    type: string
+                    format: date-time
+                    description: Timestamp when the user was last updated
+                firstName:
+                    type: string
+                    description: First name of the user
+                lastName:
+                    type: string
+                    description: Last name of the user
+                nickname:
+                    type: string
+                    description: Nickname of the user
+                avatar:
+                    type: string
+                    description: URL of the user's avatar
+                roles:
+                    type: integer
+                    description: Roles assigned to the user
+                albumsCount:
+                    type: integer
+                    description: Count of albums created by the user
+                albumsContributions:
+                    type: integer
+                    description: Number of albums the user has contributed to
+                createdPoemsCount:
+                    type: integer
+                    description: Count of poems created by the user
+                translatedPoemsCount:
+                    type: integer
+                    description: Count of poems translated by the user
+                poemsContributions:
+                    type: integer
+                    description: Number of poems the user has contributed to
+                annotationsCount:
+                    type: integer
+                    description: Count of annotations created by the user
+                annotationsContributions:
+                    type: integer
+                    description: Number of annotations the user has contributed to
+            required:
+                - id
+                - createdAt
+                - updatedAt
+                - firstName
+                - lastName
+                - nickname
+                - avatar
+                - roles
+                - albumsCount
+                - albumsContributions
+                - poemsContributions
+                - createdPoemsCount
+                - translatedPoemsCount
+                - annotationsCount
+                - annotationsContributions
+        UserCard:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: Unique identifier for the user
+                firstName:
+                    type: string
+                    description: First name of the user
+                lastName:
+                    type: string
+                    description: Last name of the user
+                nickname:
+                    type: string
+                    description: Nickname of the user
+                avatar:
+                    type: string
+                    description: URL of the user's avatar
+                roles:
+                    type: integer
+                    description: Roles assigned to the user
+                contributions:
+                    type: integer
+                    description: The contributions of the user
+            required:
+                - id
+                - firstName
+                - lastName
+                - nickname
+                - avatar
+                - roles
+                - contributions
