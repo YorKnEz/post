@@ -14,11 +14,17 @@
     </nav>
     <nav class="sidebar" id="sidebar">
     </nav>
+
     <header class="container gradient"></header>
+
     <main class="container">
         <h1>Add a new poem</h1>
-        <form id="form" class="row">
+        <form id="form" class="row" enctype="multipart/form-data">
             <div class="col-xs-4 col-sm-4 col-md-6 form">
+                <div class="form__item">
+                    <label for="cover" class="form__label form__label--uppercase">Cover</label>
+                    <input type="file" accept="image/*" id="cover" name="cover" placeholder="Cover" class="form__input">
+                </div>
                 <div class="form__item">
                     <label for="by" class="form__label form__label--uppercase">By</label>
                     <input autocomplete="off" id="by" name="by" placeholder="By" class="form__input">
@@ -34,11 +40,12 @@
                 </div>
                 <div class="form__item">
                     <label for="lyrics" class="form__label form__label--uppercase">Lyrics</label>
-                    <textarea id="lyrics" name="lyrics" placeholder="Lyrics" class="form__input form__textarea"></textarea>
+                    <textarea id="lyrics" name="lyrics" placeholder="Lyrics"
+                        class="form__input form__textarea"></textarea>
                 </div>
                 <div class="form__item">
                     <label for="date" class="form__label form__label--uppercase">Date</label>
-                    <input id="date" name="date" type="date" class="form__input">
+                    <input id="date" name="date" type="date" placeholder="Date" class="form__input">
                 </div>
                 <div class="form__item">
                     <label for="album" class="form__label form__label--uppercase">Album</label>
@@ -48,13 +55,15 @@
             </div>
             <section class="col-xs-4 col-sm-4 col-md-6 guide">
                 <h3 class="guide__title">Guide</h3>
-                <p>Start completing the fields BY and ALBUM and use the auto-suggested names if they match the thing you're looking for.</p>
+                <p>Start completing the fields BY and ALBUM and use the auto-suggested names if they match the thing
+                    you're looking for.</p>
                 <p>You can expand the LYRICS box as much as you need.</p>
             </section>
             <span class="col-xs-4 col-sm-8 col-md-12 form__error hidden"></span>
             <button class="col-xs-4 col-sm-8 col-md-12 btn form__submit">Create</button>
         </form>
     </main>
+
     <footer class="container footer"></footer>
 
     <script type="module" src="/src/pages/add_poem/index.js"></script>

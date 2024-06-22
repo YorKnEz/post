@@ -1,10 +1,9 @@
 @import '../../index.scss';
 
-@import '../../components/listing.scss';
-@import '../../components/userRow.scss';
-@import '../../components/dropdown.scss';
-@import '../../components/poemCard.scss';
 @import '../../components/button.scss';
+@import '../../components/dropdown.scss';
+@import '../../components/poem/poemCard.scss';
+@import '../../components/user/userRow.scss';
 
 main {
     margin-top: 5rem;

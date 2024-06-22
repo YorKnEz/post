@@ -4,18 +4,20 @@ export class Form {
         this.error = this.form.getElementsByClassName('form__error')[0]
         this.submitter = this.form.getElementsByClassName('form__submit')[0]
 
-        this.fields = fields
+        this.fields = fields.reduce((obj, field) => {
+            obj[field] = document.getElementById(field)
+            return obj
+        }, {})
 
         // trigger error clearing on fields update
-        for (const field of fields) {
-            document
-                .getElementById(field)
-                .addEventListener('input', this.clearError)
+        for (const [_, input] of Object.entries(this.fields)) {
+            input.addEventListener('input', this.clearError)
         }
 
-        if (this.fields.includes('password')) {
-            const password = document.getElementById('password')
-            const confirmPassword = document.getElementById('confirmPassword')
+        if (this.fields.password) {
+            const password = this.fields.password
+            const confirmPassword = this.fields.confirmPassword
+
             document.getElementById('password-toggler').onclick = (ev) => {
                 password.type =
                     password.type == 'password' ? 'text' : 'password'
@@ -39,16 +41,24 @@ export class Form {
             const data = {}
 
             // all fields are required
-            for (const field of this.fields) {
-                const { value, placeholder } = document.getElementById(field)
+            for (const [field, input] of Object.entries(this.fields)) {
+                if (input.type == 'file') {
+                    if (input.files.length == 0) {
+                        this.setError(`Field ${field} cannot be empty`)
 
-                if (value.length == 0) {
-                    this.setError(`${placeholder} field cannot be empty`)
+                        return
+                    }
 
-                    return
+                    data[field] = input.files[0]
+                } else {
+                    if (input.value.length == 0) {
+                        this.setError(`Field ${field} cannot be empty`)
+
+                        return
+                    }
+
+                    data[field] = input.value
                 }
-
-                data[field] = value
             }
 
             await onsubmit(data, this.setError)
