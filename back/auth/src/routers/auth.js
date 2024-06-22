@@ -209,7 +209,7 @@ router.post('/login', async (req, res) => {
         res.setCookie(
             { token },
             {
-                domain: process.env.HOST,
+                domain: process.env.PUBLIC_DOMAIN,
                 path: '/',
                 secure: true,
                 sameSite: 'Strict',
@@ -275,7 +275,7 @@ router.post('/logout', async (req, res) => {
             [req.cookies.token]
         )
 
-        if (result.rows.length == 0) {
+        if (result.rows.rowCount == 1) {
             return new JSONResponse(400, {
                 code: ErrorCodes.NOT_AUTHENTICATED,
                 message: 'You are not logged in',
@@ -285,11 +285,12 @@ router.post('/logout', async (req, res) => {
         res.setCookie(
             { token: '' },
             {
-                domain: process.env.HOST,
+                domain: process.env.PUBLIC_DOMAIN,
                 path: '/',
                 secure: true,
                 sameSite: 'Strict',
                 httpOnly: true,
+                maxAge: 0,
             }
         )
         return new JSONResponse(200, {
