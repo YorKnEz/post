@@ -1,6 +1,6 @@
 import { Navbar, SuggestionInput, Form } from '../../components/index.js'
-import env from '../../env.js'
-import { getErrorMessage, success } from '../../utils/api.js'
+import { uploadImage } from '../../services/index.js'
+import { getErrorMessage } from '../../utils/index.js'
 
 window.navbar = new Navbar()
 
@@ -21,18 +21,9 @@ window.form = new Form('form', ['cover'], async (data, setError) => {
         const formData = new FormData()
         formData.append('image', data.cover)
 
-        const response = await fetch(`${env.IMAGE_SERVICE_API_URL}/images`, {
-            method: 'POST',
-            body: formData,
-        })
+        const { url } = await uploadImage(formData)
 
-        const json = await response.json()
-
-        if (!success(response.status)) {
-            throw json
-        }
-
-        console.log(response, json)
+        console.log(url)
     } catch (e) {
         setError(getErrorMessage(e))
     }

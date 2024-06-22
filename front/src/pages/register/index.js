@@ -1,6 +1,6 @@
 import { Form, Modal, Navbar } from '../../components/index.js'
-import env from '../../env.js'
-import { getErrorMessage, success } from '../../utils/index.js'
+import { register } from '../../services/index.js'
+import { getErrorMessage } from '../../utils/index.js'
 
 window.navbar = new Navbar()
 window.modal = new Modal('modal', () => {
@@ -28,17 +28,10 @@ window.form = new Form(
             return
         }
 
+        delete data.confirmPassword
+
         try {
-            const response = await fetch(`${env.API_URL}/auth/register`, {
-                method: 'POST',
-                body: JSON.stringify(data),
-            })
-
-            const json = await response.json()
-
-            if (!success(response.status)) {
-                throw json
-            }
+            await register(data)
 
             window.modal.open()
         } catch (e) {

@@ -1,6 +1,3 @@
-// check if status code is in [200, 300) by checking 3rd digit value
-export const success = (status) => status / 100 == 2
-
 // if key == value, it tells `getErrorMessage` to keep the original message
 const errors = {
     1001: 'Internal server error',
