@@ -26,7 +26,7 @@ begin
 
     sort := case
                 when sort = 'activity' then
-                    '(u.albums_contributions + u.poems_contributions + u.annotations_contributions)'
+                    '(albums_contributions + poems_contributions + annotations_contributions)'
                 else 'created_at'
             end;
 
@@ -39,15 +39,15 @@ begin
     sql_query :=
             '
                 select jsonb_agg(e)
-                from (select jsonb_build_object(''id'', u.id,
-                                                ''first_name'', u.first_name,
-                                                ''last_name'', u.last_name,
-                                                ''nickname'', u.nickname,
-                                                ''avatar'', u.avatar,
-                                                ''roles'', u.roles
-                                                ''contributions'', (u.albums_contributions + u.poems_contributions + u.annotations_contributions)) e
-                      from users u
-                      where u.verified = true and (%s)
+                from (select jsonb_build_object(''id'', id,
+                                                ''first_name'', first_name,
+                                                ''last_name'', last_name,
+                                                ''nickname'', nickname,
+                                                ''avatar'', avatar,
+                                                ''roles'', roles,
+                                                ''contributions'', (albums_contributions + poems_contributions + annotations_contributions)) e
+                      from users
+                      where verified = true and (%s)
                       order by %s %s
                       offset %s limit %s) t;
             ';
@@ -55,9 +55,9 @@ begin
     if p_filters ? 'query' then
         sql_query := format(sql_query,
                             '
-                                lower(e ->> ''nickname'') like ''%%'' || $1 || ''%%''
-                                or lower(e ->> ''first_name'') like ''%%'' || $1 || ''%%''
-                                or lower(e ->> ''last_name'') like ''%%'' || $1 || ''%%''
+                                lower(nickname) like ''%%'' || $1 || ''%%''
+                                or lower(first_name) like ''%%'' || $1 || ''%%''
+                                or lower(last_name) like ''%%'' || $1 || ''%%''
                             ', sort, "order", start, count);
         execute sql_query into result using lower(trim(p_filters ->> 'query'));
     else
@@ -79,24 +79,24 @@ declare
     result jsonb;
 begin
     select jsonb_build_object(
-                   'id', u.id,
-                   'created_at', u.created_at,
-                   'updated_at', u.updated_at,
-                   'first_name', u.first_name,
-                   'last_name', u.last_name,
-                   'nickname', u.nickname,
-                   'avatar', u.avatar,
-                   'roles', u.roles,
-                   'albums_count', u.albums_count,
-                   'albums_contributions', u.albums_contributions,
-                   'created_poems_count', u.created_poems_count,
-                   'translated_poems_count', u.translated_poems_count,
-                   'poems_contributions', u.poems_contributions,
-                   'annotations_count', u.annotations_count,
-                   'annotations_contributions', u.annotations_contributions
+                   'id', id,
+                   'created_at', created_at,
+                   'updated_at', updated_at,
+                   'first_name', first_name,
+                   'last_name', last_name,
+                   'nickname', nickname,
+                   'avatar', avatar,
+                   'roles', roles,
+                   'albums_count', albums_count,
+                   'albums_contributions', albums_contributions,
+                   'created_poems_count', created_poems_count,
+                   'translated_poems_count', translated_poems_count,
+                   'poems_contributions', poems_contributions,
+                   'annotations_count', annotations_count,
+                   'annotations_contributions', annotations_contributions
            )
     into result
-    from users u
+    from users
     where id = p_id;
 
     if result is null then
@@ -113,16 +113,16 @@ declare
     result jsonb;
 begin
     select jsonb_build_object(
-                   'id', u.id,
-                   'first_name', u.first_name,
-                   'last_name', u.last_name,
-                   'nickname', u.nickname,
-                   'avatar', u.avatar,
-                   'roles', u.roles,
-                   'contributions', (u.albums_contributions + u.poems_contributions + u.annotations_contributions)
+                   'id', id,
+                   'first_name', first_name,
+                   'last_name', last_name,
+                   'nickname', nickname,
+                   'avatar', avatar,
+                   'roles', roles,
+                   'contributions', (albums_contributions + poems_contributions + annotations_contributions)
            )
     into result
-    from users u
+    from users
     where id = p_id;
 
     if result is null then
@@ -132,8 +132,6 @@ begin
     return result;
 end;
 $$ language plpgsql;
-
-
 
 create or replace function find_reaction(p_post_id integer, p_user_id integer) returns jsonb as
 $$
