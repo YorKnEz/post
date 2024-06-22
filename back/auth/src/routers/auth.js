@@ -217,8 +217,16 @@ router.post('/login', async (req, res) => {
             }
         )
         return new JSONResponse(200, {
-            code: SuccessCodes.LOGGED_IN,
-            message: 'Logged in successfully',
+            id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            nickname: user.nickname,
+            avatar: user.avatar,
+            roles: user.roles,
+            contributions:
+                user.albumsContributions +
+                user.poemsContributions +
+                user.annotationsContributions,
         })
     } catch (e) {
         if (e instanceof JSONResponse) {

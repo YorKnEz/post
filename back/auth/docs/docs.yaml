@@ -117,7 +117,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/Message'
+                                $ref: '#/components/schemas/UserCard'
                 '400':
                     description: Invalid data
                     content:
@@ -353,74 +353,102 @@ components:
                     description: The english message associated with the code
             required:
                 - code
-                - message
         User:
             type: object
             properties:
                 id:
                     type: integer
                     description: Unique identifier for the user
-                roles:
-                    type: integer
-                    description: Roles assigned to the user
-                nickname:
-                    type: string
-                    description: Nickname of the user
-                lastName:
-                    type: string
-                    description: Last name of the user
                 createdAt:
                     type: string
                     format: date-time
                     description: Timestamp when the user was created
-                firstName:
-                    type: string
-                    description: First name of the user
                 updatedAt:
                     type: string
                     format: date-time
                     description: Timestamp when the user was last updated
-                poemsCount:
+                firstName:
+                    type: string
+                    description: First name of the user
+                lastName:
+                    type: string
+                    description: Last name of the user
+                nickname:
+                    type: string
+                    description: Nickname of the user
+                avatar:
+                    type: string
+                    description: URL of the user's avatar
+                roles:
                     type: integer
-                    description: Count of poems created by the user
+                    description: Roles assigned to the user
                 albumsCount:
                     type: integer
                     description: Count of albums created by the user
-                annotationsCount:
-                    type: integer
-                    description: Count of annotations created by the user
-                poemsContributions:
-                    type: integer
-                    description: Number of poems the user has contributed to
                 albumsContributions:
                     type: integer
                     description: Number of albums the user has contributed to
-                createdLyricsCount:
+                createdPoemsCount:
                     type: integer
-                    description: Count of lyrics created by the user
-                lyricsContributions:
+                    description: Count of poems created by the user
+                translatedPoemsCount:
                     type: integer
-                    description: Number of lyrics the user has contributed to
-                translatedLyricsCount:
+                    description: Count of poems translated by the user
+                poemsContributions:
                     type: integer
-                    description: Count of lyrics translated by the user
+                    description: Number of poems the user has contributed to
+                annotationsCount:
+                    type: integer
+                    description: Count of annotations created by the user
                 annotationsContributions:
                     type: integer
                     description: Number of annotations the user has contributed to
             required:
                 - id
-                - roles
-                - nickname
-                - lastName
                 - createdAt
-                - firstName
                 - updatedAt
-                - poemsCount
+                - firstName
+                - lastName
+                - nickname
+                - avatar
+                - roles
                 - albumsCount
-                - annotationsCount
-                - poemsContributions
                 - albumsContributions
-                - createdLyricsCount
-                - lyricsContributions
-                - translatedLyricsCount
+                - poemsContributions
+                - createdPoemsCount
+                - translatedPoemsCount
+                - annotationsCount
                 - annotationsContributions
+        UserCard:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: Unique identifier for the user
+                firstName:
+                    type: string
+                    description: First name of the user
+                lastName:
+                    type: string
+                    description: Last name of the user
+                nickname:
+                    type: string
+                    description: Nickname of the user
+                avatar:
+                    type: string
+                    description: URL of the user's avatar
+                roles:
+                    type: integer
+                    description: Roles assigned to the user
+                contributions:
+                    type: integer
+                    description: The contributions of the user
+            required:
+                - id
+                - firstName
+                - lastName
+                - nickname
+                - avatar
+                - roles
+                - contributions
+                - message
