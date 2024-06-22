@@ -14,7 +14,7 @@ export const registerSchema = {
         max: 32,
         regex: /^[a-zA-Z0-9]*$/,
     },
-    cover: {
+    avatar: {
         optional: true,
     },
     email: {

@@ -17,12 +17,6 @@ paths:
                     application/json:
                         schema:
                             type: object
-                            required:
-                                - firstName
-                                - lastName
-                                - nickname
-                                - email
-                                - password
                             properties:
                                 firstName:
                                     type: string
@@ -33,12 +27,22 @@ paths:
                                 nickname:
                                     type: string
                                     description: The nickname of the user
+                                avatar:
+                                    type: string
+                                    description: The URL of the user's avatar
                                 email:
                                     type: string
                                     description: The email of the user
                                 password:
                                     type: string
                                     description: The password in plaintext
+                            required:
+                                - firstName
+                                - lastName
+                                - nickname
+                                - avatar
+                                - email
+                                - password
             responses:
                 '201':
                     description: Successful response

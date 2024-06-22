@@ -37,11 +37,12 @@ router.post('/register', async (req, res) => {
         // validate the user data
         validate(req.body, registerSchema)
     } catch (e) {
+        console.error(e)
         return new JSONResponse(400, e.obj())
     }
 
-    if (!req.body.cover) {
-        req.body.cover = `${process.env.IMAGE_SERVICE_API_URL}/images/default-avatar`
+    if (!req.body.avatar) {
+        req.body.avatar = `${process.env.IMAGE_SERVICE_API_URL}/images/default-avatar`
     }
 
     // check if the nickname exists
@@ -65,11 +66,12 @@ router.post('/register', async (req, res) => {
 
             // TODO: maybe call user service to do this step
             let result = await client.query(
-                'insert into users(first_name, last_name, nickname, cover, new_email, password_hash, password_salt) values($1, $2, $3, $4, $5, $6) returning *',
+                'insert into users(first_name, last_name, nickname, avatar, new_email, password_hash, password_salt) values($1, $2, $3, $4, $5, $6) returning *',
                 [
                     req.body.firstName,
                     req.body.lastName,
                     req.body.nickname,
+                    req.body.avatar,
                     req.body.email,
                     pass.hash,
                     pass.salt,
