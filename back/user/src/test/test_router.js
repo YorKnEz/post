@@ -1,4 +1,4 @@
-import { JSONResponse, Router } from '../../../lib/routing/index.js'
+import { JSONResponse, Router } from '../../../../lib/routing/index.js'
 
 export const router = new Router('Test Router', '/api/test')
 

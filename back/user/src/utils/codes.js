@@ -1,4 +1,4 @@
-import { JSONResponse } from '../../../lib/routing/index.js'
+import { JSONResponse } from '../../../../lib/routing/index.js'
 
 // Error codes to use in API responses
 export const ErrorCodes = Object.freeze({
