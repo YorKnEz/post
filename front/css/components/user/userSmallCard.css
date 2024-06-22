@@ -4,8 +4,12 @@
 }
 .user-small-card__image {
   width: 3.5rem;
-  aspect-ratio: 1;
   margin-right: 1rem;
+  aspect-ratio: 1;
+  background-size: cover;
+  background-position: center;
+  object-fit: cover;
+  border-radius: 100%;
 }
 .user-small-card__info {
   overflow: hidden;

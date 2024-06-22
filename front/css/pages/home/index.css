@@ -729,6 +729,44 @@
     display: none;
   }
 }
+.user-small-card {
+  display: flex;
+  align-items: center;
+}
+.user-small-card__image {
+  width: 3.5rem;
+  margin-right: 1rem;
+  aspect-ratio: 1;
+  background-size: cover;
+  background-position: center;
+  object-fit: cover;
+  border-radius: 100%;
+}
+.user-small-card__info {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.user-small-card__name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 1rem;
+}
+.user-small-card__role {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: grey;
+}
+
+@media only screen and (max-width: 300px) {
+  .user-small-card__image {
+    display: none;
+  }
+}
 .sidebar {
   position: fixed;
   z-index: 998;
@@ -1077,8 +1115,12 @@ i {
 }
 .user-small-card__image {
   width: 3.5rem;
-  aspect-ratio: 1;
   margin-right: 1rem;
+  aspect-ratio: 1;
+  background-size: cover;
+  background-position: center;
+  object-fit: cover;
+  border-radius: 100%;
 }
 .user-small-card__info {
   overflow: hidden;
