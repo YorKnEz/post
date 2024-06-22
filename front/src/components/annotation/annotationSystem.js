@@ -1,4 +1,5 @@
-import { CreateAnnotation, AnnotationCard, AnnotationClickEvent } from './index.js'
+import { AnnotationClickEvent } from '../events/index.js'
+import { CreateAnnotation, AnnotationCard } from './index.js'
 
 export class AnnotationButton {
     constructor(annotate) {
