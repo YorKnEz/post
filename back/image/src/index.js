@@ -2,9 +2,7 @@
 import env from './utils/env.js'
 
 import { App, WebServer, getCorsMiddleware } from 'web-lib'
-import {
-    images_router
-} from './routers/index.js'
+import { images_router } from './routers/index.js'
 
 const hostname = process.env.HOST
 const port = process.env.PORT
