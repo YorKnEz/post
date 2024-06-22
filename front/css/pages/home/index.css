@@ -1019,6 +1019,31 @@ i {
     display: none;
   }
 }
+.poem-row {
+  display: flex;
+  align-items: center;
+}
+.poem-row__image {
+  width: 3.5rem;
+  aspect-ratio: 1;
+  margin-right: 1rem;
+}
+.poem-row__info {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.poem-row__text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media only screen and (max-width: 300px) {
+  .poem-row__image {
+    display: none;
+  }
+}
 .table {
   display: flex;
   flex-direction: column;
@@ -1041,12 +1066,6 @@ i {
   grid-template-columns: 3rem minmax(0, 1fr) 10% 15%;
 }
 .table__row div {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.user-row__score {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1086,6 +1105,12 @@ i {
     display: none;
   }
 }
+.user-row__score {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .news {
   margin-top: 2rem;
 }

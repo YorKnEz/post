@@ -1,4 +1,4 @@
-import { getElement } from "../utils/index.js";
+import { getElement, getUserRole } from '../../utils/index.js'
 
 export class UserSmallCard {
     constructor(user) {

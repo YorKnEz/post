@@ -1,9 +1,9 @@
 @import '../../index.scss';
 
-@import '../../components/poemCard.scss';
-@import '../../components/userRow.scss';
-@import '../../components/listing.scss';
-@import '../../components/userSmallCard.scss';
+@import '../../components/poem/poemCard.scss';
+@import '../../components/poem/poemRow.scss';
+@import '../../components/table.scss';
+@import '../../components/user/userRow.scss';
 
 .news {
     margin-top: 2rem;
