@@ -87,8 +87,6 @@ const loaders = {
 const load = async ({ loader, cb }) => {
     const content = loader.getContent()
 
-    console.log(content)
-
     try {
         await cb(content)
     } catch (e) {

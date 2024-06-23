@@ -23,7 +23,7 @@ export class PoemCard {
                         ]),
                         getElement('span', { class: 'card__description' }, [
                             document.createTextNode(
-                                data.mainAnnotation.content.slice(0, 100)
+                                data.mainAnnotation.content
                             ),
                         ]),
                     ]),
