@@ -3,6 +3,7 @@
     flex-direction: column;
     width: 100%;
     font-size: 0.9rem;
+    row-gap: 1rem;
 
     &--lyrics {
         margin-bottom: 1rem;
@@ -17,35 +18,14 @@
 
     &__buttons {
         display: flex;
+        gap: 1rem;
         margin-bottom: 1rem;
-    }
-
-    &__margin {
-        margin: 0 0.5rem;
-
-        &:first-child {
-            margin-left: 0;
-        }
-
-        &:last-child {
-            margin-right: 0;
-        }
     }
 
     &__row {
         display: flex;
         align-items: center;
         width: 100%;
-
-        margin: 0.5rem 0;
-
-        &:first-child {
-            margin-top: 0;
-        }
-
-        &:last-child {
-            margin-bottom: 0;
-        }
     }
 
     &__label {
@@ -55,8 +35,5 @@
     &__input {
         font-size: 0.8rem;
         flex-grow: 1;
-    }
-
-    &__button {
     }
 }

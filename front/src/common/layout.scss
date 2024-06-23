@@ -47,7 +47,8 @@ $layouts: (
     // @media only screen and (min-width: map.get($layout, 'min-width')) and (max-width: map.get($layout, 'max-width')) {
     @media only screen and (min-width: map.get($layout, 'min-width')) {
         .container {
-            width: calc(100% - 2 * map.get($layout, 'padding'));
+            box-sizing: border-box;
+            width: 100%;
             padding: 0 map.get($layout, 'padding');
         }
 

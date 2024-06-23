@@ -70,20 +70,11 @@
     }
 
     &__controls {
+        display: flex;
+        gap: 0.8rem;
+
         font-size: 0.8rem;
         margin: 1rem 0;
-    }
-
-    &__control {
-        margin: 0 0.4rem;
-
-        &:first-child {
-            margin-left: 0;
-        }
-
-        &:last-child {
-            margin-right: 0;
-        }
     }
 
     &__buttons {

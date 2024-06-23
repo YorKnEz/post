@@ -3,6 +3,7 @@
   flex-direction: column;
   width: 100%;
   font-size: 0.9rem;
+  row-gap: 1rem;
 }
 .share--lyrics {
   margin-bottom: 1rem;
@@ -15,28 +16,13 @@
 }
 .share__buttons {
   display: flex;
+  gap: 1rem;
   margin-bottom: 1rem;
-}
-.share__margin {
-  margin: 0 0.5rem;
-}
-.share__margin:first-child {
-  margin-left: 0;
-}
-.share__margin:last-child {
-  margin-right: 0;
 }
 .share__row {
   display: flex;
   align-items: center;
   width: 100%;
-  margin: 0.5rem 0;
-}
-.share__row:first-child {
-  margin-top: 0;
-}
-.share__row:last-child {
-  margin-bottom: 0;
 }
 .share__label {
   width: fit-content;

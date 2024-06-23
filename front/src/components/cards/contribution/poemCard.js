@@ -8,7 +8,7 @@ export class PoemCard {
                     `${user.nickname} ${data.contribution} the poem`
                 ),
             ]),
-            getElement('a', { class: 'contr-card-post', href: `/poems/${data.id}` }, [
+            getElement('a', { class: 'contr-card-post', href: `/poem/${data.id}` }, [
                 getElement('img', {
                     src: data.cover,
                     alt: `cover of ${data.title}`,

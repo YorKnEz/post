@@ -1,11 +1,11 @@
 export * from './annotation/index.js'
 export * from './cards/index.js'
 export * from './loader/index.js'
+export * from './lyrics/index.js'
 export * from './rows/index.js'
 
 export * from './dropdown.js'
 export * from './form.js'
-export * from './lyricsEdit.js'
 export * from './modal.js'
 export * from './navbar.js'
 export * from './search.js'

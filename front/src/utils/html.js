@@ -1,4 +1,9 @@
-export const getElement = (element, attributes = {}, children = []) => {
+export const getElement = (
+    element,
+    attributes = {},
+    children = [],
+    clone = false
+) => {
     const elem = document.createElement(element)
     for (const [attr, value] of Object.entries(attributes)) {
         if (attr == 'onclick') {
@@ -13,7 +18,11 @@ export const getElement = (element, attributes = {}, children = []) => {
             continue
         }
 
-        elem.appendChild(child)
+        if (clone) {
+            elem.appendChild(child.cloneNode(true))
+        } else {
+            elem.appendChild(child)
+        }
     }
     return elem
 }

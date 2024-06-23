@@ -14,7 +14,6 @@
   font-weight: bold;
 }
 .card__image {
-  border: rgba(54, 53, 55, 0.3137254902) 0.5pt solid;
   width: 40%;
   aspect-ratio: 1;
   background-size: cover;
