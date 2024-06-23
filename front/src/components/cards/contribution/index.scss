@@ -1,0 +1,41 @@
+.contr-card {
+    display: flex;
+    flex-direction: column;
+
+    background-color: var(--text-full-white);
+    padding: 1rem;
+    gap: 0.4rem;
+
+    &__description {}
+}
+
+.contr-card-post {
+    display: flex;
+    gap: 0.6rem;
+
+    color: inherit;
+    text-decoration: none;
+
+    &__image {
+        width: 3rem;
+
+        aspect-ratio: 1;
+        background-size: cover;
+        background-position: center;
+        object-fit: cover;
+    }
+
+    &__info {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    &__title {
+        font-weight: 600;
+    }
+
+    &__author {
+        font-size: 0.8rem;
+    }
+}

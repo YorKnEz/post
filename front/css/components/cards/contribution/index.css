@@ -1,0 +1,33 @@
+.contr-card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--text-full-white);
+  padding: 1rem;
+  gap: 0.4rem;
+}
+.contr-card-post {
+  display: flex;
+  gap: 0.6rem;
+  color: inherit;
+  text-decoration: none;
+}
+.contr-card-post__image {
+  width: 3rem;
+  aspect-ratio: 1;
+  background-size: cover;
+  background-position: center;
+  object-fit: cover;
+}
+.contr-card-post__info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.contr-card-post__title {
+  font-weight: 600;
+}
+.contr-card-post__author {
+  font-size: 0.8rem;
+}
+
+/*# sourceMappingURL=index.css.map */

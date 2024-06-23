@@ -14,7 +14,7 @@ export class Loader {
         //     document.createTextNode('Loading...'),
         // ])
         this.loader = customLoader
-        this.content = document.getElementById(id).cloneNode()
+        this.content = document.getElementById(id)
         document.getElementById(id).replaceWith(this.loader)
     }
 

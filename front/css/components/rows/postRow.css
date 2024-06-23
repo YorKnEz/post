@@ -1,27 +1,30 @@
-.poem-row {
+.post-row {
   display: flex;
   align-items: center;
 }
-.poem-row__image {
+.post-row__image {
   width: 3.5rem;
-  aspect-ratio: 1;
   margin-right: 1rem;
+  aspect-ratio: 1;
+  background-size: cover;
+  background-position: center;
+  object-fit: cover;
 }
-.poem-row__info {
+.post-row__info {
   overflow: hidden;
   display: flex;
   flex-direction: column;
 }
-.poem-row__text {
+.post-row__text {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 @media only screen and (max-width: 300px) {
-  .poem-row__image {
+  .post-row__image {
     display: none;
   }
 }
 
-/*# sourceMappingURL=poemRow.css.map */
+/*# sourceMappingURL=postRow.css.map */

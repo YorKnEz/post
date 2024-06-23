@@ -338,6 +338,7 @@ begin
                                )
                            when p.type = 'annotation' then
                                jsonb_build_object(
+                                       'poem', find_poem_card_by_id(anv.poem_id),
                                        'poster', anv.poster,
                                        'content', anv.content,
                                        'contributors', anv.contributors,
@@ -650,6 +651,38 @@ end;
 $$ language plpgsql;
 
 create or replace function find_poem_by_id(p_id integer) returns jsonb as
+$$
+declare
+    result jsonb;
+begin
+    select jsonb_build_object(
+                   'id', id,
+                   'created_at', created_at,
+                   'updated_at', updated_at,
+                   'author', author,
+                   'poster', poster,
+                   'poem_id', poem_id,
+                   'language', language,
+                   'cover', cover,
+                   'title', title,
+                   'publication_date', publication_date,
+                   'main_annotation', main_annotation,
+                   'contributors', contributors,
+                   'likes', likes,
+                   'dislikes', dislikes)
+    into result
+    from poems_view
+    where id = p_id;
+
+    if result is null then
+        raise exception 'poem not found';
+    end if;
+
+    return result;
+end;
+$$ language plpgsql;
+
+create or replace function find_poem_card_by_id(p_id integer) returns jsonb as
 $$
 declare
     result jsonb;

@@ -24,6 +24,7 @@ const web_routes = {
     '/login': 'src/pages/login/index.html',
     '/poem/\\w+': 'src/pages/poem/index.html',
     '/profile': 'src/pages/profile/index.html',
+    '/profile/\\w+': 'src/pages/profile/index.html',
     '/register': 'src/pages/register/index.html',
     '/reset-password': 'src/pages/reset_password/index.html',
     '/verify': 'src/pages/verify/index.html',

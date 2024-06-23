@@ -1,9 +1,9 @@
 import { getElement } from '../../utils/index.js'
-import { UserSmallCard } from './userSmallCard.js'
+import { UserSmallCard } from '../index.js'
 
 export class UserRow {
     constructor(index, user) {
-        this.row = getElement(
+        this.inner = getElement(
             'a',
             {
                 class: 'table__row table__row--top-contributors',

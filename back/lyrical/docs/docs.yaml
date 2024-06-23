@@ -1255,7 +1255,14 @@ components:
             allOf:
                 - anyOf:
                       - $ref: '#/components/schemas/AlbumCard'
-                      - $ref: '#/components/schemas/Annotation'
+                      - allOf:
+                            - $ref: '#/components/schemas/Annotation'
+                            - type: object
+                              properties:
+                                  poem:
+                                      $ref: '#/components/schemas/PoemCard'
+                              required:
+                                  - poem
                       - $ref: '#/components/schemas/PoemCard'
                 - type: object
                   properties:

@@ -9,3 +9,7 @@ export const getUsers = async (data) => {
         { method: 'GET' }
     )
 }
+
+export const getUser = async (id) => {
+    return await __fetch(`${API_URL}/users/${id}`, { method: 'GET' })
+}
