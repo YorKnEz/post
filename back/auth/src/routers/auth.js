@@ -51,7 +51,7 @@ router.post('/register', async (req, res) => {
         [req.body.nickname]
     )
 
-    if (result.rows.length > 0) {
+    if (result.rowCount > 0) {
         return new JSONResponse(400, {
             code: ErrorCodes.DUPLICATE_NICKNAME,
             message: 'Nickname already used',
@@ -125,7 +125,7 @@ router.post('/verify', async (req, res) => {
             [req.query.token]
         )
 
-        if (result.rows.length == 0) {
+        if (result.rowCount == 0) {
             return new JSONResponse(400, {
                 code: ErrorCodes.VERIFY_INVALID_TOKEN,
                 message: 'The given token is invalid',
@@ -180,7 +180,7 @@ router.post('/login', async (req, res) => {
         )
 
         // no user found -> invalid identifier
-        if (result.rows.length == 0) {
+        if (result.rowCount == 0) {
             throw new JSONResponse(401, {
                 code: ErrorCodes.LOGIN_UNAUTHORIZED,
                 message: 'Invalid credentials',
@@ -253,7 +253,7 @@ router.post('/authenticated', async (req, res) => {
             [req.body.token]
         )
 
-        if (result.rows.length == 0) {
+        if (result.rowCount == 0) {
             return new JSONResponse(401, {
                 code: ErrorCodes.NOT_AUTHENTICATED,
                 message: 'The token is invalid',
@@ -333,8 +333,8 @@ router.post('/request-change', async (req, res) => {
             )
 
             // invalid email provided
-            if (result.rows.length == 0) {
                 console.log('invalid email')
+            if (result.rowCount == 0) {
                 return
             }
 
@@ -403,7 +403,7 @@ router.post('/change-email', async (req, res) => {
         [req.body.token]
     )
 
-    if (result.rows.length == 0) {
+    if (result.rowCount == 0) {
         return new JSONResponse(400, {
             code: ErrorCodes.INVALID_TOKEN,
             message: 'Invalid token provided',
@@ -429,7 +429,7 @@ router.post('/change-email', async (req, res) => {
             )
 
             // don't send an email if the email is already used
-            if (result.rows.length > 0) {
+            if (result.rowCount > 0) {
                 console.log('email already used')
                 return
             }
@@ -487,7 +487,7 @@ router.post('/change-nickname', async (req, res) => {
         [req.body.token]
     )
 
-    if (result.rows.length == 0) {
+    if (result.rowCount == 0) {
         return new JSONResponse(400, {
             code: ErrorCodes.INVALID_TOKEN,
             message: 'Invalid token provided',
@@ -542,7 +542,7 @@ router.post('/change-password', async (req, res) => {
         [req.body.token]
     )
 
-    if (result.rows.length == 0) {
+    if (result.rowCount == 0) {
         return new JSONResponse(400, {
             code: ErrorCodes.INVALID_TOKEN,
             message: 'Invalid token provided',
