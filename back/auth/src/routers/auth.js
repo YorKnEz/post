@@ -135,7 +135,7 @@ router.post('/verify', async (req, res) => {
         const user = toCamel(result.rows[0])
 
         await client.query(
-            'update users set verified = true, email = new_email, new_email = null where id = $1',
+            'update users set updated_at = now(), verified = true, email = new_email, new_email = null where id = $1',
             [user.userId]
         )
 
@@ -443,7 +443,7 @@ router.post('/change-email', async (req, res) => {
             }
 
             result = await client.query(
-                'update users set new_email = $1 where id = $2',
+                'update users set updated_at = now(), new_email = $1 where id = $2',
                 [req.body.email, user.id]
             )
 
@@ -506,7 +506,7 @@ router.post('/change-nickname', async (req, res) => {
     const token = toCamel(result.rows[0])
 
     try {
-        await client.query('update users set nickname = $1 where id = $2', [
+        await client.query('update users set updated_at = now(), nickname = $1 where id = $2', [
             req.body.nickname,
             token.userId,
         ])
@@ -564,7 +564,7 @@ router.post('/change-password', async (req, res) => {
         const pass = __hash(req.body.password)
 
         await client.query(
-            'update users set password_hash = $1, password_salt = $2 where id = $3',
+            'update users set updated_at = now(), password_hash = $1, password_salt = $2 where id = $3',
             [pass.hash, pass.salt, token.userId]
         )
 
