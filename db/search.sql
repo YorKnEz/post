@@ -298,17 +298,20 @@ begin
     start := (p_filters -> 'start')::int;
     count := (p_filters -> 'count')::int;
 
-    select jsonb_agg(e)
+    select jsonb_agg(e2)
     into result
-    from (select jsonb_build_object('date', created_at::date, 'contributions', json_agg(e)) e
+    from (select jsonb_build_object('date', created_at::date, 'contributions', json_agg(e)) e2
           from (select c.created_at,
+                       jsonb_build_object(
+                               'id', p.id,
+                               'type', p.type,
+                               'contribution', case when c.created_at = p.created_at then 'created' else 'edited' end,
+                               'created_at', p.created_at,
+                               'updated_at', p.updated_at
+                       ) ||
                        case
                            when p.type = 'album' then
                                jsonb_build_object(
-                                       'id', p.id,
-                                       'type', p.type,
-                                       'created_at', av.created_at,
-                                       'updated_at', av.updated_at,
                                        'poster', av.poster,
                                        'author', av.author,
                                        'cover', av.cover,
@@ -321,10 +324,6 @@ begin
                                )
                            when p.type = 'poem' then
                                jsonb_build_object(
-                                       'id', p.id,
-                                       'type', p.type,
-                                       'created_at', pv.created_at,
-                                       'updated_at', pv.updated_at,
                                        'author', pv.author,
                                        'poster', pv.poster,
                                        'poem_id', pv.poem_id,
@@ -339,10 +338,6 @@ begin
                                )
                            when p.type = 'annotation' then
                                jsonb_build_object(
-                                       'id', p.id,
-                                       'type', p.type,
-                                       'created_at', anv.created_at,
-                                       'updated_at', anv.updated_at,
                                        'poster', anv.poster,
                                        'content', anv.content,
                                        'contributors', anv.contributors,
@@ -355,21 +350,21 @@ begin
                          left join albums_view av on av.id = p.id
                          left join poems_view pv on pv.id = p.id
                          left join annotations_view anv on anv.id = p.id
-                where (case
-                           when p_filters ? 'userId' then c.contributor_id = (p_filters ->> 'userId')::int
-                           else true
-                       end)
+                where (p_filters ? 'userId' and c.contributor_id = (p_filters ->> 'userId')::int)
                   and (case
                            when p_filters ? 'type' then
                                (case
                                     when (p_filters ->> 'type') = 'pending' then p.verified = false
-                                    else p.type = p_filters ->> 'type'
+                                    when (p_filters ->> 'type') in ('album', 'annotation', 'poem')
+                                        then p.type = p_filters ->> 'type'
+                                    else true
                                 end)
                            else true
                        end)
                 order by c.created_at desc
                 offset start limit count) t
-          group by created_at::date) t;
+          group by t.created_at::date
+          order by t.created_at::date desc) t2;
 
     if result is null then
         return '[]'::jsonb;

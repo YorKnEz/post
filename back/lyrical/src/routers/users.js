@@ -41,7 +41,7 @@ router.get('/:id/contributions', async (req, res) => {
 
     try {
         let result = await db.query('select find_contribution_cards($1)', [
-            req.query,
+            { ...req.query, userId: req.params.id },
         ])
 
         return new JSONResponse(
