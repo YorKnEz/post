@@ -2,7 +2,6 @@ import { getElement } from '../../../utils/index.js'
 
 export class AnnotationCard {
     constructor(user, data) {
-        console.log(data)
         this.inner = getElement('div', { class: 'contr-card' }, [
             getElement('a', { class: 'contr-card__description' }, [
                 document.createTextNode(

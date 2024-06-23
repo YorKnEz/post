@@ -10,11 +10,6 @@ import { getElement } from '../../utils/html.js'
 import { getUserRole } from '../../utils/index.js'
 
 window.navbar = new Navbar()
-window.dropdown = new Dropdown('dropdown')
-
-window.onresize = () => {
-    window.dropdown.align()
-}
 
 const profileLoader = new Loader('profile')
 
@@ -129,27 +124,36 @@ const loadStatistics = async (user) => {
 }
 
 const contributionsLoader = new Loader('contributions')
+let lastDate
 
-const loadContributions = async (user) => {
+const loadContributions = async (user, type = 'all', start = 0, count = 5) => {
     const content = contributionsLoader.getContent()
 
     try {
         const response = await getContributions({
             id: user.id,
-            start: 0,
-            count: 1000,
-            type: 'all',
+            start,
+            count,
+            type,
         })
 
+        let length = 0
+
         for (const { date, contributions } of response) {
-            content.appendChild(
-                getElement('div', { class: 'contributions__date' }, [
-                    getElement('div', { class: 'contributions__rule' }),
-                    getElement('i', { class: 'fa-regular fa-calendar' }),
-                    getElement('span', {}, [document.createTextNode(date)]),
-                    getElement('div', { class: 'contributions__rule' }),
-                ])
-            )
+            if (lastDate != date) {
+                content.appendChild(
+                    getElement('div', { class: 'contributions__date' }, [
+                        getElement('div', { class: 'contributions__rule' }),
+                        getElement('i', { class: 'fa-regular fa-calendar' }),
+                        getElement('span', {}, [document.createTextNode(date)]),
+                        getElement('div', { class: 'contributions__rule' }),
+                    ])
+                )
+
+                lastDate = date
+            }
+
+            length += contributions.length
 
             for (const contribution of contributions) {
                 content.appendChild(
@@ -157,12 +161,42 @@ const loadContributions = async (user) => {
                 )
             }
         }
+
+        content.appendChild(
+            length > 0
+                ? getElement(
+                    'button',
+                    {
+                        class: 'btn',
+                        onclick: () => {
+                            content.lastChild.remove()
+                            loadContributions(
+                                user,
+                                type,
+                                start + length,
+                                count
+                            )
+                        },
+                    },
+                    [document.createTextNode('Load more')]
+                )
+                : getElement(
+                    'button',
+                    {
+                        class: 'btn',
+                        disabled: true,
+                    },
+                    [document.createTextNode('End of content')]
+                )
+        )
     } catch (e) {
         console.error(e)
     }
 
     contributionsLoader.loaded()
 }
+
+let user
 
 window.onload = async () => {
     let userId
@@ -181,7 +215,7 @@ window.onload = async () => {
     }
 
     try {
-        const user = await getUser(userId)
+        user = await getUser(userId)
 
         loadProfile(user)
         loadTopAccomplishments(user)
@@ -193,3 +227,28 @@ window.onload = async () => {
         }
     }
 }
+
+const onChoice = async (option) => {
+    contributionsLoader.loading()
+    lastDate = null
+
+    const content = contributionsLoader.getContent()
+
+    while (content.firstChild) {
+        content.firstChild.remove()
+    }
+
+    loadContributions(user, option.value)
+}
+
+window.dropdown = new Dropdown(
+    'dropdown',
+    {
+        all: { title: 'All', value: 'all' },
+        pending: { title: 'Pending', value: 'pending' },
+        annotation: { title: 'Annotations', value: 'annotation' },
+        album: { title: 'Albums', value: 'album' },
+        poem: { title: 'Poems', value: 'poem' },
+    },
+    onChoice
+)

@@ -13,9 +13,10 @@ export class Loader {
         // this.loader = getElement('div', { class: 'loader' }, [
         //     document.createTextNode('Loading...'),
         // ])
+        this.id = id
         this.loader = customLoader
-        this.content = document.getElementById(id)
-        document.getElementById(id).replaceWith(this.loader)
+        this.content = document.getElementById(this.id)
+        this.loading()
     }
 
     getContent = () => this.content
@@ -23,5 +24,10 @@ export class Loader {
     // reveal the content upon calling this method
     loaded = () => {
         this.loader.replaceWith(this.content)
+    }
+
+    // trigger loading state, this is the default state when creating the component
+    loading = () => {
+        document.getElementById(this.id).replaceWith(this.loader)
     }
 }
