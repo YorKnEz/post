@@ -62,6 +62,18 @@ router.post('/register', async (req, res) => {
     const task = async () => {
         try {
             await client.query('begin')
+
+            result = await client.query(
+                'select id from users where email = $1',
+                [req.body.email]
+            )
+
+            // don't send an email if the email is already used
+            if (result.rowCount > 0) {
+                console.log('email already used')
+                return
+            }
+
             const pass = __hash(req.body.password)
 
             let result = await client.query(
