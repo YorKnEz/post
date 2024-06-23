@@ -8,6 +8,7 @@ const errors = {
     1031: 1031,
     1032: 1032,
     1033: 1033,
+    1041: 1041,
 }
 
 export const getErrorMessage = (error) => {

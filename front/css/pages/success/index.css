@@ -1006,7 +1006,8 @@ i {
   text-transform: uppercase;
 }
 .form__input {
-  width: calc(100% - 2.8rem - 2px);
+  box-sizing: border-box;
+  width: 100%;
   cursor: text;
   font-weight: inherit;
   font-family: inherit;

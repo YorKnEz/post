@@ -4,44 +4,48 @@ import { Search, UserSmallCard } from './index.js'
 
 export class Sidebar {
     constructor() {
-        const user = JSON.parse(localStorage.getItem('user'))
+        let user = localStorage.getItem('user')
+
+        if (user) {
+            user = JSON.parse(user)
+        }
 
         this.search = new Search('search', 'sidebar')
 
         this.inner = getElement('nav', { id: 'sideabar', class: 'sidebar' }, [
             this.search.inner,
             !user &&
-                getElement('a', { class: 'sidebar__item', href: '/login' }, [
-                    getElement('i', {
-                        class: 'fa-solid fa-right-to-bracket sidebar__icon',
-                    }),
-                    getElement('span', {}, [document.createTextNode('Log in')]),
-                ]),
+            getElement('a', { class: 'sidebar__item', href: '/login' }, [
+                getElement('i', {
+                    class: 'fa-solid fa-right-to-bracket sidebar__icon',
+                }),
+                getElement('span', {}, [document.createTextNode('Log in')]),
+            ]),
             !user &&
-                getElement('a', { class: 'sidebar__item', href: '/register' }, [
+            getElement('a', { class: 'sidebar__item', href: '/register' }, [
+                getElement('i', {
+                    class: 'fa-solid fa-user-plus sidebar__icon',
+                }),
+                getElement('span', {}, [
+                    document.createTextNode('Register'),
+                ]),
+            ]),
+            user &&
+            getElement(
+                'a',
+                {
+                    class: 'sidebar__item sidebar__item--nav',
+                    href: '/add-poem',
+                },
+                [
                     getElement('i', {
-                        class: 'fa-solid fa-user-plus sidebar__icon',
+                        class: 'fa-solid fa-plus sidebar__icon',
                     }),
                     getElement('span', {}, [
-                        document.createTextNode('Register'),
+                        document.createTextNode('Add Poem'),
                     ]),
-                ]),
-            user &&
-                getElement(
-                    'a',
-                    {
-                        class: 'sidebar__item sidebar__item--nav',
-                        href: '/add-poem',
-                    },
-                    [
-                        getElement('i', {
-                            class: 'fa-solid fa-plus sidebar__icon',
-                        }),
-                        getElement('span', {}, [
-                            document.createTextNode('Add Poem'),
-                        ]),
-                    ]
-                ),
+                ]
+            ),
             getElement(
                 'a',
                 { class: 'sidebar__item sidebar__item--nav', href: '/rss' },
@@ -53,22 +57,22 @@ export class Sidebar {
                 ]
             ),
             getElement('div', { class: 'sidebar__separator' }),
-            !user &&
-                getElement(
-                    'button',
-                    {
-                        class: 'sidebar__item sidebar__item--button',
-                        onclick: this.__handleLogout,
-                    },
-                    [
-                        getElement('i', {
-                            class: 'fa-solid fa-right-from-bracket sidebar__icon',
-                        }),
-                        getElement('span', {}, [
-                            document.createTextNode('Log out'),
-                        ]),
-                    ]
-                ),
+            user &&
+            getElement(
+                'button',
+                {
+                    class: 'sidebar__item sidebar__item--button',
+                    onclick: this.__handleLogout,
+                },
+                [
+                    getElement('i', {
+                        class: 'fa-solid fa-right-from-bracket sidebar__icon',
+                    }),
+                    getElement('span', {}, [
+                        document.createTextNode('Log out'),
+                    ]),
+                ]
+            ),
             getElement(
                 'button',
                 {
