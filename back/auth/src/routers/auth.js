@@ -199,6 +199,14 @@ router.post('/login', async (req, res) => {
             })
         }
 
+        // check if user is verified
+        if (!user.verified) {
+            throw new JSONResponse(403, {
+                code: ErrorCodes.LOGIN_UNVERIFIED,
+                message: 'You must verify your account first',
+            })
+        }
+
         // generate session token
         const token = base36token()
         await client.query(
@@ -328,13 +336,13 @@ router.post('/request-change', async (req, res) => {
 
             // check if the nickname exists
             let result = await client.query(
-                'select * from users where email = $1',
+                'select * from users where verified = true and email = $1',
                 [req.body.email]
             )
 
             // invalid email provided
-                console.log('invalid email')
             if (result.rowCount == 0) {
+                console.log('invalid email or unverified')
                 return
             }
 
@@ -390,13 +398,6 @@ router.post('/request-change', async (req, res) => {
 router.post('/change-email', async (req, res) => {
     const client = await db.getClient()
 
-    try {
-        // validate the user data
-        validate(req.body, changeEmailSchema)
-    } catch (e) {
-        return new JSONResponse(400, e.obj())
-    }
-
     // destroy the old token
     let result = await client.query(
         "delete from tokens where value = $1 and type = 'emailChange' returning *",
@@ -408,6 +409,13 @@ router.post('/change-email', async (req, res) => {
             code: ErrorCodes.INVALID_TOKEN,
             message: 'Invalid token provided',
         })
+    }
+
+    try {
+        // validate the user data
+        validate(req.body, changeEmailSchema)
+    } catch (e) {
+        return new JSONResponse(400, e.obj())
     }
 
     const token = toCamel(result.rows[0])
@@ -474,12 +482,6 @@ router.post('/change-email', async (req, res) => {
 router.post('/change-nickname', async (req, res) => {
     const client = await db.getClient()
 
-    try {
-        // validate the user data
-        validate(req.body, changeNicknameSchema)
-    } catch (e) {
-        return new JSONResponse(400, e.obj())
-    }
 
     // destroy the old token
     let result = await client.query(
@@ -492,6 +494,13 @@ router.post('/change-nickname', async (req, res) => {
             code: ErrorCodes.INVALID_TOKEN,
             message: 'Invalid token provided',
         })
+    }
+
+    try {
+        // validate the user data
+        validate(req.body, changeNicknameSchema)
+    } catch (e) {
+        return new JSONResponse(400, e.obj())
     }
 
     const token = toCamel(result.rows[0])
@@ -529,13 +538,6 @@ router.post('/change-nickname', async (req, res) => {
 router.post('/change-password', async (req, res) => {
     const client = await db.getClient()
 
-    try {
-        // validate the user data
-        validate(req.body, changePasswordSchema)
-    } catch (e) {
-        return new JSONResponse(400, e.obj())
-    }
-
     // destroy the old token
     let result = await client.query(
         "delete from tokens where value = $1 and type = 'passwordChange' returning *",
@@ -547,6 +549,13 @@ router.post('/change-password', async (req, res) => {
             code: ErrorCodes.INVALID_TOKEN,
             message: 'Invalid token provided',
         })
+    }
+
+    try {
+        // validate the user data
+        validate(req.body, changePasswordSchema)
+    } catch (e) {
+        return new JSONResponse(400, e.obj())
     }
 
     const token = toCamel(result.rows[0])
