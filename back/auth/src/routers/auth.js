@@ -51,7 +51,7 @@ router.post('/register', async (req, res) => {
         [req.body.nickname]
     )
 
-    if (result.rows.length > 0) {
+    if (result.rowCount > 0) {
         return new JSONResponse(400, {
             code: ErrorCodes.DUPLICATE_NICKNAME,
             message: 'Nickname already used',
@@ -125,7 +125,7 @@ router.post('/verify', async (req, res) => {
             [req.query.token]
         )
 
-        if (result.rows.length == 0) {
+        if (result.rowCount == 0) {
             return new JSONResponse(400, {
                 code: ErrorCodes.VERIFY_INVALID_TOKEN,
                 message: 'The given token is invalid',
@@ -135,7 +135,7 @@ router.post('/verify', async (req, res) => {
         const user = toCamel(result.rows[0])
 
         await client.query(
-            'update users set verified = true, email = new_email, new_email = null where id = $1',
+            'update users set updated_at = now(), verified = true, email = new_email, new_email = null where id = $1',
             [user.userId]
         )
 
@@ -180,7 +180,7 @@ router.post('/login', async (req, res) => {
         )
 
         // no user found -> invalid identifier
-        if (result.rows.length == 0) {
+        if (result.rowCount == 0) {
             throw new JSONResponse(401, {
                 code: ErrorCodes.LOGIN_UNAUTHORIZED,
                 message: 'Invalid credentials',
@@ -196,6 +196,14 @@ router.post('/login', async (req, res) => {
             throw new JSONResponse(401, {
                 code: ErrorCodes.LOGIN_UNAUTHORIZED,
                 message: 'Invalid credentials',
+            })
+        }
+
+        // check if user is verified
+        if (!user.verified) {
+            throw new JSONResponse(403, {
+                code: ErrorCodes.LOGIN_UNVERIFIED,
+                message: 'You must verify your account first',
             })
         }
 
@@ -253,7 +261,7 @@ router.post('/authenticated', async (req, res) => {
             [req.body.token]
         )
 
-        if (result.rows.length == 0) {
+        if (result.rowCount == 0) {
             return new JSONResponse(401, {
                 code: ErrorCodes.NOT_AUTHENTICATED,
                 message: 'The token is invalid',
@@ -328,13 +336,13 @@ router.post('/request-change', async (req, res) => {
 
             // check if the nickname exists
             let result = await client.query(
-                'select * from users where email = $1',
+                'select * from users where verified = true and email = $1',
                 [req.body.email]
             )
 
             // invalid email provided
-            if (result.rows.length == 0) {
-                console.log('invalid email')
+            if (result.rowCount == 0) {
+                console.log('invalid email or unverified')
                 return
             }
 
@@ -390,24 +398,24 @@ router.post('/request-change', async (req, res) => {
 router.post('/change-email', async (req, res) => {
     const client = await db.getClient()
 
-    try {
-        // validate the user data
-        validate(req.body, changeEmailSchema)
-    } catch (e) {
-        return new JSONResponse(400, e.obj())
-    }
-
     // destroy the old token
     let result = await client.query(
         "delete from tokens where value = $1 and type = 'emailChange' returning *",
         [req.body.token]
     )
 
-    if (result.rows.length == 0) {
+    if (result.rowCount == 0) {
         return new JSONResponse(400, {
             code: ErrorCodes.INVALID_TOKEN,
             message: 'Invalid token provided',
         })
+    }
+
+    try {
+        // validate the user data
+        validate(req.body, changeEmailSchema)
+    } catch (e) {
+        return new JSONResponse(400, e.obj())
     }
 
     const token = toCamel(result.rows[0])
@@ -429,13 +437,13 @@ router.post('/change-email', async (req, res) => {
             )
 
             // don't send an email if the email is already used
-            if (result.rows.length > 0) {
+            if (result.rowCount > 0) {
                 console.log('email already used')
                 return
             }
 
             result = await client.query(
-                'update users set new_email = $1 where id = $2',
+                'update users set updated_at = now(), new_email = $1 where id = $2',
                 [req.body.email, user.id]
             )
 
@@ -474,12 +482,6 @@ router.post('/change-email', async (req, res) => {
 router.post('/change-nickname', async (req, res) => {
     const client = await db.getClient()
 
-    try {
-        // validate the user data
-        validate(req.body, changeNicknameSchema)
-    } catch (e) {
-        return new JSONResponse(400, e.obj())
-    }
 
     // destroy the old token
     let result = await client.query(
@@ -487,17 +489,24 @@ router.post('/change-nickname', async (req, res) => {
         [req.body.token]
     )
 
-    if (result.rows.length == 0) {
+    if (result.rowCount == 0) {
         return new JSONResponse(400, {
             code: ErrorCodes.INVALID_TOKEN,
             message: 'Invalid token provided',
         })
     }
 
+    try {
+        // validate the user data
+        validate(req.body, changeNicknameSchema)
+    } catch (e) {
+        return new JSONResponse(400, e.obj())
+    }
+
     const token = toCamel(result.rows[0])
 
     try {
-        await client.query('update users set nickname = $1 where id = $2', [
+        await client.query('update users set updated_at = now(), nickname = $1 where id = $2', [
             req.body.nickname,
             token.userId,
         ])
@@ -529,24 +538,24 @@ router.post('/change-nickname', async (req, res) => {
 router.post('/change-password', async (req, res) => {
     const client = await db.getClient()
 
-    try {
-        // validate the user data
-        validate(req.body, changePasswordSchema)
-    } catch (e) {
-        return new JSONResponse(400, e.obj())
-    }
-
     // destroy the old token
     let result = await client.query(
         "delete from tokens where value = $1 and type = 'passwordChange' returning *",
         [req.body.token]
     )
 
-    if (result.rows.length == 0) {
+    if (result.rowCount == 0) {
         return new JSONResponse(400, {
             code: ErrorCodes.INVALID_TOKEN,
             message: 'Invalid token provided',
         })
+    }
+
+    try {
+        // validate the user data
+        validate(req.body, changePasswordSchema)
+    } catch (e) {
+        return new JSONResponse(400, e.obj())
     }
 
     const token = toCamel(result.rows[0])
@@ -555,7 +564,7 @@ router.post('/change-password', async (req, res) => {
         const pass = __hash(req.body.password)
 
         await client.query(
-            'update users set password_hash = $1, password_salt = $2 where id = $3',
+            'update users set updated_at = now(), password_hash = $1, password_salt = $2 where id = $3',
             [pass.hash, pass.salt, token.userId]
         )
 

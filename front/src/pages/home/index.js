@@ -1,21 +1,17 @@
 import {
     Loader,
     Navbar,
-    PoemCard,
-    PoemRow,
+    PostRow,
+    PostCard,
     UserRow,
 } from '../../components/index.js'
-import { getPoems, getUsers } from '../../services/index.js'
+import { getPosts, getUsers } from '../../services/index.js'
 import { getErrorMessage, getElement } from '../../utils/index.js'
 
 window.navbar = new Navbar()
 
-window.onresize = () => {
-    window.navbar.resize()
-}
-
 const loadTrendingPoems = async (content) => {
-    const response = await getPoems({
+    const response = await getPosts({
         start: 0,
         count: 5,
         sort: 'trending',
@@ -24,13 +20,13 @@ const loadTrendingPoems = async (content) => {
 
     for (const index in response) {
         content.appendChild(
-            new PoemCard(response[index], 'Trending', index > 0).card
+            new PostCard(response[index], 'Trending', index > 0).inner
         )
     }
 }
 
 const loadPoemChart = async (content) => {
-    const response = await getPoems({
+    const response = await getPosts({
         start: 0,
         count: 5,
         sort: 'popular',
@@ -39,21 +35,21 @@ const loadPoemChart = async (content) => {
 
     for (const index in response) {
         content.appendChild(
-            new PoemRow(parseInt(index) + 1, response[index]).row
+            new PostRow(parseInt(index) + 1, response[index]).inner
         )
     }
 }
 
 const loadNews = async (content) => {
-    const response = await getPoems({
+    const response = await getPosts({
         start: 0,
-        count: 5,
+        count: 8,
         sort: 'new',
         order: 'desc',
     })
 
     for (const index in response) {
-        content.appendChild(new PoemCard(response[index], 'News', true).card)
+        content.appendChild(new PostCard(response[index], 'News', true).inner)
     }
 }
 
@@ -67,7 +63,7 @@ const loadTopContributors = async (content) => {
 
     for (const index in response) {
         content.appendChild(
-            new UserRow(parseInt(index) + 1, response[index]).row
+            new UserRow(parseInt(index) + 1, response[index]).inner
         )
     }
 }

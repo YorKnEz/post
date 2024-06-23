@@ -28,3 +28,31 @@ export const logout = async () => {
         credentials: 'include',
     })
 }
+
+export const requestChange = async (data) => {
+    return await __fetch(`${API_URL}/auth/request-change`, {
+        method: 'POST',
+        body: JSON.stringify(data),
+    })
+}
+
+export const changeEmail = async (data) => {
+    return await __fetch(`${API_URL}/auth/change-email`, {
+        method: 'POST',
+        body: JSON.stringify(data),
+    })
+}
+
+export const changeNickname = async (data) => {
+    return await __fetch(`${API_URL}/auth/change-nickname`, {
+        method: 'POST',
+        body: JSON.stringify(data),
+    })
+}
+
+export const changePassword = async (data) => {
+    return await __fetch(`${API_URL}/auth/change-password`, {
+        method: 'POST',
+        body: JSON.stringify(data),
+    })
+}

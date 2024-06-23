@@ -58,17 +58,10 @@
   width: 100%;
 }
 .annotation__controls {
+  display: flex;
+  gap: 0.8rem;
   font-size: 0.8rem;
   margin: 1rem 0;
-}
-.annotation__control {
-  margin: 0 0.4rem;
-}
-.annotation__control:first-child {
-  margin-left: 0;
-}
-.annotation__control:last-child {
-  margin-right: 0;
 }
 .annotation__buttons {
   font-size: 0.8rem;

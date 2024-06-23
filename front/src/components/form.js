@@ -4,19 +4,25 @@ export class Form {
         this.error = this.form.getElementsByClassName('form__error')[0]
         this.submitter = this.form.getElementsByClassName('form__submit')[0]
 
-        this.fields = fields.reduce((obj, field) => {
-            obj[field] = document.getElementById(field)
-            return obj
-        }, {})
+        this.fields = Object.entries(fields).reduce(
+            (obj, [id, { required }]) => {
+                obj[id] = {
+                    input: document.getElementById(id),
+                    required: required ?? true,
+                }
+                return obj
+            },
+            {}
+        )
 
         // trigger error clearing on fields update
-        for (const [_, input] of Object.entries(this.fields)) {
+        for (const [_, { input }] of Object.entries(this.fields)) {
             input.addEventListener('input', this.clearError)
         }
 
         if (this.fields.password) {
-            const password = this.fields.password
-            const confirmPassword = this.fields.confirmPassword
+            const password = this.fields.password.input
+            const confirmPassword = this.fields.confirmPassword?.input
 
             document.getElementById('password-toggler').onclick = (ev) => {
                 password.type =
@@ -41,20 +47,28 @@ export class Form {
             const data = {}
 
             // all fields are required
-            for (const [field, input] of Object.entries(this.fields)) {
+            for (const [field, { input, required }] of Object.entries(
+                this.fields
+            )) {
                 if (input.type == 'file') {
                     if (input.files.length == 0) {
-                        this.setError(`Field ${field} cannot be empty`)
+                        if (required) {
+                            this.setError(`Field ${field} cannot be empty`)
+                            return
+                        }
 
-                        return
+                        continue
                     }
 
                     data[field] = input.files[0]
                 } else {
                     if (input.value.length == 0) {
-                        this.setError(`Field ${field} cannot be empty`)
+                        if (required) {
+                            this.setError(`Field ${field} cannot be empty`)
+                            return
+                        }
 
-                        return
+                        continue
                     }
 
                     data[field] = input.value

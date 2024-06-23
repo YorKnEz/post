@@ -4,10 +4,6 @@ import { getElement, getErrorMessage } from '../../utils/index.js'
 
 window.navbar = new Navbar()
 
-window.onresize = () => {
-    window.navbar.resize()
-}
-
 const loader = new Loader('verify-message')
 
 window.onload = async () => {

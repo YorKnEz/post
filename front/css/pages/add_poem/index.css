@@ -1,6 +1,7 @@
 @media only screen and (min-width: 0px) {
   .container {
-    width: calc(100% - 32px);
+    box-sizing: border-box;
+    width: 100%;
     padding: 0 16px;
   }
   .row {
@@ -59,7 +60,8 @@
 }
 @media only screen and (min-width: 600px) {
   .container {
-    width: calc(100% - 64px);
+    box-sizing: border-box;
+    width: 100%;
     padding: 0 32px;
   }
   .row {
@@ -166,7 +168,8 @@
 }
 @media only screen and (min-width: 905px) {
   .container {
-    width: calc(100% - 2 * (100vw - 840px) / 2);
+    box-sizing: border-box;
+    width: 100%;
     padding: 0 calc((100vw - 840px) / 2);
   }
   .row {
@@ -321,7 +324,8 @@
 }
 @media only screen and (min-width: 1240px) {
   .container {
-    width: calc(100% - 400px);
+    box-sizing: border-box;
+    width: 100%;
     padding: 0 200px;
   }
   .row {
@@ -476,7 +480,8 @@
 }
 @media only screen and (min-width: 1440px) {
   .container {
-    width: calc(100% - 2 * (100vw - 1040px) / 2);
+    box-sizing: border-box;
+    width: 100%;
     padding: 0 calc((100vw - 1040px) / 2);
   }
   .row {
@@ -1006,7 +1011,8 @@ i {
   text-transform: uppercase;
 }
 .form__input {
-  width: calc(100% - 2.8rem - 2px);
+  box-sizing: border-box;
+  width: 100%;
   cursor: text;
   font-weight: inherit;
   font-family: inherit;

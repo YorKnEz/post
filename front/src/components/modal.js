@@ -13,6 +13,11 @@ export class Modal {
         this.onclose()
     }
 
+    setTitle = (newTitle) => {
+        const title = this.modal.getElementsByClassName('modal__title')[0]
+        title.innerText = newTitle
+    }
+
     setContent = (newContent) => {
         const content = this.modal.getElementsByClassName('modal__content')[0]
         content.replaceChildren(newContent)

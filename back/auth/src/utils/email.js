@@ -9,8 +9,7 @@ const __dirname = path.dirname(__filename)
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+        user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS,
     },
 })
 
@@ -56,7 +55,7 @@ export const sendChangeCredentialEmail = async (to, name, resource, token) => {
             {
                 name,
                 resource,
-                link: `${process.env.FRONTEND_URL}/reset?type=${resource}&token=${token}`,
+                link: `${process.env.FRONTEND_URL}/reset-${resource}?token=${token}`,
             }
         )
 

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/1ea9bc0996.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/css/pages/reset_nickname/index.css">
+    <title>Change your nickname</title>
+</head>
+
+<body>
+    <nav class="nav" id="nav">
+    </nav>
+    <nav class="sidebar" id="sidebar">
+    </nav>
+
+    <header class="container gradient"></header>
+
+    <main class="container">
+        <div id="modal" class="modal__overlay hidden">
+            <section class="modal">
+                <div class="modal__header">
+                    <h2 class="modal__title">Nickname changed</h2>
+                    <button class="btn btn--link">
+                        <i class="fa-solid fa-close btn__icon" onclick="modal.close()"></i>
+                    </button>
+                </div>
+                <hr class="modal__hr">
+                <div class="modal__content"></div>
+            </section>
+        </div>
+        <div class="row page">
+            <section class="col-xs-4 col-sm-4 col-md-5">
+                <h1>Change your nickname</h1>
+                <form id="form" class="form">
+                    <div class="form__item">
+                        <label for="nickname" class="form__label">Nickname</label>
+                        <input id="nickname" name="nickname" placeholder="Nickname" class="form__input">
+                    </div>
+                    <span class="form__error hidden"></span>
+                    <button class="btn form__submit">Change nickname</button>
+                </form>
+            </section>
+            <aside class="col-xs-4 col-sm-4 col-md-7">
+                <img class="page__bg" src="/assets/bg.png" alt="Post page background">
+            </aside>
+        </div>
+    </main>
+
+    <footer class="container footer"></footer>
+
+    <script type="module" src="/src/pages/reset_nickname/index.js"></script>
+</body>
+
+</html>

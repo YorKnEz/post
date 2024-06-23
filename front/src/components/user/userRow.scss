@@ -1,9 +1,0 @@
-@import './userSmallCard.scss';
-
-.user-row {
-    &__score {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-}
