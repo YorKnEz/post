@@ -6,7 +6,7 @@ window.navbar = new Navbar()
 
 window.form = new Form(
     'form',
-    ['identifier', 'password'],
+    { identifier: {}, password: {} },
     async (data, setError) => {
         try {
             const user = await login(data)

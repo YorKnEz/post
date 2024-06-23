@@ -8,7 +8,7 @@ window.modal = new Modal('modal', () => {
     location.assign('/login')
 })
 
-window.form = new Form('form', ['email'], async (data, setError) => {
+window.form = new Form('form', { email: {} }, async (data, setError) => {
     const params = new URLSearchParams(location.search)
     const token = params.get('token')
 

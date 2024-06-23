@@ -7,12 +7,16 @@ window.modal = new Modal('modal', () => {
     location.assign('/login')
 })
 
-window.form = new Form('form', ['type', 'email'], async (data, setError) => {
-    try {
-        await requestChange(data)
+window.form = new Form(
+    'form',
+    { type: {}, email: {} },
+    async (data, setError) => {
+        try {
+            await requestChange(data)
 
-        window.modal.open()
-    } catch (e) {
-        setError(getErrorMessage(e))
+            window.modal.open()
+        } catch (e) {
+            setError(getErrorMessage(e))
+        }
     }
-})
+)

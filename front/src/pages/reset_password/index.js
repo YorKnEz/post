@@ -9,7 +9,7 @@ window.modal = new Modal('modal', () => {
 
 window.form = new Form(
     'form',
-    ['password', 'confirmPassword'],
+    { password: {}, confirmPassword: {} },
     async (data, setError) => {
         if (data.password != data.confirmPassword) {
             setError('Passwords are not the same')
