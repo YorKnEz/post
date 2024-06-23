@@ -36,10 +36,9 @@ document.onclick = (ev) => {
     window.annotation.disappearAnnotation(ev)
 }
 
-window.onresize = (ev) => {
+window.onresize = () => {
     window.dropdown.align()
     window.annotation.align()
-    window.navbar.resize()
 }
 
 const scrollToNewAnnotation = (annotation) => {

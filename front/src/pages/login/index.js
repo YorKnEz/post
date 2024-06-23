@@ -4,10 +4,6 @@ import { getErrorMessage } from '../../utils/index.js'
 
 window.navbar = new Navbar()
 
-window.onresize = () => {
-    window.navbar.resize()
-}
-
 window.form = new Form(
     'form',
     ['identifier', 'password'],

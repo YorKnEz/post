@@ -39,6 +39,8 @@ export class Navbar {
         // attach components
         document.getElementById('nav').replaceWith(this.inner)
         document.getElementById('sidebar').replaceWith(this.sidebar.inner)
+
+        window.addEventListener('resize', this.resize)
     }
 
     toggleMenu = () => {

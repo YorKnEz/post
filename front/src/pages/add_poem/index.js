@@ -4,10 +4,6 @@ import { getErrorMessage } from '../../utils/index.js'
 
 window.navbar = new Navbar()
 
-window.onresize = () => {
-    window.navbar.resize()
-}
-
 window.byInput = new SuggestionInput('by', 'by-suggestions')
 window.albumInput = new SuggestionInput('album', 'album-suggestions')
 

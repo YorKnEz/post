@@ -8,10 +8,6 @@ window.modal = new Modal('modal', () => {
     location.assign('/login')
 })
 
-window.onresize = () => {
-    window.navbar.resize()
-}
-
 window.form = new Form(
     'form',
     [

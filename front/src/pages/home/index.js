@@ -10,10 +10,6 @@ import { getErrorMessage, getElement } from '../../utils/index.js'
 
 window.navbar = new Navbar()
 
-window.onresize = () => {
-    window.navbar.resize()
-}
-
 const loadTrendingPoems = async (content) => {
     const response = await getPosts({
         start: 0,

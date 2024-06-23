@@ -13,7 +13,6 @@ window.navbar = new Navbar()
 window.dropdown = new Dropdown('dropdown')
 
 window.onresize = () => {
-    window.navbar.resize()
     window.dropdown.align()
 }
 
