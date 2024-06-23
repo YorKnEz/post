@@ -609,6 +609,8 @@ begin
         execute sql_query into result;
     end if;
 
+    raise notice '%s', sql_query;
+
     if result is null then
         return '[]'::jsonb;
     end if;
@@ -616,6 +618,8 @@ begin
     return result;
 end;
 $$ language plpgsql;
+
+select find_poem_cards('{"start":0, "count":5,"sort":"popular","order":"desc","query":"cumpl"}'::jsonb);
 
 create or replace function find_poem_cards_by_album_id(p_id integer) returns jsonb as
 $$

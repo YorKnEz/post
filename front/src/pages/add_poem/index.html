@@ -22,8 +22,14 @@
         <form id="form" class="row" enctype="multipart/form-data">
             <div class="col-xs-4 col-sm-4 col-md-6 form">
                 <div class="form__item">
-                    <label for="cover" class="form__label form__label--uppercase">Cover</label>
-                    <input type="file" accept="image/*" id="cover" name="cover" placeholder="Cover" class="form__input">
+                    <label for="album" class="form__label form__label--uppercase">Album</label>
+                    <input autocomplete="off" id="album" name="album" placeholder="Album" class="form__input">
+                    <div id="album-suggestions" class="dropdown__container hidden"></div>
+                </div>
+                <div class="form__item">
+                    <label for="poem" class="form__label form__label--uppercase">Translation of</label>
+                    <input autocomplete="off" id="poem" name="poem" placeholder="The poem which you will translate" class="form__input">
+                    <div id="poem-suggestions" class="dropdown__container hidden"></div>
                 </div>
                 <div class="form__item">
                     <label for="by" class="form__label form__label--uppercase">By</label>
@@ -31,26 +37,30 @@
                     <div id="by-suggestions" class="dropdown__container hidden"></div>
                 </div>
                 <div class="form__item">
-                    <label for="title" class="form__label form__label--uppercase">Title</label>
-                    <input id="title" name="title" placeholder="Title" class="form__input">
-                </div>
-                <div class="form__item">
                     <label for="language" class="form__label form__label--uppercase">Language</label>
                     <input autocomplete="off" id="language" name="language" placeholder="Language" class="form__input">
                 </div>
                 <div class="form__item">
-                    <label for="lyrics" class="form__label form__label--uppercase">Lyrics</label>
-                    <textarea id="lyrics" name="lyrics" placeholder="Lyrics"
-                        class="form__input form__textarea"></textarea>
+                    <label for="cover" class="form__label form__label--uppercase">Cover</label>
+                    <input type="file" accept="image/*" id="cover" name="cover" placeholder="Cover" class="form__input">
+                </div>
+                <div class="form__item">
+                    <label for="title" class="form__label form__label--uppercase">Title</label>
+                    <input id="title" name="title" placeholder="Title" class="form__input">
                 </div>
                 <div class="form__item">
                     <label for="date" class="form__label form__label--uppercase">Date</label>
                     <input id="date" name="date" type="date" placeholder="Date" class="form__input">
                 </div>
                 <div class="form__item">
-                    <label for="album" class="form__label form__label--uppercase">Album</label>
-                    <input autocomplete="off" id="album" name="album" placeholder="Album" class="form__input">
-                    <div id="album-suggestions" class="dropdown__container hidden"></div>
+                    <label for="about" class="form__label form__label--uppercase">About</label>
+                    <textarea id="about" name="about" placeholder="About"
+                        class="form__input form__textarea"></textarea>
+                </div>
+                <div class="form__item">
+                    <label for="lyrics" class="form__label form__label--uppercase">Lyrics</label>
+                    <textarea id="lyrics" name="lyrics" placeholder="Lyrics"
+                        class="form__input form__textarea"></textarea>
                 </div>
             </div>
             <section class="col-xs-4 col-sm-4 col-md-6 guide">
