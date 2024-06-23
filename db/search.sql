@@ -214,7 +214,7 @@ begin
                                              ''updated_at'', pv.updated_at,
                                              ''author'', pv.author,
                                              ''poster'', pv.poster,
-                                             ''poem_id'', poem_id,
+                                             ''poem'', poem,
                                              ''language'', language,
                                              ''cover'', pv.cover,
                                              ''title'', pv.title,
@@ -326,7 +326,7 @@ begin
                                jsonb_build_object(
                                        'author', pv.author,
                                        'poster', pv.poster,
-                                       'poem_id', pv.poem_id,
+                                       'poem', pv.poem,
                                        'language', pv.language,
                                        'cover', pv.cover,
                                        'title', pv.title,
@@ -570,7 +570,7 @@ begin
                                                 ''updated_at'', updated_at,
                                                 ''author'', author,
                                                 ''poster'', poster,
-                                                ''poem_id'', poem_id,
+                                                ''poem'', poem,
                                                 ''language'', language,
                                                 ''cover'', cover,
                                                 ''title'', title,
@@ -619,8 +619,6 @@ begin
 end;
 $$ language plpgsql;
 
-select find_poem_cards('{"start":0, "count":5,"sort":"popular","order":"desc","query":"cumpl"}'::jsonb);
-
 create or replace function find_poem_cards_by_album_id(p_id integer) returns jsonb as
 $$
 declare
@@ -633,7 +631,7 @@ begin
                                     'updated_at', updated_at,
                                     'author', author,
                                     'poster', poster,
-                                    'poem_id', po.poem_id,
+                                    'poem', po.poem,
                                     'language', language,
                                     'cover', cover,
                                     'title', title,
@@ -665,12 +663,14 @@ begin
                    'updated_at', updated_at,
                    'author', author,
                    'poster', poster,
-                   'poem_id', poem_id,
+                   'poem', poem,
                    'language', language,
                    'cover', cover,
                    'title', title,
                    'publication_date', publication_date,
                    'main_annotation', main_annotation,
+                   'content', content,
+                   'annotations', annotations,
                    'contributors', contributors,
                    'likes', likes,
                    'dislikes', dislikes)
@@ -691,20 +691,22 @@ $$
 declare
     result jsonb;
 begin
+    if p_id is null then
+        return null;
+    end if;
+
     select jsonb_build_object(
                    'id', id,
                    'created_at', created_at,
                    'updated_at', updated_at,
                    'author', author,
                    'poster', poster,
-                   'poem_id', poem_id,
+                   'poem', poem,
                    'language', language,
                    'cover', cover,
                    'title', title,
                    'publication_date', publication_date,
                    'main_annotation', main_annotation,
-                   'content', content,
-                   'annotations', annotations,
                    'contributors', contributors,
                    'likes', likes,
                    'dislikes', dislikes)
@@ -729,7 +731,7 @@ begin
     into result
     from (select jsonb_build_object('id', id, 'language', language) e
           from poems_view
-          where poem_id = p_id
+          where (poem ->> 'id')::int = p_id
              or id = p_id) t;
 
     if result is null then

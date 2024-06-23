@@ -1295,6 +1295,10 @@ components:
                 poster:
                     $ref: '#/components/schemas/UserCard'
                     description: The information of the user that posted the poem
+                poem:
+                    nullable: true
+                    $ref: '#/components/schemas/PoemCard'
+                    description: The original version of this poem or null if it is already the original
                 language:
                     type: string
                     description: The language of the poem
@@ -1362,6 +1366,10 @@ components:
                 poster:
                     $ref: '#/components/schemas/UserCard'
                     description: The information of the user that posted the poem
+                poem:
+                    nullable: true
+                    $ref: '#/components/schemas/PoemCard'
+                    description: The original version of this poem or null if it is already the original
                 language:
                     type: string
                     description: The language of the poem
