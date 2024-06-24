@@ -5,6 +5,7 @@ import fs from 'fs'
 
 import { App, WebServer, getCorsMiddleware } from 'web-lib'
 import {
+    admin_router,
     albums_router,
     annotations_router,
     poems_router,
@@ -19,6 +20,7 @@ const app = new App({
 
 app.middleware(getCorsMiddleware([process.env.FRONTEND_URL]))
 
+app.use('/api/admin', admin_router)
 app.use('/api/albums', albums_router)
 app.use('/api/annotations', annotations_router)
 app.use('/api/poems', poems_router)

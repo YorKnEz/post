@@ -1,3 +1,4 @@
+export { router as admin_router } from './admin.js'
 export { router as albums_router } from './albums.js'
 export { router as annotations_router } from './annotations.js'
 export { router as poems_router } from './poems.js'
