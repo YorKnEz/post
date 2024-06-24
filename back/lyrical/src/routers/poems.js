@@ -199,6 +199,13 @@ auth_router.patch('/:id', async (req, res) => {
 
 auth_router.delete('/:id', async (req, res) => {
     try {
+        if (!(req.locals.userRoles & 0b10)) {
+            return new JSONResponse(403, {
+                code: ErrorCodes.UNAUTHORIZED,
+                message: 'You are not an admin',
+            })
+        }
+
         await db.query('call delete_poem($1)', [req.params.id])
 
         return new JSONResponse(200, {

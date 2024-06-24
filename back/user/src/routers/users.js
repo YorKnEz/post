@@ -52,53 +52,37 @@ router.use('/', auth_router)
 
 auth_router.middleware(authMiddleware)
 
-auth_router.post('/', async (req, res) => {
-    try {
-        let result = await db.query('select insert_user($1)', [req.body])
+auth_router.post('/', async (req, res) => { })
 
-        return new JSONResponse(201, toCamel(result.rows[0]))
-    } catch (e) {
-        console.error(e)
-        return new InternalError()
-    }
-})
-
-auth_router.patch('/:id', async (req, res) => {
-    try {
-        let result = await db.query('select update_user($1)', [
-            {
-                ...req.body,
-                id: req.params.id,
-            },
-        ])
-
-        return new JSONResponse(200, toCamel(result.rows[0]))
-    } catch (e) {
-        console.error(e)
-        return new InternalError()
-    }
-})
+auth_router.patch('/:id', async (req, res) => { })
 
 auth_router.delete('/:id', async (req, res) => {
     try {
-        await db.query('call delete_user($1)', [req.params.id])
-
-        return new JSONResponse(200, {
-            code: SuccessCodes.USER_DELETED,
-            message: 'User deleted successfully',
+    if (!(req.locals.userRoles & 0b10)) {
+        return new JSONResponse(403, {
+            code: ErrorCodes.UNAUTHORIZED,
+            message: 'You are not an admin',
         })
-    } catch (e) {
-        // db threw 404
-        if (e.code == 'P0001' && e.message == 'user not found') {
-            return new JSONResponse(404, {
-                code: ErrorCodes.USER_NOT_FOUND,
-                message: 'User not found',
-            })
-        }
-
-        console.error(e)
-        return new InternalError()
     }
+
+    await db.query('call delete_user($1)', [req.params.id])
+
+    return new JSONResponse(200, {
+        code: SuccessCodes.USER_DELETED,
+        message: 'User deleted successfully',
+    })
+} catch (e) {
+    // db threw 404
+    if (e.code == 'P0001' && e.message == 'user not found') {
+        return new JSONResponse(404, {
+            code: ErrorCodes.USER_NOT_FOUND,
+            message: 'User not found',
+        })
+    }
+
+    console.error(e)
+    return new InternalError()
+}
 })
 
 auth_router.put('/:id/active-request', async (req, res) => {
