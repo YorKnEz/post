@@ -120,6 +120,7 @@ router.post('/register', async (req, res) => {
     // whatever happens with this task, the user won't know the result, they'll just know that they
     // must check their email
     task()
+    
 
     client.release()
 
