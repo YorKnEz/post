@@ -44,10 +44,11 @@ const updateIntervals = (deletions, annotations) => {
         if (deletions[j].start <= annotations[i].offset) {
             //-----[-------]----- annotation
             //--[-----]---------- deletion
-            //update the new length of the annotation
-            annotations[i].length = annotations[i].length - (deletions[j].end - annotations[i].offset + 1)
-            //move the offset to the next valid spot
-            annotations[i].offset = deletions[j].end + 1
+            //update the offset of the annotation
+            annotations[i].offset = -1
+            updatedAnnotations.push(annotations[i])
+            //go to the next annotation
+            i++
             //go to next deletion
             j++
             continue
@@ -56,9 +57,8 @@ const updateIntervals = (deletions, annotations) => {
         if (annotations[i].offset + annotations[i].length - 1 <= deletions[j].end) {
             //-----[---------]--- annotation
             //----------[------]- deletion
-            //update length
-            annotations[i].length = annotations[i].length - (annotations[i].offset + annotations[i].length - deletions[j].start)
-            //save current annotation
+            //update the offset of the annotation
+            annotations[i].offset = -1
             updatedAnnotations.push(annotations[i])
             //go to the next annotation
             i++
@@ -68,7 +68,10 @@ const updateIntervals = (deletions, annotations) => {
         //-----[---------]--- annotation
         //--------[-]-------- deletion
         //update length
-        annotations[i].length = annotations[i].length - (deletions[j].end - deletions[j].start + 1)
+        annotations[i].offset = -1
+        updatedAnnotations.push(annotations[i])
+        //go to the next annotation
+        i++
         //go to next deletion
         j++
     }
