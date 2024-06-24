@@ -1,5 +1,6 @@
 export * from './api.js'
 export * from './html.js'
+export * from './user.js'
 
 export const toggleTheme = () => {
     document.documentElement.classList.toggle('theme-dark')
@@ -45,14 +46,3 @@ export const removeHashFromURL = () => {
     }
 }
 
-export const getUserRole = (roles) => {
-    if (roles & 0b1) {
-        return 'Poet'
-    }
-
-    if (roles & 0b10) {
-        return 'Admin'
-    }
-
-    return 'Regular'
-}

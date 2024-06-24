@@ -6,7 +6,7 @@ import {
     Router,
     toCamel,
 } from 'web-lib'
-import * as db from '../db/index.js'
+import db from '../db/index.js'
 import { authMiddleware } from '../utils/index.js'
 
 export const router = new Router('Users Router')
@@ -52,9 +52,9 @@ router.use('/', auth_router)
 
 auth_router.middleware(authMiddleware)
 
-auth_router.post('/', async (req, res) => {})
+auth_router.post('/', async (req, res) => { })
 
-auth_router.patch('/:id', async (req, res) => {})
+auth_router.patch('/:id', async (req, res) => { })
 
 auth_router.delete('/:id', async (req, res) => {
     try {
@@ -74,6 +74,80 @@ auth_router.delete('/:id', async (req, res) => {
         }
 
         console.error(e)
+        return new InternalError()
+    }
+})
+
+auth_router.put('/:id/active-request', async (req, res) => {
+    if (req.params.id != req.locals.userId) {
+        return new JSONResponse(403, {
+            code: ErrorCodes.UNAUTHORIZED,
+            message: `You are not the user with id ${req.params.id}`,
+        })
+    }
+
+    if (req.locals.userRoles & 0b1) {
+        return new JSONResponse(403, {
+            code: ErrorCodes.UNAUTHORIZED,
+            message: 'You are already a poet',
+        })
+    }
+
+    try {
+        await db.query('insert into requests(requester_id) values ($1)', [
+            req.params.id,
+        ])
+
+        return new JSONResponse(200, {
+            code: SuccessCodes.REQUEST_MADE,
+            message:
+                'Request made successfully, you will be notified by email when the request will be evaluated',
+        })
+    } catch (e) {
+        if (e.code == 23503) {
+            if (e.constraint == 'requests_u1') {
+                return new JSONResponse(403, {
+                    code: ErrorCodes.ALREADY_ACTIVE_REQUEST,
+                    message: 'You already have an active request',
+                })
+            } else if (e.constraint == 'requests_f1') {
+                return new JSONResponse(404, {
+                    code: ErrorCodes.USER_NOT_FOUND,
+                    message: 'User not found',
+                })
+            }
+        }
+
+        console.error(e)
+        return new InternalError()
+    }
+})
+
+auth_router.post('/:id/active-request', async (req, res) => {
+    try {
+        let result = await db.query(
+            'select post_id from requests where requester_id = $1',
+            [req.params.id]
+        )
+
+        if (result.rowCount == 0) {
+            return new JSONResponse(404, {
+                code: ErrorCodes.USER_NOT_FOUND,
+                message: 'User not found',
+            })
+        }
+
+        let hasActiveReq = false
+
+        for (const request of toCamel(result.rows)) {
+            if (request.postId == null) {
+                hasActiveReq = true
+                break
+            }
+        }
+
+        return new JSONResponse(200, { result: hasActiveReq })
+    } catch (e) {
         return new InternalError()
     }
 })

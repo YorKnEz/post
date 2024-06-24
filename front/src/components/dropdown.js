@@ -5,14 +5,18 @@ import { getElement } from '../utils/index.js'
 //
 // By default options[0] is used as default
 export class Dropdown {
-    constructor(id, options, cb) {
+    constructor(id, options, cb, defaultOption) {
         this.cb = cb
 
         this.dropdown = document.getElementById(id)
         this.dropdown.addEventListener('click', this.toggle)
 
+        if (defaultOption == undefined) {
+            defaultOption = Object.entries(options)[0][0]
+        }
+
         this.text = this.dropdown.querySelector('.dropdown__text')
-        this.text.innerText = Object.entries(options)[0][1].title
+        this.text.innerText = options[defaultOption].title
 
         this.container = this.dropdown.querySelector('.dropdown__container')
         this.container.addEventListener('click', this.optionClick)

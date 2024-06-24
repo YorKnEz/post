@@ -1,45 +1,17 @@
-import { AnnotationClickEvent } from '../events/index.js'
-import { CreateAnnotation, AnnotationCard } from './index.js'
-
-export class AnnotationButton {
-    constructor(annotate) {
-        this.button = document.createElement('button')
-        this.button.innerHTML = 'Annotate'
-        this.button.style.position = 'absolute'
-        this.button.classList.add('btn')
-        this.button.onclick = annotate
-    }
-
-    // align button under selection
-    align = (selection) => {
-        const bounds = selection.getRangeAt(0).getBoundingClientRect()
-        document.body.appendChild(this.button)
-        this.button.style.top = window.scrollY + bounds.bottom + 4 + 'px'
-        this.button.style.left =
-            bounds.left +
-            bounds.width / 2 -
-            this.button.getBoundingClientRect().width / 2 +
-            'px'
-    }
-
-    // hide the button from the screen
-    remove = () => {
-        if (document.body.contains(this.button)) {
-            document.body.removeChild(this.button)
-        }
-    }
-}
+import { AnnotationButton } from "../annotation/annotationButton.js"
+import { AnnotationClickEvent } from "../events/annotationClickEvent.js"
 
 export class AnnotationSystem {
-    constructor() {
-        this.root = document.getElementById('lyrics')
+    constructor(root) {
+        this.root = root
         this.button = new AnnotationButton(this.annotate)
-        this.createCard = new CreateAnnotation()
-        this.card = new AnnotationCard('annotation', location.href)
+        // this.createCard = new CreateAnnotation()
+        // this.card = new AnnotationCard('annotation', location.href)
         this.range
         this.region
 
-        document.onmouseup = document.onselectionchange = this.onselection
+        document.addEventListener('mouseup', this.onselection)
+        document.addEventListener('selectionchange', this.onselection)
 
         document.querySelectorAll('.poem__annotated').forEach((annotated) => {
             annotated.onclick = (ev) => {
@@ -49,12 +21,9 @@ export class AnnotationSystem {
     }
 
     // checks whether a node is annotated or is a child of an annotated element
-    static annotated = (node) => {
-        return (
-            node.parentNode.classList.contains('poem__annotated') ||
-            node?.classList?.contains('poem__annotated')
-        )
-    }
+    static annotated = (node) =>
+        node.parentNode.classList.contains('poem__annotated') ||
+        node?.classList?.contains('poem__annotated')
 
     // update the selection
     onselection = (ev) => {
@@ -119,7 +88,7 @@ export class AnnotationSystem {
             return
         }
 
-        this.button.align(selection)
+        this.button.align(selection.getRangeAt(0))
     }
 
     // realize the annotation on the selected text range

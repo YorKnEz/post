@@ -1,8 +1,8 @@
 import { getElement } from '../utils/index.js'
 
 export class Share {
-    constructor(title, url) {
-        this.url = url
+    constructor(title, data) {
+        this.data = data
 
         this.inner = getElement('section', { class: 'share' }, [
             getElement('h2', { class: 'share__title' }, [
@@ -13,11 +13,11 @@ export class Share {
                     'button',
                     {
                         class: 'btn btn--round btn--span btn--transparent',
-                        onclick: this.share('tumblr'),
+                        onclick: this.shareToTwitter,
                     },
                     [
                         getElement('i', {
-                            class: 'fa-brands fa-tumblr btn__icon',
+                            class: 'fa-brands fa-twitter btn__icon',
                         }),
                     ]
                 ),
@@ -25,11 +25,11 @@ export class Share {
                     'button',
                     {
                         class: 'btn btn--round btn--span btn--transparent',
-                        onclick: this.share('wordpress'),
+                        onclick: this.shareToTumblr,
                     },
                     [
                         getElement('i', {
-                            class: 'fa-brands fa-wordpress btn__icon',
+                            class: 'fa-brands fa-tumblr btn__icon',
                         }),
                     ]
                 ),
@@ -41,7 +41,7 @@ export class Share {
                 getElement('input', {
                     class: 'input share__input',
                     disabled: '',
-                    value: this.url,
+                    value: this.data.url,
                 }),
                 getElement(
                     'button',
@@ -55,16 +55,29 @@ export class Share {
         ])
     }
 
-    shown = () => {
-        return !this.inner.classList.contains('hidden')
-    }
-
     toggle = () => {
         this.inner.classList.toggle('hidden')
     }
 
-    share = (to) => {
-        console.log(`share to ${to}`)
+    shareToTwitter = () => {
+        const text = this.data.title
+        const url = this.data.url
+        const hashtags = 'post'
+
+        const twitterIntentUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}&hashtags=${encodeURIComponent(hashtags)}`
+
+        window.open(twitterIntentUrl, '_blank')
+    }
+
+    shareToTumblr = () => {
+        const title = this.data.title
+        const content = this.data.content
+        const url = this.data.url
+        const hashtags = 'post'
+
+        const tumblrShareUrl = `https://www.tumblr.com/widgets/share/tool?canonicalUrl=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}&caption=${encodeURIComponent(content)}&tags=${encodeURIComponent(hashtags)}`
+
+        window.open(tumblrShareUrl, '_blank')
     }
 
     copy = (ev) => {

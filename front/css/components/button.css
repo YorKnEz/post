@@ -3,10 +3,15 @@
   font-weight: inherit;
   font-family: inherit;
   font-size: inherit;
+  box-sizing: border-box;
   border: 1px solid;
   color: var(--text-black);
   background-color: var(--text-white);
   padding: 4px 16px;
+  gap: 0.2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .btn:hover {
   border-color: var(--text-black);
@@ -17,7 +22,7 @@
   border-radius: 2rem;
 }
 .btn--span {
-  width: calc(100% - 32px - 2px);
+  width: 100%;
 }
 .btn--transparent {
   color: inherit;

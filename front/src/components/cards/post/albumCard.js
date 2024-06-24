@@ -1,4 +1,4 @@
-import { getElement } from '../../utils/index.js'
+import { getElement } from '../../../utils/index.js'
 
 export class AlbumCard {
     constructor(data, type, small) {
@@ -6,27 +6,27 @@ export class AlbumCard {
             'a',
             {
                 class: small
-                    ? 'card card--small col-xs-2 col-sm-2 col-md-3'
-                    : 'card col-xs-2 col-sm-8 col-md-12',
-                href: `/poem/${data.id}`,
+                    ? 'post-card post-card--small col-xs-2 col-sm-2 col-md-3'
+                    : 'post-card col-xs-2 col-sm-8 col-md-12',
+                href: `/album/${data.id}`,
             },
             [
-                getElement('section', { class: 'card__info' }, [
+                getElement('section', { class: 'post-card__info' }, [
                     getElement('div', {}, [
-                        getElement('span', { class: 'card__type' }, [
+                        getElement('span', { class: 'post-card__type' }, [
                             document.createTextNode(type),
                         ]),
-                        getElement('h2', { class: 'card__title' }, [
+                        getElement('h2', { class: 'post-card__title' }, [
                             document.createTextNode(data.title),
                         ]),
                     ]),
                     getElement('div', {}, [
-                        getElement('span', { class: 'card__author' }, [
+                        getElement('span', { class: 'post-card__author' }, [
                             document.createTextNode(
                                 `by ${data.author.nickname} / `
                             ),
                         ]),
-                        getElement('span', { class: 'card__date' }, [
+                        getElement('span', { class: 'post-card__date' }, [
                             document.createTextNode(
                                 new Date(data.createdAt).toLocaleDateString(
                                     'en-US',
@@ -41,7 +41,7 @@ export class AlbumCard {
                     ]),
                 ]),
                 getElement('img', {
-                    class: 'card__image',
+                    class: 'post-card__image',
                     src: data.cover,
                     alt: `cover of ${data.title}`,
                 }),

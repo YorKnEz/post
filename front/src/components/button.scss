@@ -1,18 +1,20 @@
 .btn {
     cursor: pointer;
-    
+
     font-weight: inherit;
     font-family: inherit;
     font-size: inherit;
 
+    box-sizing: border-box;
     border: 1px solid;
     color: var(--text-black);
     background-color: var(--text-white);
     padding: 4px 16px;
 
-    // &__icon {}
-
-    // &__label {}
+    gap: 0.2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
     &:hover {
         border-color: var(--text-black);
@@ -25,7 +27,7 @@
     }
 
     &--span {
-        width: calc(100% - 32px - 2px);
+        width: 100%;
     }
 
     &--transparent {
@@ -44,9 +46,7 @@
         color: inherit;
         background-color: transparent;
         padding: 0;
-        
-        // .btn__icon {}
-        
+
         .btn__label {
             text-decoration: underline;
             text-underline-offset: 0.2rem;

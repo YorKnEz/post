@@ -4,57 +4,77 @@ import {
     Loader,
     ContributionCard,
 } from '../../components/index.js'
-import { getContributions } from '../../services/lyrical.js'
-import { getUser } from '../../services/users.js'
-import { getElement } from '../../utils/html.js'
-import { getUserRole } from '../../utils/index.js'
+import {
+    getContributions,
+    getUser,
+    hasPoetRequest,
+    makePoetRequest,
+} from '../../services/index.js'
+import { getElement, getUserRole, isPoet } from '../../utils/index.js'
 
 window.navbar = new Navbar()
 
 const profileLoader = new Loader('profile')
 
-const loadProfile = async (user) => {
+const loadProfile = async (user, ownProfile) => {
     const content = profileLoader.getContent()
 
-    content.appendChild(
-        getElement('img', {
-            class: 'profile__avatar col-xs-4 col-sm-4 col-md-5',
-            src: user.avatar,
-        })
+    const becomeAPoet = getElement(
+        'button',
+        { class: 'btn profile__editor-btn' },
+        [
+            getElement('span', { class: 'btn__label' }, [
+                document.createTextNode('Become a Poet'),
+            ]),
+        ]
     )
-    content.appendChild(
-        getElement(
-            'div',
-            { class: 'profile__container col-xs-4 col-sm-4 col-md-7' },
-            [
-                getElement('div', { class: 'profile__info' }, [
-                    getElement('h1', { class: 'profile__name' }, [
-                        document.createTextNode(
-                            `${user.firstName} ${user.lastName} (AKA ${user.nickname})`
-                        ),
+
+    becomeAPoet.addEventListener('click', async () => {
+        await new Promise((res) => setTimeout(res, 200))
+        await makePoetRequest(user.id)
+        becomeAPoet.remove()
+    })
+
+    content.append(
+        ...[
+            getElement('img', {
+                class: 'profile__avatar col-xs-4 col-sm-4 col-md-5',
+                src: user.avatar,
+            }),
+            getElement(
+                'div',
+                { class: 'profile__container col-xs-4 col-sm-4 col-md-7' },
+                [
+                    getElement('div', { class: 'profile__info' }, [
+                        getElement('h1', { class: 'profile__name' }, [
+                            document.createTextNode(
+                                `${user.firstName} ${user.lastName} (AKA ${user.nickname})`
+                            ),
+                        ]),
+                        getElement('h3', { class: 'profile__role' }, [
+                            document.createTextNode(getUserRole(user.roles)),
+                        ]),
+                        getElement('span', { class: 'profile__joined' }, [
+                            document.createTextNode(
+                                `Joined on ${new Date(
+                                    user.createdAt
+                                ).toLocaleDateString('en-US', {
+                                    year: 'numeric',
+                                    month: 'short',
+                                    day: '2-digit',
+                                })}`
+                            ),
+                        ]),
                     ]),
-                    getElement('h3', { class: 'profile__role' }, [
-                        document.createTextNode(getUserRole(user.role)),
-                    ]),
-                    getElement('span', { class: 'profile__joined' }, [
-                        document.createTextNode(
-                            `Joined on ${new Date(
-                                user.createdAt
-                            ).toLocaleDateString('en-US', {
-                                year: 'numeric',
-                                month: 'short',
-                                day: '2-digit',
-                            })}`
-                        ),
-                    ]),
-                ]),
-                getElement('button', { class: 'btn profile__editor-btn' }, [
-                    getElement('span', { class: 'btn__label' }, [
-                        document.createTextNode('Become a Poet'),
-                    ]),
-                ]),
-            ]
-        )
+                    // load become a poet only if the user's on his own profile
+                    ...(ownProfile &&
+                        !isPoet(user.roles) &&
+                        !(await hasPoetRequest(user.id)).result
+                        ? [becomeAPoet]
+                        : []),
+                ]
+            ),
+        ]
     )
 
     profileLoader.loaded()
@@ -129,69 +149,58 @@ let lastDate
 const loadContributions = async (user, type = 'all', start = 0, count = 5) => {
     const content = contributionsLoader.getContent()
 
-    try {
-        const response = await getContributions({
-            id: user.id,
-            start,
-            count,
-            type,
-        })
+    const response = await getContributions({
+        id: user.id,
+        start,
+        count,
+        type,
+    })
 
-        let length = 0
+    let length = 0
 
-        for (const { date, contributions } of response) {
-            if (lastDate != date) {
-                content.appendChild(
-                    getElement('div', { class: 'contributions__date' }, [
-                        getElement('div', { class: 'contributions__rule' }),
-                        getElement('i', { class: 'fa-regular fa-calendar' }),
-                        getElement('span', {}, [document.createTextNode(date)]),
-                        getElement('div', { class: 'contributions__rule' }),
-                    ])
-                )
+    for (const { date, contributions } of response) {
+        if (lastDate != date) {
+            content.appendChild(
+                getElement('div', { class: 'contributions__date' }, [
+                    getElement('div', { class: 'contributions__rule' }),
+                    getElement('i', { class: 'fa-regular fa-calendar' }),
+                    getElement('span', {}, [document.createTextNode(date)]),
+                    getElement('div', { class: 'contributions__rule' }),
+                ])
+            )
 
-                lastDate = date
-            }
-
-            length += contributions.length
-
-            for (const contribution of contributions) {
-                content.appendChild(
-                    new ContributionCard(user, contribution).inner
-                )
-            }
+            lastDate = date
         }
 
-        content.appendChild(
-            length > 0
-                ? getElement(
-                    'button',
-                    {
-                        class: 'btn',
-                        onclick: () => {
-                            content.lastChild.remove()
-                            loadContributions(
-                                user,
-                                type,
-                                start + length,
-                                count
-                            )
-                        },
-                    },
-                    [document.createTextNode('Load more')]
-                )
-                : getElement(
-                    'button',
-                    {
-                        class: 'btn',
-                        disabled: true,
-                    },
-                    [document.createTextNode('End of content')]
-                )
-        )
-    } catch (e) {
-        console.error(e)
+        length += contributions.length
+
+        for (const contribution of contributions) {
+            content.appendChild(new ContributionCard(user, contribution).inner)
+        }
     }
+
+    content.appendChild(
+        length > 0
+            ? getElement(
+                'button',
+                {
+                    class: 'btn',
+                    onclick: () => {
+                        content.lastChild.remove()
+                        loadContributions(user, type, start + length, count)
+                    },
+                },
+                [document.createTextNode('Load more')]
+            )
+            : getElement(
+                'button',
+                {
+                    class: 'btn',
+                    disabled: true,
+                },
+                [document.createTextNode('End of content')]
+            )
+    )
 
     contributionsLoader.loaded()
 }
@@ -201,15 +210,17 @@ let user
 window.onload = async () => {
     let userId
     const path = location.pathname.replace('/profile', '')
+    let ownProfile = false
 
     if (path.length == 0) {
-        userId = JSON.parse(localStorage.getItem('user'))
+        userId = JSON.parse(sessionStorage.getItem('user'))
 
         if (!userId) {
             location.assign('/')
         }
 
         userId = userId.id
+        ownProfile = true
     } else {
         userId = parseInt(path.slice(1))
     }
@@ -217,7 +228,11 @@ window.onload = async () => {
     try {
         user = await getUser(userId)
 
-        loadProfile(user)
+        if (ownProfile) {
+            sessionStorage.setItem('user', JSON.stringify(user))
+        }
+
+        loadProfile(user, ownProfile)
         loadTopAccomplishments(user)
         loadStatistics(user)
         loadContributions(user)

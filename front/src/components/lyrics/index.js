@@ -2,12 +2,11 @@ import { EditLyrics } from './editLyrics.js'
 import { ViewLyrics } from './viewLyrics.js'
 
 export class Lyrics {
-    constructor(parent, poem, cb) {
-        this.parent = parent
+    constructor(inner, poem, cb) {
+        this.inner = inner
+        poem.annotations.reverse()
         this.poem = poem
         this.cb = cb
-
-        console.log(poem)
 
         this.viewState = new ViewLyrics(this)
         this.editState = new EditLyrics(this)
@@ -16,6 +15,7 @@ export class Lyrics {
     }
 
     setState = (state) => {
+        this.state?.exit()
         this.state = state
         this.state.enter()
     }

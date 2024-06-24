@@ -1,6 +1,3 @@
-export * from './contribution/index.js'
-
-export * from './albumCard.js'
-export * from './poemCard.js'
-export * from './postCard.js'
-export * from './userSmallCard.js'
+export { ContributionCard } from './contribution/index.js'
+export { PostCard } from './post/index.js'
+export { UserSmallCard } from './userSmallCard.js'

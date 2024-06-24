@@ -5,6 +5,271 @@ info:
     description: Lyrical Service API Documentation
 
 paths:
+    /api/admin/stats:
+        get:
+            summary: Get a collection of statistics about the site
+            description: This route returns statistics about the site such as total contributions, total registered users, total verified users etc.
+            tags:
+                - admin
+                - auth
+            security:
+                - cookieAuth: []
+            responses:
+                '200':
+                    description: Stats
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    usersCount:
+                                        type: integer
+                                    verifiedUsersCount:
+                                        type: integer
+                                    poetsCount:
+                                        type: integer
+                                    adminsCount:
+                                        type: integer
+                                    contributionsCount:
+                                        type: integer
+                                    albumsCount:
+                                        type: integer
+                                    verifiedAlbumsCount:
+                                        type: integer
+                                    poemsCount:
+                                        type: integer
+                                    verifiedPoemsCount:
+                                        type: integer
+                                    annotationsCount:
+                                        type: integer
+                                    verifiedAnnotationsCount:
+                                        type: integer
+                                    likes:
+                                        type: integer
+                                    dislikes:
+                                        type: integer
+                                required:
+                                    - all
+
+    /api/admin/requests:
+        get:
+            summary: Get paginated users or posts that are yet to be accepted (i.e they have a request active)
+            description: This route is provided with a type (album, poem, annotation or user), for the first three, the results contain posts that must be accepted, otherwise it contains users that made a poet request.
+            tags:
+                - admin
+                - auth
+            security:
+                - cookieAuth: []
+            parameters:
+                - name: type
+                  in: query
+                  required: true
+                  schema:
+                      type: string
+                  description: album/poem/annotation/user
+                - name: start
+                  in: query
+                  required: true
+                  schema:
+                      type: integer
+                  description: Offset of results to start from
+                - name: count
+                  in: query
+                  required: true
+                  schema:
+                      type: integer
+                  description: Number of results to return
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/RequestCard'
+                                description: List of matched users or posts
+
+    /api/admin/requests/{id}:
+        post:
+            summary: Solve a request by id
+            description: The effect of this route is the following
+                If the request is a poet request, on approval the user is made a poet, on denial, nothing happens.
+                If the request is a post, on approval the post is verified, otherwise deleted.
+                For all of these, an email is sent to the user notifying them of the action taken by the admin and the request is deleted.
+            tags:
+                - admin
+                - auth
+            security:
+                - cookieAuth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                  description: The id of the request
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                approve:
+                                    type: boolean
+                                    description: Whether the request is approved or not
+                            required:
+                                - approve
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+                '404':
+                    description: Request not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+
+    /api/posts:
+        get:
+            summary: Get paginated posts by specified filters
+            description: This route returns a paginated list of posts, based on some filtering criteria
+            tags:
+                - posts
+            parameters:
+                - name: query
+                  in: query
+                  required: false
+                  schema:
+                      type: string
+                  description: The query string to search by
+                - name: start
+                  in: query
+                  required: true
+                  schema:
+                      type: integer
+                  description: Offset of results to start from
+                - name: count
+                  in: query
+                  required: true
+                  schema:
+                      type: integer
+                  description: Number of results to return
+                - name: sort
+                  in: query
+                  required: false
+                  schema:
+                      type: string
+                  description: The sort criteria
+                - name: order
+                  in: query
+                  required: false
+                  schema:
+                      type: string
+                  description: The order of the sorting
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/PostCard'
+                                description: List of matched posts
+
+    /api/posts/{id}/reactions:
+        post:
+            summary: Add or remove a reaction
+            tags:
+                - posts
+                - auth
+            security:
+                - cookieauth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                  description: The id of the post
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                action:
+                                    type: integer
+                                    description: -1 for removing and 1 for adding
+                                type:
+                                    type: integer
+                                    description: 0 for like, 1 for dislike
+                            required:
+                                - action
+                                - type
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+                '400':
+                    description: Already reacted to this post
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+                '404':
+                    description: Post not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+
+    /api/posts/{id}/reaction:
+        post:
+            summary: Get the reaction of a user for a specific post
+            description: This route returns the reaction the user has, can be -1 for no reaction, 0 like, 1 dislike
+            tags:
+                - posts
+                - auth
+            security:
+                - cookieauth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                  description: The id of the post
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    type:
+                                        type: integer
+                                        description: The id of the reaction, -1, 0 or 1
+                                required:
+                                    - properties
+                '404':
+                    description: Post not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+
     /api/users/{id}/albums:
         get:
             summary: Get paginated albums that were authored or posted by a specified user
@@ -926,153 +1191,6 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/Message'
 
-    /api/posts:
-        get:
-            summary: Get paginated posts by specified filters
-            description: This route returns a paginated list of posts, based on some filtering criteria
-            tags:
-                - posts
-            parameters:
-                - name: query
-                  in: query
-                  required: false
-                  schema:
-                      type: string
-                  description: The query string to search by
-                - name: start
-                  in: query
-                  required: true
-                  schema:
-                      type: integer
-                  description: Offset of results to start from
-                - name: count
-                  in: query
-                  required: true
-                  schema:
-                      type: integer
-                  description: Number of results to return
-                - name: sort
-                  in: query
-                  required: false
-                  schema:
-                      type: string
-                  description: The sort criteria
-                - name: order
-                  in: query
-                  required: false
-                  schema:
-                      type: string
-                  description: The order of the sorting
-            responses:
-                '200':
-                    description: Successful response
-                    content:
-                        application/json:
-                            schema:
-                                type: array
-                                items:
-                                    $ref: '#/components/schemas/PostCard'
-                                description: List of matched posts
-
-    /api/posts/{id}/reactions:
-        post:
-            summary: Add or remove a reaction
-            tags:
-                - posts
-                - auth
-            security:
-                - cookieauth: []
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                      type: integer
-                  description: The id of the post
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            type: object
-                            properties:
-                                action:
-                                    type: integer
-                                    description: -1 for removing and 1 for adding
-                                type:
-                                    type: integer
-                                    description: 0 for like, 1 for dislike
-                            required:
-                                - action
-                                - type
-            responses:
-                '200':
-                    description: Successful response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Message'
-                '400':
-                    description: Already reacted to this post
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Message'
-                '404':
-                    description: Post not found
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Message'
-
-    /api/posts/{id}/reactions/{userId}:
-        get:
-            summary: Get the reaction of a user for a specific post
-            description: This route returns the reaction the user has, can be -1 for no reaction, 0 like, 1 dislike
-            tags:
-                - posts
-                - auth
-            security:
-                - cookieauth: []
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                      type: integer
-                  description: The id of the post
-                - name: userId
-                  in: path
-                  required: true
-                  schema:
-                      type: integer
-                  description: The id of the user
-            responses:
-                '200':
-                    description: Successful response
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    type:
-                                        type: integer
-                                        description: The id of the reaction, -1, 0 or 1
-                                required:
-                                    - properties
-                '400':
-                    description: Already reacted to this post
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Message'
-                '404':
-                    description: Post not found
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Message'
-
 components:
     securitySchemes:
         cookieAuth:
@@ -1427,6 +1545,32 @@ components:
                           description: poem or album
                   required:
                       - type
+        RequestCard:
+            allOf:
+                - type: object
+                  properties:
+                      id:
+                          type: integer
+                          description: Id of the request
+                  required:
+                      - type
+                - anyOf:
+                      - type: object
+                        properties:
+                            user:
+                                $ref: '#/components/schemas/UserCard'
+                      - type: object
+                        properties:
+                            album:
+                                $ref: '#/components/schemas/AlbumCard'
+                      - type: object
+                        properties:
+                            poem:
+                                $ref: '#/components/schemas/PoemCard'
+                      - type: object
+                        properties:
+                            annotation:
+                                $ref: '#/components/schemas/Annotation'
         User:
             type: object
             properties:
