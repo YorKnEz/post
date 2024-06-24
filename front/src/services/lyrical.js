@@ -50,6 +50,18 @@ export const addPoemToAlbum = async (albumId, poemId) => {
     })
 }
 
+export const addAlbum = async (data) => {
+    return await __fetch(`${API_URL}/albums`, {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify(data),
+    })
+}
+
+export const getAlbum = async (id) => {
+    return await __fetch(`${API_URL}/albums/${id}`, { method: 'GET' })
+}
+
 // poems
 export const getPoem = async (id) => {
     return await __fetch(`${API_URL}/poems/${id}`, { method: 'GET' })

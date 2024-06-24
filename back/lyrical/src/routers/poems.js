@@ -12,6 +12,7 @@ import {
     authMiddleware,
     poemSchema,
     poemUpdateSchema,
+    meyersDiff,
 } from '../utils/index.js'
 import db from '../db/index.js'
 
@@ -152,15 +153,37 @@ auth_router.patch('/:id', async (req, res) => {
         return new JSONResponse(400, e.obj())
     }
 
+    const client = await db.getClient()
+
     try {
-        let result = await db.query('select update_poem($1, $2, $3);', [
+        await client.query('begin')
+        let result = await client.query(
+            'select content, annotations from poems_view where id = $1',
+            [req.params.id]
+        )
+        const oldContent = result.rows[0].content
+        const annotations = result.rows[0].annotations
+
+        const updatedAnnotations = meyersDiff(
+            oldContent,
+            req.body.content,
+            annotations
+        )
+
+        await client.query('delete from annotations where id = any($1::int[])', [
+            updatedAnnotations.filter(ann => ann.offset == -1).map(ann => ann.id),
+        ])
+
+        result = await client.query('select update_poem($1, $2, $3);', [
             req.params.id,
             req.locals.userId,
             req.body,
         ])
 
+        await client.query('commit')
         return new JSONResponse(200, toCamel(result.rows[0].update_poem))
     } catch (e) {
+        await client.query('rollback')
         // db threw 404
         if (e.code == 'P0001' && e.message == 'poem not found') {
             return new JSONResponse(404, {

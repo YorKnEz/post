@@ -1,0 +1,155 @@
+@import '../../index.scss';
+
+@import '../../components/loader/loader.scss';
+
+@import '../../components/button.scss';
+@import '../../components/dropdown.scss';
+@import '../../components/input.scss';
+@import '../../components/share.scss';
+
+
+@import '../../components/rows/postRow.scss';
+@import '../../components/cards/index.scss';
+@import '../../components/table.scss';
+
+.album {
+    &__avatar-container {
+        justify-self: end;
+        max-height: 300px;
+    }
+
+    &__avatar {
+        width: 320px;
+        aspect-ratio: 1;
+    }
+
+    &__container {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    &__title {
+        margin: 0;
+        margin-bottom: 8px;
+    }
+
+    &__author {
+        color: var(--text-white);
+        margin: 0;
+        font-weight: 500;
+
+        &:visited {
+            color: var(--text-white);
+        }
+    }
+
+    &__info {
+        display: flex;
+        margin-bottom: 1rem;
+        gap: 1rem;
+    }
+
+    &__item {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    &__content {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+        color: var(--text-black);
+    }
+
+    &__content-header {
+        display: flex;
+        margin: 2rem 0;
+        font-size: 0.8rem;
+        gap: 1rem;
+    }
+
+    &__controls {
+        display: flex;
+        margin: 2rem 0;
+    }
+
+    &__control {
+        margin: 0 0.5rem;
+
+        &:first-child {
+            margin-left: 0;
+        }
+
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+
+    &__lyrics {
+        font-size: 1.2rem;
+        line-height: 30px;
+    }
+
+    &__lyrics-header {
+        display: flex;
+        margin: 2rem 0;
+        font-size: 0.8rem;
+    }
+
+    &__textarea {
+        width: calc(100% - 20px - 2px);
+        height: 10rem;
+        padding: 10px;
+
+        color: inherit;
+        background-color: transparent;
+        border: 1px solid inherit;
+
+        font-family: inherit;
+        font-size: inherit;
+        font-weight: inherit;
+        resize: none;
+
+        &:focus-visible {
+            outline: none;
+        }
+    }
+
+    &__annotated {
+        cursor: pointer;
+        background-color: var(--highlight);
+
+        &--active {
+            background-color: var(--active-highlight);
+        }
+    }
+}
+
+@media (max-width: 1239px) {
+    .album {
+        &__avatar {
+            width: 280px;
+        }
+
+        &__avatar-container {
+            max-height: 260px;
+        }
+    }
+}
+
+@media (max-width: 904px) {
+    .album {
+        &__avatar {
+            width: 200px;
+        }
+    }
+}
+
+@media (max-width: 599px) {
+    .album {
+        &__avatar-container {
+            justify-self: start;
+        }
+    }
+}
