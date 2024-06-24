@@ -33,6 +33,7 @@ const web_routes = {
     '/reset-nickname': 'src/pages/reset_nickname/index.html',
     '/reset-password': 'src/pages/reset_password/index.html',
     '/verify': 'src/pages/verify/index.html',
+    '/search': 'src/pages/search/index.html',
     '/src': { '\\*': 'src' },
 }
 

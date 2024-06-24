@@ -1,5 +1,5 @@
 import { updatePoem } from '../../services/lyrical.js'
-import { autoGrow, getElement, htmlToText } from '../../utils/index.js'
+import { autoGrow, getElement } from '../../utils/index.js'
 
 export class EditLyrics {
     constructor(component) {
@@ -7,7 +7,7 @@ export class EditLyrics {
     }
 
     enter = () => {
-        this.inner = this.component.parent
+        this.inner = this.component.inner
 
         while (this.inner.firstChild) {
             this.inner.firstChild.remove()
@@ -21,24 +21,30 @@ export class EditLyrics {
         autoGrow(this.textarea)
         this.textarea.addEventListener('keyup', () => autoGrow(this.textarea))
 
-        this.inner.appendChild(this.textarea)
-        this.inner.appendChild(
-            getElement('aside', { class: 'col-xs-4 col-sm-4 col-md-5' }, [
-                getElement(
-                    'button',
-                    { class: 'btn', onclick: this.component.state.save },
-                    [document.createTextNode('Save')]
-                ),
-                getElement(
-                    'button',
-                    { class: 'btn', onclick: this.component.state.toggle },
-                    [document.createTextNode('Cancel')]
-                ),
-            ])
+        this.inner.append(
+            ...[
+                this.textarea,
+                getElement('aside', { class: 'col-xs-4 col-sm-4 col-md-5' }, [
+                    getElement('button', { class: 'btn', onclick: this.save }, [
+                        document.createTextNode('Save'),
+                    ]),
+                    getElement(
+                        'button',
+                        { class: 'btn', onclick: this.toggle },
+                        [document.createTextNode('Cancel')]
+                    ),
+                ]),
+            ]
         )
+
+        this.component.inner.replaceWith(this.inner)
+        this.component.inner = this.inner
     }
 
+    exit = () => {}
+
     toggle = () => {
+        this.component.cb()
         this.component.setState(this.component.viewState)
     }
 
@@ -47,6 +53,7 @@ export class EditLyrics {
             content: this.textarea.value,
         })
 
-        this.toggle(ev)
+        // refresh page on update
+        location.reload()
     }
 }

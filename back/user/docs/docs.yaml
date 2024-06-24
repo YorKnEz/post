@@ -186,6 +186,78 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/Message'
 
+    /api/users/{id}/active-request:
+        put:
+            summary: Create a request to become a poet
+            description: This route will create a request for the admins in order to notify them that the user wants to become a poet
+            tags:
+                - users
+                - auth
+            security:
+                - cookieAuth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                  description: Id of the user
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+                '403':
+                    description: A request is already active
+                        The user is not who they say they are
+                        They are already a poet
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+                '404':
+                    description: User not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+        post:
+            summary: Get a flag specifying if a user has a poet request active
+            description: This route will return true if the user has an active poet request and false otherwise
+            tags:
+                - users
+                - auth
+            security:
+                - cookieAuth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                  description: Id of the user
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    result:
+                                        type: boolean
+                                        description: True if the user has an active poet request or false otherwise
+                                required:
+                                    - result
+                '404':
+                    description: User not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+
 components:
     schemas:
         Message:

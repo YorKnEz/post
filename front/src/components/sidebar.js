@@ -4,7 +4,7 @@ import { Search, UserSmallCard } from './index.js'
 
 export class Sidebar {
     constructor() {
-        let user = localStorage.getItem('user')
+        let user = sessionStorage.getItem('user')
 
         if (user) {
             user = JSON.parse(user)
@@ -108,7 +108,7 @@ export class Sidebar {
         try {
             await logout()
 
-            localStorage.removeItem('user')
+            sessionStorage.removeItem('user')
 
             // navigate to home after being logged out
             location.assign('/')

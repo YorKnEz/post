@@ -1,4 +1,5 @@
-import { AlbumCard, PoemCard } from './index.js'
+import { AlbumCard } from "./albumCard.js";
+import { PoemCard } from "./poemCard.js";
 
 export class PostCard {
     constructor(data, type, small) {

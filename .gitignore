@@ -2,3 +2,5 @@
 **/.env*
 front/**/env.js
 **/.gitignore
+cert.key
+cert.pem

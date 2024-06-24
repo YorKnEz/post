@@ -11,7 +11,7 @@ window.form = new Form(
         try {
             const user = await login(data)
 
-            localStorage.setItem('user', JSON.stringify(user))
+            sessionStorage.setItem('user', JSON.stringify(user))
 
             // navigate to home after being logged in
             location.assign('/')

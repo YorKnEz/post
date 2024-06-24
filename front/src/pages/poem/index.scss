@@ -9,14 +9,16 @@
 @import '../../components/share.scss';
 
 .poem {
-    &__avatar-container {
-        justify-self: end;
-        max-height: 300px;
-    }
+    padding: 1rem 0;
 
     &__avatar {
-        width: 320px;
+        justify-self: center;
+        max-width: 300px;
+        width: 100%;
         aspect-ratio: 1;
+        background-size: cover;
+        background-position: center;
+        object-fit: cover;
     }
 
     &__container {
@@ -26,8 +28,7 @@
     }
 
     &__title {
-        margin: 0;
-        margin-bottom: 8px;
+        margin: 8px 0;
     }
 
     &__author {
@@ -42,7 +43,6 @@
 
     &__info {
         display: flex;
-        margin-bottom: 1rem;
         gap: 1rem;
     }
 
@@ -67,19 +67,8 @@
 
     &__controls {
         display: flex;
-        margin: 2rem 0;
-    }
-
-    &__control {
-        margin: 0 0.5rem;
-
-        &:first-child {
-            margin-left: 0;
-        }
-
-        &:last-child {
-            margin-right: 0;
-        }
+        margin-bottom: 2rem;
+        gap: 1rem;
     }
 
     &__lyrics {
@@ -118,34 +107,6 @@
 
         &--active {
             background-color: var(--active-highlight);
-        }
-    }
-}
-
-@media (max-width: 1239px) {
-    .poem {
-        &__avatar {
-            width: 280px;
-        }
-
-        &__avatar-container {
-            max-height: 260px;
-        }
-    }
-}
-
-@media (max-width: 904px) {
-    .poem {
-        &__avatar {
-            width: 200px;
-        }
-    }
-}
-
-@media (max-width: 599px) {
-    .poem {
-        &__avatar-container {
-            justify-self: start;
         }
     }
 }

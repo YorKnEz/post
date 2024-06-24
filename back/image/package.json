@@ -5,7 +5,7 @@
     "description": "Image service responsible with upload/retrieval of images to a local storage",
     "main": "src/index.js",
     "scripts": {
-        "dev": "nodemon --watch . --watch ../../lib src/index.js",
+        "dev": "nodemon --watch . --watch ../../lib --ignore docs/swagger-initializer.js src/index.js",
         "test": "echo \"Error: no test specified\" && exit 1",
         "lint": "eslint_d .",
         "lint:fix": "eslint_d --fix ."
