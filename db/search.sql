@@ -232,8 +232,7 @@ begin
            )
     into result
     from users
-    where id = p_id
-      and verified = true;
+    where id = p_id;
 
     if result is null then
         raise exception 'user not found';
@@ -259,8 +258,7 @@ begin
            )
     into result
     from users
-    where id = p_id
-      and verified = true;
+    where id = p_id;
 
     if result is null then
         raise exception 'user not found';

@@ -77,7 +77,7 @@ router.post('/register', async (req, res) => {
 
             const pass = __hash(req.body.password)
 
-            let result = await client.query(
+            result = await client.query(
                 'insert into users(first_name, last_name, nickname, avatar, new_email, password_hash, password_salt) values($1, $2, $3, $4, $5, $6, $7) returning *',
                 [
                     req.body.firstName,
@@ -120,6 +120,7 @@ router.post('/register', async (req, res) => {
     // whatever happens with this task, the user won't know the result, they'll just know that they
     // must check their email
     task()
+    
 
     client.release()
 
