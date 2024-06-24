@@ -4,6 +4,7 @@
     "version": "1.0.0",
     "description": "A vanilla Javascript web server",
     "scripts": {
+        "dev": "nodemon --watch . --watch ../lib --watch ../front --ignore ../front/src/env.js src/index.js",
         "test": "echo \"Error: no test specified\" && exit 1",
         "lint": "eslint_d .",
         "lint:fix": "eslint_d --fix ."
@@ -11,7 +12,9 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "dotenv": "^16.4.5"
+        "dotenv": "^16.4.5",
+        "nodemon": "^3.1.3",
+        "web-lib": "file:../lib"
     },
     "devDependencies": {
         "@eslint/js": "^9.4.0",

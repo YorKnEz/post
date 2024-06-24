@@ -1,0 +1,28 @@
+.table {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.table__row {
+  display: grid;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+  color: inherit;
+}
+.table__row--top {
+  font-weight: bold;
+}
+.table__row--top-contributors {
+  grid-template-columns: 3rem minmax(0, 1fr) 4rem;
+}
+.table__row--poem-chart {
+  grid-template-columns: 3rem minmax(0, 1fr) 10% 15%;
+}
+.table__row div {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/*# sourceMappingURL=table.css.map */

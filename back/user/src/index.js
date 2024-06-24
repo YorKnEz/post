@@ -1,39 +1,34 @@
-import dotenv from 'dotenv'
+// load env before anything else
+import env from './utils/env.js'
 
-import { App, WebServer } from '../../../lib/routing/index.js'
-import {
-    users_router,
-} from './routers/index.js'
-// import { router as test_router } from './test/test_router.js'
+import fs from 'fs'
 
-dotenv.config()
+import { App, WebServer, getCorsMiddleware } from 'web-lib'
+import { users_router } from './routers/index.js'
 
-console.log(process.env.DOCS_LOCATION)
+const app = new App({
+    key: fs.readFileSync('./cert.key'),
+    cert: fs.readFileSync('./cert.pem'),
+})
 
+app.middleware(getCorsMiddleware([process.env.FRONTEND_URL]))
 
-const hostname = process.env.HOST
-const port = process.env.PORT
+app.use('/api/users', users_router)
 
 const web_routes = {
-    '/docs': {
-        '': 'index.html',
-        '*': '',
-    },
-    '/favicon.ico': 'dist/favicon-32x32.png',
+    '': 'index.html',
+    '/favicon.ico': 'favicon-32x32.png',
+    '\\*': '',
 }
 
-const app = new App()
+app.use(
+    '/docs',
+    new WebServer(process.env.DOCS_LOCATION, web_routes, {
+        openapi: {
+            url: process.env.PUBLIC_URL,
+            path: `${process.env.DOCS_LOCATION}/swagger-initializer.js`,
+        },
+    })
+)
 
-// app.add(albums_router)
-// app.add(annotations_router)
-// app.add(lyrics_router)
-// app.add(poems_router)
-// app.add(posts_router)
-app.add(users_router)
-// app.add(test_router)
-
-app.add(new WebServer(process.env.DOCS_LOCATION, web_routes))
-
-app.listen(port, hostname, () => {
-    console.log(`Server running at http://${hostname}:${port}/`)
-})
+app.listen(process.env.PORT, process.env.HOST)

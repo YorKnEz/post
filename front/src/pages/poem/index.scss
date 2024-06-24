@@ -1,0 +1,112 @@
+@import '../../index.scss';
+
+@import '../../components/annotation/index.scss';
+@import '../../components/loader/loader.scss';
+
+@import '../../components/button.scss';
+@import '../../components/dropdown.scss';
+@import '../../components/input.scss';
+@import '../../components/share.scss';
+
+.poem {
+    padding: 1rem 0;
+
+    &__avatar {
+        justify-self: center;
+        max-width: 300px;
+        width: 100%;
+        aspect-ratio: 1;
+        background-size: cover;
+        background-position: center;
+        object-fit: cover;
+    }
+
+    &__container {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    &__title {
+        margin: 8px 0;
+    }
+
+    &__author {
+        color: var(--text-white);
+        margin: 0;
+        font-weight: 500;
+
+        &:visited {
+            color: var(--text-white);
+        }
+    }
+
+    &__info {
+        display: flex;
+        gap: 1rem;
+    }
+
+    &__item {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    &__content {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+        color: var(--text-black);
+    }
+
+    &__content-header {
+        display: flex;
+        margin: 2rem 0;
+        font-size: 0.8rem;
+        gap: 1rem;
+    }
+
+    &__controls {
+        display: flex;
+        margin-bottom: 2rem;
+        gap: 1rem;
+    }
+
+    &__lyrics {
+        font-size: 1.2rem;
+        line-height: 30px;
+    }
+
+    &__lyrics-header {
+        display: flex;
+        margin: 2rem 0;
+        font-size: 0.8rem;
+    }
+
+    &__textarea {
+        width: calc(100% - 20px - 2px);
+        height: 10rem;
+        padding: 10px;
+
+        color: inherit;
+        background-color: transparent;
+        border: 1px solid inherit;
+
+        font-family: inherit;
+        font-size: inherit;
+        font-weight: inherit;
+        resize: none;
+
+        &:focus-visible {
+            outline: none;
+        }
+    }
+
+    &__annotated {
+        cursor: pointer;
+        background-color: var(--highlight);
+
+        &--active {
+            background-color: var(--active-highlight);
+        }
+    }
+}

@@ -1,0 +1,93 @@
+@use 'sass:map';
+
+$layouts: (
+    'xs': (
+        'min-width': 0px,
+        'max-width': 599px,
+        'cols': 4,
+        'body': calc(100vw - 32px),
+        'gap': 16px,
+        'padding': 16px,
+    ),
+    'sm': (
+        'min-width': 600px,
+        'max-width': 904px,
+        'cols': 8,
+        'body': calc(100vw - 64px),
+        'gap': 16px,
+        'padding': 32px,
+    ),
+    'md': (
+        'min-width': 905px,
+        'max-width': 1239px,
+        'cols': 12,
+        'body': 840px,
+        'gap': 24px,
+        'padding': calc((100vw - 840px) / 2),
+    ),
+    'lg': (
+        'min-width': 1240px,
+        'max-width': 1439px,
+        'cols': 12,
+        'body': calc(100vw - 400px),
+        'gap': 32px,
+        'padding': 200px,
+    ),
+    'xl': (
+        'min-width': 1440px,
+        'max-width': 100vw,
+        'cols': 12,
+        'body': 1040px,
+        'gap': 32px,
+        'padding': calc((100vw - 1040px) / 2),
+    ),
+);
+
+@each $breakpoint, $layout in $layouts {
+    // @media only screen and (min-width: map.get($layout, 'min-width')) and (max-width: map.get($layout, 'max-width')) {
+    @media only screen and (min-width: map.get($layout, 'min-width')) {
+        .container {
+            box-sizing: border-box;
+            width: 100%;
+            padding: 0 map.get($layout, 'padding');
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: repeat(
+                map.get($layout, 'cols'),
+                calc(
+                    (
+                            map.get($layout, 'body') -
+                                (
+                                    map.get($layout, 'gap') *
+                                        (map.get($layout, 'cols') - 1)
+                                )
+                        ) / map.get($layout, 'cols')
+                )
+            );
+            column-gap: map.get($layout, 'gap');
+            // grid-column: span map.get($layout, 'cols');
+        }
+
+        @for $i from 1 through map.get($layout, 'cols') {
+            .col-#{$i} {
+                grid-column-end: span $i;
+            }
+            
+            .col-#{$breakpoint}-#{$i} {
+                grid-column-end: span $i;
+            }
+        }
+
+        @for $i from 1 through map.get($layout, 'cols') {
+            .off-#{$i} {
+                grid-column-start: $i;
+            }
+
+            .off-#{$breakpoint}-#{$i} {
+                grid-column-start: $i;
+            }
+        }
+    }
+}

@@ -1,25 +1,10 @@
 openapi: 3.0.0
 info:
-    title: My API
+    title: User Service
     version: 1.0.0
-    description: A simple API example
+    description: User Service API Documentation
 
 paths:
-    # /api/test:
-    #     get:
-    #         summary: Example route
-    #         description: An example POST route with path and query parameters, and a JSON body.
-    #         tags:
-    #             - test
-    #         responses:
-    #             '200':
-    #                 description: Successful response
-    #                 content:
-    #                     text/plain:
-    #                         schema:
-    #                             type: string
-    #                             example: Successfully processed the request
-
     /api/users:
         get:
             summary: Get paginated users by specified filters
@@ -65,7 +50,7 @@ paths:
                             schema:
                                 type: array
                                 items:
-                                    $ref: '#/components/schemas/User'
+                                    $ref: '#/components/schemas/UserCard'
                                 description: List of matched users
         post:
             summary: Create a new user
@@ -79,28 +64,30 @@ paths:
                             type: object
                             required:
                                 - nickname
-                                - email
+                                - newEmail
                                 - roles
                                 - verified
+                                - passwordHash
+                                - passwordSalt
                             properties:
-                                first_name:
+                                firstName:
                                     type: string
                                     description: The first name of the user
-                                last_name:
+                                lastName:
                                     type: string
                                     description: The last name of the user
                                 nickname:
                                     type: string
                                     description: The nickname of the user
-                                email:
+                                newEmail:
                                     type: string
                                     description: The email of the user
-                                password_hash:
+                                passwordHash:
                                     type: string
-                                    description: The hash of the cripted password
-                                password_salt:
+                                    description: The hash of the password of the user
+                                passwordSalt:
                                     type: string
-                                    description: The salt added to the hash
+                                    description: The salt of the password of the user
             responses:
                 '201':
                     description: Successful response
@@ -153,10 +140,10 @@ paths:
                         schema:
                             type: object
                             properties:
-                                first_name:
+                                firstName:
                                     type: string
                                     description: The first name of the user
-                                last_name:
+                                lastName:
                                     type: string
                                     description: The last name of the user
             responses:
@@ -197,12 +184,15 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/Message'
 
-    /api/users/{id}/albums:
-        get:
-            summary: Get the albums of this user
-            description: Fetches all the albums for which this user is the poster or the author
+    /api/users/{id}/active-request:
+        put:
+            summary: Create a request to become a poet
+            description: This route will create a request for the admins in order to notify them that the user wants to become a poet
             tags:
                 - users
+                - auth
+            security:
+                - cookieAuth: []
             parameters:
                 - name: id
                   in: path
@@ -216,17 +206,29 @@ paths:
                     content:
                         application/json:
                             schema:
-                                type: array
-                                items:
-                                    $ref: '#/components/schemas/Album'
-                                description: List of matched albums
-
-    /api/users/{id}/poems:
-        get:
-            summary: Get the poems of this user
-            description: Fetches all the poems for which this user is the poster or the author
+                                $ref: '#/components/schemas/Message'
+                '403':
+                    description: A request is already active
+                        The user is not who they say they are
+                        They are already a poet
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+                '404':
+                    description: User not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+        post:
+            summary: Get a flag specifying if a user has a poet request active
+            description: This route will return true if the user has an active poet request and false otherwise
             tags:
                 - users
+                - auth
+            security:
+                - cookieAuth: []
             parameters:
                 - name: id
                   in: path
@@ -240,221 +242,19 @@ paths:
                     content:
                         application/json:
                             schema:
-                                type: array
-                                items:
-                                    $ref: '#/components/schemas/Poem'
-                                description: List of matched poems
-    # /api/users:
-    #     get:
-    #         summary: Get paginated users by specified filters
-    #         description: This route returns a paginated list of users, based on some filtering criteria
-    #         tags:
-    #             - users
-    #         parameters:
-    #             - name: query
-    #               in: query
-    #               required: false
-    #               schema:
-    #                   type: string
-    #               description: The query string to search by
-    #             - name: start
-    #               in: query
-    #               required: true
-    #               schema:
-    #                   type: integer
-    #               description: Offset of results to start from
-    #             - name: count
-    #               in: query
-    #               required: true
-    #               schema:
-    #                   type: integer
-    #               description: Number of results to return
-    #             - name: sort
-    #               in: query
-    #               required: false
-    #               schema:
-    #                   type: string
-    #               description: The sort criteria
-    #             - name: order
-    #               in: query
-    #               required: false
-    #               schema:
-    #                   type: string
-    #               description: The order of the sorting
-    #         responses:
-    #             '200':
-    #                 description: Successful response
-    #                 content:
-    #                     application/json:
-    #                         schema:
-    #                             type: array
-    #                             items:
-    #                                 $ref: '#/components/schemas/User'
-    #                             description: List of matched users
-    #     post:
-    #         summary: Create a new user
-    #         tags:
-    #             - users
-    #             - TODO
-    #         responses:
-    #             '201':
-    #                 description: Successful response
-    #                 content:
-    #                     application/json:
-    #                         schema:
-    #                             $ref: '#/components/schemas/User'
-    #
-    # /api/users/{id}:
-    #     get:
-    #         summary: Get user by id
-    #         tags:
-    #             - users
-    #         parameters:
-    #             - name: id
-    #               in: path
-    #               required: true
-    #               schema:
-    #                   type: string
-    #               description: Id of the user
-    #         responses:
-    #             '200':
-    #                 description: Successful response
-    #                 content:
-    #                     application/json:
-    #                         schema:
-    #                             $ref: '#/components/schemas/User'
-    #             '404':
-    #                 description: User not found
-    #                 content:
-    #                     application/json:
-    #                         schema:
-    #                             $ref: '#/components/schemas/Message'
-    #     patch:
-    #         summary: Update some of the user state
-    #         description: Update the first name and/or last name of the user
-    #         tags:
-    #             - users
-    #             - TODO
-    #         parameters:
-    #             - name: id
-    #               in: path
-    #               required: true
-    #               schema:
-    #                   type: string
-    #               description: Id of the user
-    #         responses:
-    #             '200':
-    #                 description: Successful response
-    #                 content:
-    #                     application/json:
-    #                         schema:
-    #                             $ref: '#/components/schemas/User'
-    #             '404':
-    #                 description: User not found
-    #                 content:
-    #                     application/json:
-    #                         schema:
-    #                             $ref: '#/components/schemas/Message'
-    #     delete:
-    #         summary: Delete a user and it's work by id
-    #         tags:
-    #             - users
-    #         parameters:
-    #             - name: id
-    #               in: path
-    #               required: true
-    #               schema:
-    #                   type: string
-    #               description: Id of the user
-    #         responses:
-    #             '200':
-    #                 description: Successful response
-    #                 content:
-    #                     application/json:
-    #                         schema:
-    #                             $ref: '#/components/schemas/Message'
-    #             '404':
-    #                 description: User not found
-    #                 content:
-    #                     application/json:
-    #                         schema:
-    #                             $ref: '#/components/schemas/Message'
-
-
-    # /api/example/{id}/test:
-    #     post:
-    #         summary: Example route
-    #         description: An example POST route with path and query parameters, and a JSON body.
-    #         tags:
-    #             - test
-    #         parameters:
-    #             - name: id
-    #               in: path
-    #               required: true
-    #               schema:
-    #                   type: string
-    #               description: The ID path parameter
-    #             - name: a
-    #               in: query
-    #               required: false
-    #               schema:
-    #                   type: string
-    #               description: Optional query parameter a
-    #             - name: b
-    #               in: query
-    #               required: false
-    #               schema:
-    #                   type: string
-    #               description: Optional query parameter b
-    #             - name: c
-    #               in: query
-    #               required: true
-    #               schema:
-    #                   type: string
-    #               description: Required query parameter c
-    #         requestBody:
-    #             required: true
-    #             content:
-    #                 application/json:
-    #                     schema:
-    #                         type: object
-    #                         required:
-    #                             - name
-    #                             - preferences
-    #                             - age
-    #                         properties:
-    #                             name:
-    #                                 type: string
-    #                                 description: The name of the user
-    #                             preferences:
-    #                                 type: array
-    #                                 items:
-    #                                     type: string
-    #                                 description: A list of preferences
-    #                             age:
-    #                                 type: integer
-    #                                 description: The age of the user
-    #         responses:
-    #             '200':
-    #                 description: Successful response
-    #                 content:
-    #                     application/json:
-    #                         schema:
-    #                             type: object
-    #                             properties:
-    #                                 message:
-    #                                     type: string
-    #                                     example: Successfully processed the request
-    #             '400':
-    #                 description: Bad request
-    #                 content:
-    #                     application/json:
-    #                         schema:
-    #                             type: object
-    #                             properties:
-    #                                 error:
-    #                                     type: string
-    #                                     example: Invalid input
+                                type: object
+                                properties:
+                                    result:
+                                        type: boolean
+                                        description: True if the user has an active poet request or false otherwise
+                                required:
+                                    - result
+                '404':
+                    description: User not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
 
 components:
     schemas:
@@ -476,67 +276,95 @@ components:
                 id:
                     type: integer
                     description: Unique identifier for the user
-                roles:
-                    type: integer
-                    description: Roles assigned to the user
-                nickname:
-                    type: string
-                    description: Nickname of the user
-                last_name:
-                    type: string
-                    description: Last name of the user
-                created_at:
+                createdAt:
                     type: string
                     format: date-time
                     description: Timestamp when the user was created
-                first_name:
-                    type: string
-                    description: First name of the user
-                updated_at:
+                updatedAt:
                     type: string
                     format: date-time
                     description: Timestamp when the user was last updated
-                poems_count:
+                firstName:
+                    type: string
+                    description: First name of the user
+                lastName:
+                    type: string
+                    description: Last name of the user
+                nickname:
+                    type: string
+                    description: Nickname of the user
+                avatar:
+                    type: string
+                    description: URL of the user's avatar
+                roles:
                     type: integer
-                    description: Count of poems created by the user
-                albums_count:
+                    description: Roles assigned to the user
+                albumsCount:
                     type: integer
                     description: Count of albums created by the user
-                annotations_count:
-                    type: integer
-                    description: Count of annotations created by the user
-                poems_contributions:
-                    type: integer
-                    description: Number of poems the user has contributed to
-                albums_contributions:
+                albumsContributions:
                     type: integer
                     description: Number of albums the user has contributed to
-                created_lyrics_count:
+                createdPoemsCount:
                     type: integer
-                    description: Count of lyrics created by the user
-                lyrics_contributions:
+                    description: Count of poems created by the user
+                translatedPoemsCount:
                     type: integer
-                    description: Number of lyrics the user has contributed to
-                translated_lyrics_count:
+                    description: Count of poems translated by the user
+                poemsContributions:
                     type: integer
-                    description: Count of lyrics translated by the user
-                annotations_contributions:
+                    description: Number of poems the user has contributed to
+                annotationsCount:
+                    type: integer
+                    description: Count of annotations created by the user
+                annotationsContributions:
                     type: integer
                     description: Number of annotations the user has contributed to
             required:
                 - id
-                - roles
+                - createdAt
+                - updatedAt
+                - firstName
+                - lastName
                 - nickname
-                - last_name
-                - created_at
-                - first_name
-                - updated_at
-                - poems_count
-                - albums_count
-                - annotations_count
-                - poems_contributions
-                - albums_contributions
-                - created_lyrics_count
-                - lyrics_contributions
-                - translated_lyrics_count
-                - annotations_contributions
+                - avatar
+                - roles
+                - albumsCount
+                - albumsContributions
+                - poemsContributions
+                - createdPoemsCount
+                - translatedPoemsCount
+                - annotationsCount
+                - annotationsContributions
+        UserCard:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: Unique identifier for the user
+                firstName:
+                    type: string
+                    description: First name of the user
+                lastName:
+                    type: string
+                    description: Last name of the user
+                nickname:
+                    type: string
+                    description: Nickname of the user
+                avatar:
+                    type: string
+                    description: URL of the user's avatar
+                roles:
+                    type: integer
+                    description: Roles assigned to the user
+                contributions:
+                    type: integer
+                    description: The contributions of the user
+            required:
+                - id
+                - firstName
+                - lastName
+                - nickname
+                - avatar
+                - roles
+                - contributions

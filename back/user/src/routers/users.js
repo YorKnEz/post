@@ -1,61 +1,24 @@
-import { JSONResponse, Router } from '../../../../lib/routing/index.js'
-import * as db from '../db/index.js'
-import { ErrorCodes, SuccessCodes, InternalError } from '../utils/codes.js'
+import {
+    ErrorCodes,
+    SuccessCodes,
+    InternalError,
+    JSONResponse,
+    Router,
+    toCamel,
+} from 'web-lib'
+import db from '../db/index.js'
+import { authMiddleware } from '../utils/index.js'
 
-export const router = new Router('Users Router', '/api/users')
+export const router = new Router('Users Router')
 
 router.get('/', async (req, res) => {
-    // TODO: add some form of safe conversion to router
     req.query.start = parseInt(req.query.start)
     req.query.count = parseInt(req.query.count)
 
-    const client = await db.getClient()
-
     try {
-        await client.query('begin')
-        let result = await client.query('select find_users($1)', [req.query])
+        let result = await db.query('select find_user_cards($1)', [req.query])
 
-        result = await client.query(
-            `fetch all from "${result.rows[0].find_users}"`
-        )
-
-        await client.query('commit')
-
-        return new JSONResponse(200, result.rows)
-    } catch (e) {
-        console.error(e)
-        await client.query('rollback')
-        return new InternalError()
-    }
-})
-
-router.post('/', async (req, res) => {
-    const client = await db.getClient()
-
-    const userData = {
-        ...req.body,
-        verified: 0,
-        roles: 0,
-        albums_count: 0,
-        albums_contributions: 0,
-        poems_count: 0,
-        poems_contributions: 0,
-        created_lyrics_count: 0,
-        translated_lyrics_count: 0,
-        lyrics_contributions: 0,
-        annotations_count: 0,
-        annotations_contributions: 0
-    }
-
-    try {
-        //left off:
-        //Q: de ce nu recunoaste procedurile stocate
-        //   chiar daca dau cast explicit la jsonb?
-        //A: schema mea se numea public nu post
-
-        const result = await client.query('select insert_user($1)', [userData])
-
-        return new JSONResponse(201, result.rows)
+        return new JSONResponse(200, toCamel(result.rows[0].find_user_cards))
     } catch (e) {
         console.error(e)
         return new InternalError()
@@ -63,96 +26,149 @@ router.post('/', async (req, res) => {
 })
 
 router.get('/:id', async (req, res) => {
-    const result = await db.query('select find_user_by_id($1)', [req.params.id])
+    try {
+        let result = await db.query('select find_user_by_id($1)', [
+            req.params.id,
+        ])
 
-    const entity = result.rows[0].find_user_by_id
+        return new JSONResponse(200, toCamel(result.rows[0].find_user_by_id))
+    } catch (e) {
+        // db threw 404
+        if (e.code == 'P0001' && e.message == 'user not found') {
+            return new JSONResponse(404, {
+                code: ErrorCodes.USER_NOT_FOUND,
+                message: 'User not found',
+            })
+        }
 
-    if (entity == null) {
-        return new JSONResponse(404, {
-            code: ErrorCodes.USER_NOT_FOUND,
-            message: 'User not found',
+        console.error(e)
+        return new InternalError()
+    }
+})
+
+const auth_router = new Router('User Auth Router')
+
+router.use('/', auth_router)
+
+auth_router.middleware(authMiddleware)
+
+auth_router.post('/', async (req, res) => {
+    try {
+        let result = await db.query('select insert_user($1)', [req.body])
+
+        return new JSONResponse(201, toCamel(result.rows[0]))
+    } catch (e) {
+        console.error(e)
+        return new InternalError()
+    }
+})
+
+auth_router.patch('/:id', async (req, res) => {
+    try {
+        let result = await db.query('select update_user($1)', [{
+            ...req.body,
+            id: req.params.id
+        }])
+        
+        return new JSONResponse(200, toCamel(result.rows[0]))
+    } catch (e) {
+        console.error(e)
+        return new InternalError()
+    }
+})
+
+auth_router.delete('/:id', async (req, res) => {
+    try {
+        await db.query('call delete_user($1)', [req.params.id])
+
+        return new JSONResponse(200, {
+            code: SuccessCodes.USER_DELETED,
+            message: 'User deleted successfully',
+        })
+    } catch (e) {
+        // db threw 404
+        if (e.code == 'P0001' && e.message == 'user not found') {
+            return new JSONResponse(404, {
+                code: ErrorCodes.USER_NOT_FOUND,
+                message: 'User not found',
+            })
+        }
+
+        console.error(e)
+        return new InternalError()
+    }
+})
+
+auth_router.put('/:id/active-request', async (req, res) => {
+    if (req.params.id != req.locals.userId) {
+        return new JSONResponse(403, {
+            code: ErrorCodes.UNAUTHORIZED,
+            message: `You are not the user with id ${req.params.id}`,
         })
     }
 
-    return new JSONResponse(200, result.rows[0].find_user_by_id)
-})
+    if (req.locals.userRoles & 0b1) {
+        return new JSONResponse(403, {
+            code: ErrorCodes.UNAUTHORIZED,
+            message: 'You are already a poet',
+        })
+    }
 
-router.patch('/:id', async (req, res) => {
-    const client = await db.getClient()
     try {
-        const updatedUserData = {
-            ...req.body,
-            id: req.params.id
+        await db.query('insert into requests(requester_id) values ($1)', [
+            req.params.id,
+        ])
+
+        return new JSONResponse(200, {
+            code: SuccessCodes.REQUEST_MADE,
+            message:
+                'Request made successfully, you will be notified by email when the request will be evaluated',
+        })
+    } catch (e) {
+        if (e.code == 23503) {
+            if (e.constraint == 'requests_u1') {
+                return new JSONResponse(403, {
+                    code: ErrorCodes.ALREADY_ACTIVE_REQUEST,
+                    message: 'You already have an active request',
+                })
+            } else if (e.constraint == 'requests_f1') {
+                return new JSONResponse(404, {
+                    code: ErrorCodes.USER_NOT_FOUND,
+                    message: 'User not found',
+                })
+            }
         }
-        const result = await client.query('select update_user($1)', [
-            updatedUserData
-        ])
-        return new JSONResponse(200, result.rows[0])
-        // res.statusCode = 200
-        // res.setHeader('Content-Type', 'application/json')
-        // res.end(JSON.stringify(result.rows[0]))
-    } catch (e) {
+
         console.error(e)
-        // res.statusCode = 500
-        // res.setHeader('Content-Type', 'text/plain')
-        // res.end('Internal server error')
-        await client.query('rollback')
         return new InternalError()
     }
 })
 
-// TODO: check if deletion actually took place
-router.delete('/:id', async (req, res) => {
-    await db.query('call delete_user($1)', [req.params.id])
-
-    return new JSONResponse(200, {
-        code: SuccessCodes.USER_DELETED,
-        message: 'User deleted successfully',
-    })
-})
-
-router.get('/:id/albums', async (req, res) => {
-    const client = await db.getClient()
-
+auth_router.post('/:id/active-request', async (req, res) => {
     try {
-        await client.query('begin')
-        let result = await client.query('select find_albums_by_user_id($1)', [
-            req.params.id,
-        ])
-
-        result = await client.query(
-            `fetch all from "${result.rows[0].find_albums_by_user_id}"`
+        let result = await db.query(
+            'select post_id from requests where requester_id = $1',
+            [req.params.id]
         )
 
-        await client.query('commit')
+        if (result.rowCount == 0) {
+            return new JSONResponse(404, {
+                code: ErrorCodes.USER_NOT_FOUND,
+                message: 'User not found',
+            })
+        }
 
-        return new JSONResponse(200, result.rows)
+        let hasActiveReq = false
+
+        for (const request of toCamel(result.rows)) {
+            if (request.postId == null) {
+                hasActiveReq = true
+                break
+            }
+        }
+
+        return new JSONResponse(200, { result: hasActiveReq })
     } catch (e) {
-        console.error(e)
-        await client.query('rollback')
-        return new InternalError()
-    }
-})
-
-router.get('/:id/poems', async (req, res) => {
-    const client = await db.getClient()
-
-    try {
-        await client.query('begin')
-        let result = await client.query('select find_poems_by_user_id($1)', [
-            req.params.id,
-        ])
-
-        result = await client.query(
-            `fetch all from "${result.rows[0].find_poems_by_user_id}"`
-        )
-
-        await client.query('commit')
-
-        return new JSONResponse(200, result.rows)
-    } catch (e) {
-        console.error(e)
-        await client.query('rollback')
         return new InternalError()
     }
 })

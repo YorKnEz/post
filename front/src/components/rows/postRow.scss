@@ -1,0 +1,33 @@
+.post-row {
+    display: flex;
+    align-items: center;
+
+    &__image {
+        width: 3.5rem;
+        margin-right: 1rem;
+
+        aspect-ratio: 1;
+        background-size: cover;
+        background-position: center;
+        object-fit: cover;
+    }
+
+    &__info {
+        overflow: hidden;
+
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__text {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+@media only screen and (max-width: 300px) {
+    .post-row__image {
+        display: none;
+    }
+}

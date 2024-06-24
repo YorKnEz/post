@@ -1,0 +1,1663 @@
+openapi: 3.0.0
+info:
+    title: Lyrical Service
+    version: 1.0.0
+    description: Lyrical Service API Documentation
+
+paths:
+    /api/admin/stats:
+        get:
+            summary: Get a collection of statistics about the site
+            description: This route returns statistics about the site such as total contributions, total registered users, total verified users etc.
+            tags:
+                - admin
+                - auth
+            security:
+                - cookieAuth: []
+            responses:
+                '200':
+                    description: Stats
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    usersCount:
+                                        type: integer
+                                    verifiedUsersCount:
+                                        type: integer
+                                    poetsCount:
+                                        type: integer
+                                    adminsCount:
+                                        type: integer
+                                    contributionsCount:
+                                        type: integer
+                                    albumsCount:
+                                        type: integer
+                                    verifiedAlbumsCount:
+                                        type: integer
+                                    poemsCount:
+                                        type: integer
+                                    verifiedPoemsCount:
+                                        type: integer
+                                    annotationsCount:
+                                        type: integer
+                                    verifiedAnnotationsCount:
+                                        type: integer
+                                    likes:
+                                        type: integer
+                                    dislikes:
+                                        type: integer
+                                required:
+                                    - all
+
+    /api/admin/requests:
+        get:
+            summary: Get paginated users or posts that are yet to be accepted (i.e they have a request active)
+            description: This route is provided with a type (album, poem, annotation or user), for the first three, the results contain posts that must be accepted, otherwise it contains users that made a poet request.
+            tags:
+                - admin
+                - auth
+            security:
+                - cookieAuth: []
+            parameters:
+                - name: type
+                  in: query
+                  required: true
+                  schema:
+                      type: string
+                  description: album/poem/annotation/user
+                - name: start
+                  in: query
+                  required: true
+                  schema:
+                      type: integer
+                  description: Offset of results to start from
+                - name: count
+                  in: query
+                  required: true
+                  schema:
+                      type: integer
+                  description: Number of results to return
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/RequestCard'
+                                description: List of matched users or posts
+
+    /api/admin/requests/{id}:
+        post:
+            summary: Solve a request by id
+            description: The effect of this route is the following
+                If the request is a poet request, on approval the user is made a poet, on denial, nothing happens.
+                If the request is a post, on approval the post is verified, otherwise deleted.
+                For all of these, an email is sent to the user notifying them of the action taken by the admin and the request is deleted.
+            tags:
+                - admin
+                - auth
+            security:
+                - cookieAuth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                  description: The id of the request
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                approve:
+                                    type: boolean
+                                    description: Whether the request is approved or not
+                            required:
+                                - approve
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+                '404':
+                    description: Request not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+
+    /api/posts:
+        get:
+            summary: Get paginated posts by specified filters
+            description: This route returns a paginated list of posts, based on some filtering criteria
+            tags:
+                - posts
+            parameters:
+                - name: query
+                  in: query
+                  required: false
+                  schema:
+                      type: string
+                  description: The query string to search by
+                - name: start
+                  in: query
+                  required: true
+                  schema:
+                      type: integer
+                  description: Offset of results to start from
+                - name: count
+                  in: query
+                  required: true
+                  schema:
+                      type: integer
+                  description: Number of results to return
+                - name: sort
+                  in: query
+                  required: false
+                  schema:
+                      type: string
+                  description: The sort criteria
+                - name: order
+                  in: query
+                  required: false
+                  schema:
+                      type: string
+                  description: The order of the sorting
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/PostCard'
+                                description: List of matched posts
+
+    /api/posts/{id}/reactions:
+        post:
+            summary: Add or remove a reaction
+            tags:
+                - posts
+                - auth
+            security:
+                - cookieauth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                  description: The id of the post
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                action:
+                                    type: integer
+                                    description: -1 for removing and 1 for adding
+                                type:
+                                    type: integer
+                                    description: 0 for like, 1 for dislike
+                            required:
+                                - action
+                                - type
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+                '400':
+                    description: Already reacted to this post
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+                '404':
+                    description: Post not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+
+    /api/posts/{id}/reaction:
+        post:
+            summary: Get the reaction of a user for a specific post
+            description: This route returns the reaction the user has, can be -1 for no reaction, 0 like, 1 dislike
+            tags:
+                - posts
+                - auth
+            security:
+                - cookieauth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                  description: The id of the post
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    type:
+                                        type: integer
+                                        description: The id of the reaction, -1, 0 or 1
+                                required:
+                                    - properties
+                '404':
+                    description: Post not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+
+    /api/users/{id}/albums:
+        get:
+            summary: Get paginated albums that were authored or posted by a specified user
+            description: This route returns a paginated list of albums, based on some filtering criteria
+            tags:
+                - albums
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                  description: The id of the user
+                - name: start
+                  in: query
+                  required: true
+                  schema:
+                      type: integer
+                  description: Offset of results to start from
+                - name: count
+                  in: query
+                  required: true
+                  schema:
+                      type: integer
+                  description: Number of results to return
+                - name: sort
+                  in: query
+                  schema:
+                      type: string
+                  description: The sort criteria
+                - name: order
+                  in: query
+                  schema:
+                      type: string
+                  description: The order of the sorting
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/AlbumCard'
+                                description: List of matched albums
+
+    /api/users/{id}/poems:
+        get:
+            summary: Get paginated poems that were authored or posted by a specified user
+            description: This route returns a paginated list of poems, based on some filtering criteria
+            tags:
+                - poems
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                  description: The id of the user
+                - name: start
+                  in: query
+                  required: true
+                  schema:
+                      type: integer
+                  description: Offset of results to start from
+                - name: count
+                  in: query
+                  required: true
+                  schema:
+                      type: integer
+                  description: Number of results to return
+                - name: sort
+                  in: query
+                  schema:
+                      type: string
+                  description: The sort criteria
+                - name: order
+                  in: query
+                  schema:
+                      type: string
+                  description: The order of the sorting
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/PoemCard'
+                                description: List of matched poems
+
+    /api/users/{id}/contributions:
+        get:
+            summary: Get paginated contributions that were made by the user
+            description: This route returns a paginated list of contributions, based on some filtering criteria, sorted by creation date of contribution
+            tags:
+                - posts
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                  description: The id of the user
+                - name: start
+                  in: query
+                  required: true
+                  schema:
+                      type: integer
+                  description: Offset of results to start from
+                - name: count
+                  in: query
+                  required: true
+                  schema:
+                      type: integer
+                  description: Number of results to return
+                - name: type
+                  in: query
+                  required: false
+                  schema:
+                      type: string
+                  description: all, pending, album, annotation or poem
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: object
+                                    properties:
+                                        date:
+                                            type: string
+                                            format: date-time
+                                            description: The date of the contribution
+                                        contributions:
+                                            type: array
+                                            items:
+                                                $ref: '#/components/schemas/ContributionCard'
+                                            description: List of contributions
+                                description: List of contributions, grouped by date
+
+    /api/albums:
+        get:
+            summary: Get paginated albums by specified filters
+            description: This route returns a paginated list of albums, based on some filtering criteria
+            tags:
+                - albums
+            parameters:
+                - name: query
+                  in: query
+                  required: false
+                  schema:
+                      type: string
+                  description: The query string to search by
+                - name: start
+                  in: query
+                  required: true
+                  schema:
+                      type: integer
+                  description: Offset of results to start from
+                - name: count
+                  in: query
+                  required: true
+                  schema:
+                      type: integer
+                  description: Number of results to return
+                - name: sort
+                  in: query
+                  required: false
+                  schema:
+                      type: string
+                  description: The sort criteria
+                - name: order
+                  in: query
+                  required: false
+                  schema:
+                      type: string
+                  description: The order of the sorting
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/AlbumCard'
+                                description: List of matched albums
+        post:
+            summary: Create a new album
+            tags:
+                - albums
+                - auth
+            security:
+                - cookieAuth: []
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                authorId:
+                                    type: integer
+                                    description: The id of the user that authored the album
+                                cover:
+                                    type: string
+                                    description: URL of an album cover
+                                title:
+                                    type: string
+                                    description: The title of the album
+                                publicationDate:
+                                    type: string
+                                    format: date-time
+                                    description: Timestamp when the album has been officially released
+                            required:
+                                - authorId
+                                - title
+            responses:
+                '201':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Album'
+                '400':
+                    description: Invalid data
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Album'
+
+    /api/albums/suggestions:
+        get:
+            summary: Get 5 suggestions of albums based on the given query
+            description: This route returns a list of at most 5 albums that match the given query, this is like a mini version of search
+            tags:
+                - albums
+            parameters:
+                - name: query
+                  in: query
+                  required: false
+                  schema:
+                      type: string
+                  description: The query string to search by
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/AlbumCard'
+                                description: List of matched albums
+
+    /api/albums/{id}:
+        get:
+            summary: Get album by id
+            tags:
+                - albums
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                  description: Id of the album
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Album'
+                '404':
+                    description: Album not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+        patch:
+            summary: Update some of the album state
+            description: Update the title of the album
+            tags:
+                - albums
+                - auth
+            security:
+                - cookieAuth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                  description: Id of the album
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                cover:
+                                    type: string
+                                    description: An URL of the new cover of the album
+                                title:
+                                    type: string
+                                    description: The title of the album
+                                publicationDate:
+                                    type: string
+                                    format: date-time
+                                    description: Timestamp when the album has been officially released
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Album'
+                '400':
+                    description: Invalid data
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+                '404':
+                    description: Album not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+        delete:
+            summary: Delete an album and it's related content by id
+            tags:
+                - albums
+                - auth
+            security:
+                - cookieAuth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                  description: Id of the album
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+                '404':
+                    description: Album not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+
+    /api/albums/{id}/poems:
+        post:
+            summary: Add a poem to this album
+            tags:
+                - albums
+                - auth
+            security:
+                - cookieAuth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                  description: Id of the album
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                poemId:
+                                    type: integer
+                                    description: The id of the poem to link to this album
+            responses:
+                '201':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+                '400':
+                    description: Poem is already in the album
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+                '404':
+                    description: Album or poem not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+
+    /api/albums/{id}/poems/{poemId}:
+        delete:
+            summary: Remove a poem from this album
+            tags:
+                - albums
+                - auth
+            security:
+                - cookieAuth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                  description: Id of the album
+                - name: poemId
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                  description: Id of the poem
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+                '400':
+                    description: Poem is not in album
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+                '404':
+                    description: Album or poem not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+
+    /api/poems:
+        get:
+            summary: Get paginated poems by specified filters
+            description: This route returns a paginated list of poems, based on some filtering criteria
+            tags:
+                - poems
+            parameters:
+                - name: query
+                  in: query
+                  required: false
+                  schema:
+                      type: string
+                  description: The query string to search by
+                - name: start
+                  in: query
+                  required: true
+                  schema:
+                      type: integer
+                  description: Offset of results to start from
+                - name: count
+                  in: query
+                  required: true
+                  schema:
+                      type: integer
+                  description: Number of results to return
+                - name: sort
+                  in: query
+                  required: false
+                  schema:
+                      type: string
+                  description: The sort criteria
+                - name: order
+                  in: query
+                  required: false
+                  schema:
+                      type: string
+                  description: The order of the sorting
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/PoemCard'
+                                description: List of matched poems
+        post:
+            summary: Create a new poem
+            tags:
+                - poems
+                - auth
+            security:
+                - cookieAuth: []
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                authorId:
+                                    type: integer
+                                    description: The id of the user that wrote this poem (optional). If not present, the id of the user that made the request is used.
+                                language:
+                                    type: string
+                                    description: The language the poem is written in (and which the other fields must match)
+                                cover:
+                                    type: string
+                                    description: An URL to the cover of the poem
+                                title:
+                                    type: string
+                                    description: The title of the poem
+                                publicationDate:
+                                    type: string
+                                    format: date-time
+                                    description: The publication date of the poem (optional). If not present, the current date is used
+                                about:
+                                    type: string
+                                    description: A short description about the poem
+                                content:
+                                    type: string
+                                    description: The poem
+                            required:
+                                - language
+                                - title
+                                - about
+                                - content
+            responses:
+                '201':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Poem'
+                '400':
+                    description: Invalid data
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+
+                '404':
+                    description: Author not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+
+    /api/poems/suggestions:
+        get:
+            summary: Get 5 suggestions of poems based on the given query
+            description: This route returns a list of at most 5 poems that match the given query, this is like a mini version of search
+            tags:
+                - poems
+            parameters:
+                - name: query
+                  in: query
+                  required: false
+                  schema:
+                      type: string
+                  description: The query string to search by
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/PoemCard'
+                                description: List of matched poems
+
+    /api/poems/{id}:
+        get:
+            summary: Get poem by id
+            tags:
+                - poems
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                  description: Id of the poem
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Poem'
+                '404':
+                    description: Poem not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+        patch:
+            summary: Edit the title, publication date or contents of the poem
+            description: The body can be any combination of the three fields (title, publication date and content) and it will update only the mentioned fields, returning the modified entity.
+            tags:
+                - poems
+                - auth
+            security:
+                - cookieAuth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                  description: Id of the poem
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                cover:
+                                    type: string
+                                    description: An URL to the new cover of the poem
+                                title:
+                                    type: string
+                                    description: The title of the poem
+                                publicationDate:
+                                    type: string
+                                    format: date-time
+                                    description: Timestamp when the poem has been officially released
+                                content:
+                                    type: string
+                                    description: The lyrics of the poem
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Poem'
+                '404':
+                    description: Poem not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+        delete:
+            summary: Delete a poem and all of the related translations and annotations by id
+            tags:
+                - poems
+                - auth
+            security:
+                - cookieAuth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                  description: Id of the poem
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+                '404':
+                    description: Poem not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+
+    /api/poems/{id}/translations:
+        get:
+            summary: Get a list of available translations for the given poem
+            tags:
+                - poems
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                  description: The id of the poem
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/PoemLanguages'
+                '404':
+                    description: Poem not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+        post:
+            summary: Add a new translation to the poem
+            tags:
+                - poems
+                - auth
+            security:
+                - cookieAuth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                  description: The id of the poem
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                authorId:
+                                    type: integer
+                                    description: The id of the user that wrote this poem (optional). If not present, the id of the user that made the request is used.
+                                language:
+                                    type: string
+                                    description: The language the poem is written in (and which the other fields must match)
+                                cover:
+                                    type: string
+                                    description: An URL to the cover of the translation
+                                title:
+                                    type: string
+                                    description: The title of the poem
+                                publicationDate:
+                                    type: string
+                                    format: date-time
+                                    description: The publication date of the poem (optional). If not present, the current date is used
+                                about:
+                                    type: string
+                                    description: A short description about the poem
+                                content:
+                                    type: string
+                                    description: The poem
+                            required:
+                                - language
+                                - title
+                                - about
+                                - content
+            responses:
+                '201':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/Poem'
+                '404':
+                    description: Poem not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+
+    /api/poems/{id}/annotations:
+        post:
+            summary: Create a new annotation associated with the poem
+            tags:
+                - poems
+                - auth
+            security:
+                - cookieauth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                  description: The id of the poem to annotate
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                content:
+                                    type: string
+                                    description: The content of the annotation (not the part of poem that is annotated!)
+                                offset:
+                                    type: integer
+                                    description: The start position of the annotated content
+                                length:
+                                    type: integer
+                                    description: The length of the annotated content
+                            required:
+                                - content
+                                - offset
+                                - length
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Annotation'
+                '400':
+                    description: Invalid data
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+                '404':
+                    description: Poem not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+
+    /api/annotations/{id}:
+        get:
+            summary: Get an annotation by id
+            tags:
+                - annotations
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                  description: Id of the annotation
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Annotation'
+                '404':
+                    description: Annotation not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+        patch:
+            summary: Update an annotation
+            tags:
+                - annotations
+                - auth
+            security:
+                - cookieAuth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                  description: Id of the annotation
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                content:
+                                    type: string
+                                    description: The new content of the annotation
+                            required:
+                                - content
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Annotation'
+                '404':
+                    description: Annotation not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+        delete:
+            summary: Delete an annotation
+            tags:
+                - annotations
+                - auth
+            security:
+                - cookieAuth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                  description: Id of the annotation
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+                '404':
+                    description: Annotation not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
+
+components:
+    securitySchemes:
+        cookieAuth:
+            type: apiKey
+            in: cookie
+            name: token
+    schemas:
+        Message:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    description: The code of the message received (an error or a success message)
+                message:
+                    type: string
+                    description: The english message associated with the code
+            required:
+                - code
+                - message
+        Album:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: Unique identifier of the album
+                createdAt:
+                    type: string
+                    format: date-time
+                    description: Timestamp when the album has been added to the site
+                updatedAt:
+                    type: string
+                    format: date-time
+                    description: Timestamp when the album has been last updated on the site
+                poster:
+                    $ref: '#/components/schemas/UserCard'
+                    description: The information of the user that posted the album
+                author:
+                    $ref: '#/components/schemas/UserCard'
+                    description: The information of the user that authored the album
+                cover:
+                    type: string
+                    description: An URL of the cover of the album
+                title:
+                    type: string
+                    description: The title of the album
+                publicationDate:
+                    type: string
+                    format: date-time
+                    description: Timestamp when the album has been officially released
+                poems:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/PoemCard'
+                    description: The list of poems part of this album
+                contributors:
+                    type: integer
+                    description: The number of people that contributed to this annotation
+                likes:
+                    type: integer
+                dislikes:
+                    type: integer
+            required:
+                - id
+                - createdAt
+                - updatedAt
+                - poster
+                - author
+                - cover
+                - title
+                - publicationDate
+                - poems
+                - contributors
+                - likes
+                - dislikes
+        AlbumCard:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: Unique identifier of the album
+                createdAt:
+                    type: string
+                    format: date-time
+                    description: Timestamp when the album has been added to the site
+                updatedAt:
+                    type: string
+                    format: date-time
+                    description: Timestamp when the album has been last updated on the site
+                poster:
+                    $ref: '#/components/schemas/UserCard'
+                    description: The information of the user that posted the album
+                author:
+                    $ref: '#/components/schemas/UserCard'
+                    description: The information of the user that authored the album
+                cover:
+                    type: string
+                    description: An URL of the cover of the album
+                title:
+                    type: string
+                    description: The title of the album
+                publicationDate:
+                    type: string
+                    format: date-time
+                    description: Timestamp when the album has been officially released
+                contributors:
+                    type: integer
+                    description: The number of people that contributed to this annotation
+                likes:
+                    type: integer
+                dislikes:
+                    type: integer
+                poemsCount:
+                    type: integer
+                    description: The number of poems part of this album
+            required:
+                - id
+                - createdAt
+                - updatedAt
+                - poster
+                - author
+                - cover
+                - title
+                - publicationDate
+                - contributors
+                - likes
+                - dislikes
+                - poemsCount
+        Annotation:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: Unique identifier of the annotation
+                createdAt:
+                    type: string
+                    format: date-time
+                    description: Timestamp when the annotation has been added to the site
+                updatedAt:
+                    type: string
+                    format: date-time
+                    description: Timestamp when the annotation has been last updated on the site
+                poster:
+                    $ref: '#/components/schemas/UserCard'
+                    description: The information of the user that posted the annotation
+                content:
+                    type: string
+                    description: The content of the annotation
+                contributors:
+                    type: integer
+                    description: The number of people that contributed to this annotation
+                likes:
+                    type: integer
+                dislikes:
+                    type: integer
+            required:
+                - id
+                - createdAt
+                - updatedAt
+                - poster
+                - content
+                - likes
+                - dislikes
+        AnnotationMetadata:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: Unique identifier of the annotation
+                offset:
+                    type: integer
+                    description: The position in the content where the annotation begins
+                length:
+                    type: integer
+                    description: The length of the annotation
+            required:
+                - id
+                - offset
+                - length
+        ContributionCard:
+            allOf:
+                - anyOf:
+                      - $ref: '#/components/schemas/AlbumCard'
+                      - allOf:
+                            - $ref: '#/components/schemas/Annotation'
+                            - type: object
+                              properties:
+                                  poem:
+                                      $ref: '#/components/schemas/PoemCard'
+                              required:
+                                  - poem
+                      - $ref: '#/components/schemas/PoemCard'
+                - type: object
+                  properties:
+                      type:
+                          type: string
+                          description: poem, album or annotation
+                      contribution:
+                          type: string
+                          description: created or edited
+                  required:
+                      - type
+                      - contribution
+        Poem:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: Unique identifier of the poem
+                createdAt:
+                    type: string
+                    format: date-time
+                    description: Timestamp when the poem has been added to the site
+                updatedAt:
+                    type: string
+                    format: date-time
+                    description: Timestamp when the poem has been last updated on the site
+                author:
+                    $ref: '#/components/schemas/UserCard'
+                    description: The information of the user that authored the poem
+                poster:
+                    $ref: '#/components/schemas/UserCard'
+                    description: The information of the user that posted the poem
+                poem:
+                    nullable: true
+                    $ref: '#/components/schemas/PoemCard'
+                    description: The original version of this poem or null if it is already the original
+                language:
+                    type: string
+                    description: The language of the poem
+                cover:
+                    type: string
+                    description: An URL of the cover of the poem
+                title:
+                    type: string
+                    description: The title of the poem
+                publicationDate:
+                    type: string
+                    format: date-time
+                    description: Timestamp when the poem has been officially released
+                mainAnnotation:
+                    $ref: '#/components/schemas/Annotation'
+                    description: The main information about this poem
+                content:
+                    type: string
+                    description: The lyrics of the poem
+                annotations:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/AnnotationMetadata'
+                        description: An annotation of a segment of the poem's lyrics
+                contributors:
+                    type: integer
+                    description: The number of people that contributed to this annotation
+                likes:
+                    type: integer
+                dislikes:
+                    type: integer
+            required:
+                - id
+                - createdAt
+                - updatedAt
+                - author
+                - poster
+                - language
+                - cover
+                - title
+                - publicationDate
+                - mainAnnotation
+                - content
+                - annotations
+                - contributors
+                - likes
+                - dislikes
+        PoemCard:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: Unique identifier of the poem
+                createdAt:
+                    type: string
+                    format: date-time
+                    description: Timestamp when the poem has been added to the site
+                updatedAt:
+                    type: string
+                    format: date-time
+                    description: Timestamp when the poem has been last updated on the site
+                author:
+                    $ref: '#/components/schemas/UserCard'
+                    description: The information of the user that authored the poem
+                poster:
+                    $ref: '#/components/schemas/UserCard'
+                    description: The information of the user that posted the poem
+                poem:
+                    nullable: true
+                    $ref: '#/components/schemas/PoemCard'
+                    description: The original version of this poem or null if it is already the original
+                language:
+                    type: string
+                    description: The language of the poem
+                cover:
+                    type: string
+                    description: An URL of the cover of the poem
+                title:
+                    type: string
+                    description: The title of the poem
+                publicationDate:
+                    type: string
+                    format: date-time
+                    description: Timestamp when the poem has been officially released
+                contributors:
+                    type: integer
+                    description: The number of people that contributed to this annotation
+                likes:
+                    type: integer
+                dislikes:
+                    type: integer
+            required:
+                - id
+                - createdAt
+                - updatedAt
+                - author
+                - poster
+                - language
+                - cover
+                - title
+                - publicationDate
+                - contributors
+                - likes
+                - dislikes
+        PoemLanguages:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: Unique identifier of the poem
+                language:
+                    type: string
+                    description: The language the poem is written in
+            required:
+                - id
+                - language
+        PostCard:
+            allOf:
+                - anyOf:
+                      - $ref: '#/components/schemas/AlbumCard'
+                      - $ref: '#/components/schemas/PoemCard'
+                - type: object
+                  properties:
+                      type:
+                          type: string
+                          description: poem or album
+                  required:
+                      - type
+        RequestCard:
+            allOf:
+                - type: object
+                  properties:
+                      id:
+                          type: integer
+                          description: Id of the request
+                  required:
+                      - type
+                - anyOf:
+                      - type: object
+                        properties:
+                            user:
+                                $ref: '#/components/schemas/UserCard'
+                      - type: object
+                        properties:
+                            album:
+                                $ref: '#/components/schemas/AlbumCard'
+                      - type: object
+                        properties:
+                            poem:
+                                $ref: '#/components/schemas/PoemCard'
+                      - type: object
+                        properties:
+                            annotation:
+                                $ref: '#/components/schemas/Annotation'
+        User:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: Unique identifier for the user
+                roles:
+                    type: integer
+                    description: Roles assigned to the user
+                nickname:
+                    type: string
+                    description: Nickname of the user
+                lastName:
+                    type: string
+                    description: Last name of the user
+                createdAt:
+                    type: string
+                    format: date-time
+                    description: Timestamp when the user was created
+                firstName:
+                    type: string
+                    description: First name of the user
+                updatedAt:
+                    type: string
+                    format: date-time
+                    description: Timestamp when the user was last updated
+                poemsCount:
+                    type: integer
+                    description: Count of poems created by the user
+                albumsCount:
+                    type: integer
+                    description: Count of albums created by the user
+                annotationsCount:
+                    type: integer
+                    description: Count of annotations created by the user
+                albumsContributions:
+                    type: integer
+                    description: Number of albums the user has contributed to
+                createdPoemsCount:
+                    type: integer
+                    description: Count of poems created by the user
+                poemsContributions:
+                    type: integer
+                    description: Number of poems the user has contributed to
+                translatedPoemsCount:
+                    type: integer
+                    description: Count of poems translated by the user
+                annotationsContributions:
+                    type: integer
+                    description: Number of annotations the user has contributed to
+            required:
+                - id
+                - roles
+                - nickname
+                - lastName
+                - createdAt
+                - firstName
+                - updatedAt
+                - poemsCount
+                - albumsCount
+                - annotationsCount
+                - albumsContributions
+                - createdPoemsCount
+                - poemsContributions
+                - translatedPoemsCount
+                - annotationsContributions
+        UserCard:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: Unique identifier for the user
+                roles:
+                    type: integer
+                    description: Roles assigned to the user
+                nickname:
+                    type: string
+                    description: Nickname of the user
+                lastName:
+                    type: string
+                    description: Last name of the user
+                firstName:
+                    type: string
+                    description: First name of the user
+            required:
+                - id
+                - roles
+                - nickname
+                - lastName
+                - firstName
