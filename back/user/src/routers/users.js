@@ -65,11 +65,13 @@ auth_router.post('/', async (req, res) => {
 
 auth_router.patch('/:id', async (req, res) => {
     try {
-        let result = await db.query('select update_user($1)', [{
-            ...req.body,
-            id: req.params.id
-        }])
-        
+        let result = await db.query('select update_user($1)', [
+            {
+                ...req.body,
+                id: req.params.id,
+            },
+        ])
+
         return new JSONResponse(200, toCamel(result.rows[0]))
     } catch (e) {
         console.error(e)
