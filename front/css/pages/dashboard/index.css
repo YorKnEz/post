@@ -1117,6 +1117,9 @@ body {
   margin: 0;
 }
 .section__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
   padding-left: 1.4rem;
   padding-right: 0.2rem;
   overflow-y: scroll;
@@ -1136,6 +1139,11 @@ body {
 .request__link {
   color: var(--text-black);
   text-underline-offset: 4px;
+}
+.request__controls {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
 }
 
 /*# sourceMappingURL=index.css.map */

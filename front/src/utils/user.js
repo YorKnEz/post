@@ -1,13 +1,18 @@
+const rolesSchema = {
+    0b10: 'Admin',
+    0b1: 'Poet',
+}
+
 export const getUserRole = (roles) => {
-    if (roles & 0b1) {
-        return 'Poet'
+    let list = []
+
+    for (const [bitmask, role] of Object.entries(rolesSchema)) {
+        if (roles & bitmask) {
+            list.push(role)
+        }
     }
 
-    if (roles & 0b10) {
-        return 'Admin'
-    }
-
-    return 'Regular'
+    return list.length == 0 ? 'Regular' : list.join(', ')
 }
 
 export const isAdmin = (roles) => roles & 0b10

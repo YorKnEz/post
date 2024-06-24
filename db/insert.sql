@@ -86,7 +86,7 @@ begin
             (p_data ->> 'publicationDate')::timestamp, p_data ->> 'content');
 
     -- add main annotation
-    select (add_annotation(l_poem_id, p_poster_id,
+    select (add_main_annotation(l_poem_id, p_poster_id,
                            jsonb_build_object('content', p_data ->> 'about', 'offset', 0, 'length', 0)) ->> 'id')::int
     into annotation_id;
 
@@ -107,6 +107,36 @@ begin
     end if;
 
     return find_poem_by_id(l_poem_id);
+end;
+$$ language plpgsql;
+
+create or replace function add_main_annotation(p_poem_id integer, p_poster_id integer, p_data jsonb) returns jsonb as
+$$
+declare
+    annotation_id integer;
+    date    timestamp := now();
+begin
+    -- add post
+    insert into posts (created_at, updated_at, poster_id, type, verified)
+    values (date, date, p_poster_id, 'annotation', true)
+    returning id into annotation_id;
+
+    -- add contribution
+    insert into contributions (created_at, updated_at, contributor_id, post_id)
+    values (date, date, p_poster_id, annotation_id);
+
+    -- add annotation
+    insert into annotations(id, poem_id, content, "offset", length)
+    values (annotation_id, p_poem_id, p_data ->> 'content', (p_data ->> 'offset')::int,
+            (p_data ->> 'length')::int);
+
+    -- increment annotations_count of user
+    update users
+    set annotations_count         = annotations_count + 1,
+        annotations_contributions = annotations_contributions + 1
+    where id = p_poster_id;
+
+    return find_annotation_by_id(annotation_id);
 end;
 $$ language plpgsql;
 

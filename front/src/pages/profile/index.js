@@ -4,15 +4,37 @@ import {
     Loader,
     ContributionCard,
 } from '../../components/index.js'
-import { getContributions, getUser } from '../../services/index.js'
-import { getElement, getUserRole } from '../../utils/index.js'
+import {
+    getContributions,
+    getUser,
+    hasPoetRequest,
+    makePoetRequest,
+} from '../../services/index.js'
+import { getElement, getUserRole, isPoet } from '../../utils/index.js'
 
 window.navbar = new Navbar()
 
 const profileLoader = new Loader('profile')
 
-const loadProfile = async (user) => {
+const loadProfile = async (user, ownProfile) => {
+    console.log(user)
     const content = profileLoader.getContent()
+
+    const becomeAPoet = getElement(
+        'button',
+        { class: 'btn profile__editor-btn' },
+        [
+            getElement('span', { class: 'btn__label' }, [
+                document.createTextNode('Become a Poet'),
+            ]),
+        ]
+    )
+
+    becomeAPoet.addEventListener('click', async () => {
+        await new Promise((res) => setTimeout(res, 200))
+        await makePoetRequest(user.id)
+        becomeAPoet.remove()
+    })
 
     content.append(
         ...[
@@ -31,7 +53,7 @@ const loadProfile = async (user) => {
                             ),
                         ]),
                         getElement('h3', { class: 'profile__role' }, [
-                            document.createTextNode(getUserRole(user.role)),
+                            document.createTextNode(getUserRole(user.roles)),
                         ]),
                         getElement('span', { class: 'profile__joined' }, [
                             document.createTextNode(
@@ -45,11 +67,12 @@ const loadProfile = async (user) => {
                             ),
                         ]),
                     ]),
-                    getElement('button', { class: 'btn profile__editor-btn' }, [
-                        getElement('span', { class: 'btn__label' }, [
-                            document.createTextNode('Become a Poet'),
-                        ]),
-                    ]),
+                    // load become a poet only if the user's on his own profile
+                    ...(ownProfile &&
+                        !isPoet(user.roles) &&
+                        !(await hasPoetRequest(user.id)).result
+                        ? [becomeAPoet]
+                        : []),
                 ]
             ),
         ]
@@ -199,6 +222,7 @@ let user
 window.onload = async () => {
     let userId
     const path = location.pathname.replace('/profile', '')
+    let ownProfile = false
 
     if (path.length == 0) {
         userId = JSON.parse(sessionStorage.getItem('user'))
@@ -208,6 +232,7 @@ window.onload = async () => {
         }
 
         userId = userId.id
+        ownProfile = true
     } else {
         userId = parseInt(path.slice(1))
     }
@@ -215,7 +240,11 @@ window.onload = async () => {
     try {
         user = await getUser(userId)
 
-        loadProfile(user)
+        if (ownProfile) {
+            sessionStorage.setItem('user', JSON.stringify(user))
+        }
+
+        loadProfile(user, ownProfile)
         loadTopAccomplishments(user)
         loadStatistics(user)
         loadContributions(user)

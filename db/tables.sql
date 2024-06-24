@@ -74,7 +74,7 @@ create table requests
     updated_at   timestamp not null default now(),
     -- primary information
     requester_id integer   not null,
-    post_id      integer,
+    post_id      integer            default null,
 
     constraint requests_u1 unique (requester_id, post_id),
     constraint requests_f1 foreign key (requester_id) references users (id),

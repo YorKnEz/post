@@ -1,3 +1,138 @@
+create or replace function find_statistics() returns jsonb as
+$$
+declare
+    result jsonb;
+begin
+    select jsonb_build_object(
+                   'users_count', (select count(*) from users),
+                   'verified_users_count', (select count(*) from users where verified = true),
+                   'poets_count', (select count(*) from users where (roles & 1 << 0) != 0),
+                   'admins_count', (select count(*) from users where (roles & 1 << 1) != 0),
+                   'contributions_count', (select count(*) from contributions),
+                   'albums_count', (select count(*) from albums),
+                   'verified_albums_count', (select count(*) from albums_view where verified = true),
+                   'poems_count', (select count(*) from poems),
+                   'verified_poems_count', (select count(*) from poems_view where verified = true),
+                   'annotations_count', (select count(*) from annotations),
+                   'verified_annotations_count', (select count(*) from annotations_view where verified = true),
+                   'likes', (select count(*) from reactions where type = 0),
+                   'dislikes', (select count(*) from reactions where type = 1)
+           )
+    into result;
+    return result;
+end;
+$$ language plpgsql;
+
+create or replace function find_requests(p_filters jsonb) returns jsonb as
+$$
+declare
+    type   text := 'poem';
+    start  int  := 0;
+    count  int  := 10;
+    result jsonb;
+begin
+    if p_filters ? 'type' and (p_filters ->> 'type' in ('user', 'poem', 'album', 'annotation')) then
+        type = p_filters ->> 'type';
+    end if;
+
+    if not p_filters ? 'start' or not p_filters ? 'count' then
+        raise exception '`start` and `count` are missing';
+    end if;
+
+    start := (p_filters -> 'start')::int;
+    count := (p_filters -> 'count')::int;
+
+    if type = 'user' then
+        select jsonb_agg(e)
+        into result
+        from (select jsonb_build_object(
+                             'id', r.id,
+                             'user', jsonb_build_object('id', u.id,
+                                                        'first_name', first_name,
+                                                        'last_name', last_name,
+                                                        'nickname', nickname,
+                                                        'avatar', avatar,
+                                                        'roles', roles,
+                                                        'contributions',
+                                                        (albums_contributions + poems_contributions + annotations_contributions))
+                     ) e
+              from requests r
+                       join users u on r.requester_id = u.id
+              order by r.created_at desc
+              offset start limit count) t;
+    elsif type = 'album' then
+        select jsonb_agg(e)
+        into result
+        from (select jsonb_build_object(
+                             'id', r.id,
+                             'album', jsonb_build_object('id', av.id,
+                                                         'created_at', av.created_at,
+                                                         'updated_at', av.updated_at,
+                                                         'poster', poster,
+                                                         'author', author,
+                                                         'cover', cover,
+                                                         'title', title,
+                                                         'publication_date', publication_date,
+                                                         'contributors', contributors,
+                                                         'likes', likes,
+                                                         'dislikes', dislikes,
+                                                         'poems_count', poems_count)) e
+              from albums_view av
+                       join requests r on r.post_id = av.id
+              order by r.created_at desc
+              offset start limit count) t;
+    elsif type = 'poem' then
+        select jsonb_agg(e)
+        into result
+        from (select jsonb_build_object(
+                             'id', r.id,
+                             'poem', jsonb_build_object('id', pv.id,
+                                                        'created_at', pv.created_at,
+                                                        'updated_at', pv.updated_at,
+                                                        'author', author,
+                                                        'poster', poster,
+                                                        'poem', poem,
+                                                        'language', language,
+                                                        'cover', cover,
+                                                        'title', title,
+                                                        'publication_date', publication_date,
+                                                        'main_annotation', main_annotation,
+                                                        'contributors', contributors,
+                                                        'likes', likes,
+                                                        'dislikes', dislikes)
+                     ) e
+              from poems_view pv
+                       join requests r on r.post_id = pv.id
+              order by r.created_at desc
+              offset start limit count) t;
+    elsif type = 'annotation' then
+        select jsonb_agg(e)
+        into result
+        from (select jsonb_build_object(
+                             'id', r.id,
+                             'annotation', jsonb_build_object('id', av.id,
+                                                              'created_at', av.created_at,
+                                                              'updated_at', av.updated_at,
+                                                              'poster', poster,
+                                                              'content', content,
+                                                              'contributors', contributors,
+                                                              'likes', likes,
+                                                              'dislikes', dislikes)
+                     ) e
+              from annotations_view av
+                       join requests r on r.post_id = av.id
+              order by r.created_at desc
+              offset start limit count) t;
+    end if;
+
+    if result is null then
+        return '[]'::jsonb;
+    end if;
+
+    return result;
+end;
+$$ language plpgsql;
+
 create or replace function find_user_cards(p_filters jsonb) returns jsonb as
 $$
 declare
@@ -97,7 +232,8 @@ begin
            )
     into result
     from users
-    where id = p_id;
+    where id = p_id
+      and verified = true;
 
     if result is null then
         raise exception 'user not found';
@@ -123,7 +259,8 @@ begin
            )
     into result
     from users
-    where id = p_id;
+    where id = p_id
+      and verified = true;
 
     if result is null then
         raise exception 'user not found';
@@ -357,10 +494,10 @@ begin
                                (case
                                     when (p_filters ->> 'type') = 'pending' then p.verified = false
                                     when (p_filters ->> 'type') in ('album', 'annotation', 'poem')
-                                        then p.type = p_filters ->> 'type'
-                                    else true
+                                        then p.type = p_filters ->> 'type' and p.verified = true
+                                    else p.verified = true
                                 end)
-                           else true
+                           else p.verified = true
                        end)
                 order by c.created_at desc
                 offset start limit count) t

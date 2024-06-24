@@ -25,3 +25,17 @@ export const getUsersSuggestions = async (query) => {
 export const getUser = async (id) => {
     return await __fetch(`${API_URL}/users/${id}`, { method: 'GET' })
 }
+
+export const hasPoetRequest = async (userId) => {
+    return await __fetch(`${API_URL}/users/${userId}/active-request`, {
+        method: 'POST',
+        credentials: 'include',
+    })
+}
+
+export const makePoetRequest = async (userId) => {
+    return await __fetch(`${API_URL}/users/${userId}/active-request`, {
+        method: 'PUT',
+        credentials: 'include',
+    })
+}

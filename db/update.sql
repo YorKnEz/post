@@ -7,6 +7,90 @@ begin
 end;
 $$ language plpgsql;
 
+create or replace function update_request(p_id integer, p_approve boolean) returns jsonb as
+$$
+declare
+    l_post_id integer;
+    l_requester_id integer;
+    result    jsonb;
+begin
+    select r.id, jsonb_build_object('email', u.email, 'name', u.first_name || ' ' || u.last_name), r.post_id, r.requester_id
+    into p_id, result, l_post_id, l_requester_id
+    from requests r
+             join users u on r.requester_id = u.id
+    where r.id = p_id;
+
+    if p_id is null then
+        raise exception 'request not found';
+    end if;
+
+    if l_post_id is not null then
+        result = result || (select jsonb_build_object('type', type) from posts where id = l_post_id);
+
+        if (result ->> 'type') = 'album' then
+            result = result ||
+                     (select jsonb_build_object(
+                                     'extra_data', jsonb_build_object(
+                                     'id', l_post_id,
+                                     'title', title))
+                      from albums
+                      where id = l_post_id);
+        elsif (result ->> 'type') = 'poem' then
+            result = result ||
+                     (select jsonb_build_object(
+                                     'extra_data', jsonb_build_object(
+                                     'id', l_post_id,
+                                     'title', title))
+                      from poems
+                      where id = l_post_id);
+        elsif (result ->> 'type') = 'annotation' then
+            result = result ||
+                     (select jsonb_build_object(
+                                     'extra_data', jsonb_build_object(
+                                     'id', l_post_id,
+                                     'poem_id', poem_id
+                                                   ))
+                      from annotations
+                      where id = l_post_id);
+        end if;
+
+        if p_approve = true then
+            update posts set verified = true, updated_at = now() where id = l_post_id;
+        else
+            begin
+                call delete_album(l_post_id);
+            exception
+                when others then
+            end;
+
+            begin
+                call delete_poem(l_post_id);
+            exception
+                when others then
+            end;
+
+            begin
+                call delete_annotation(l_post_id);
+            exception
+                when others then
+            end;
+        end if;
+    else
+        result = result || '{
+          "type": "user"
+        }'::jsonb;
+        result['extra_data'] = '{}'::jsonb;
+
+        if p_approve = true then
+            update users set roles = roles | 1, updated_at = now() where id = l_requester_id;
+        end if;
+    end if;
+
+    delete from requests where id = p_id;
+    return result;
+end;
+$$ language plpgsql;
+
 create or replace function update_album(p_id integer, p_user_id integer, p_data jsonb) returns jsonb as
 $$
 declare
