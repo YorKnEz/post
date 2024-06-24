@@ -1,25 +1,21 @@
 create or replace function find_statistics() returns jsonb as
 $$
-declare
-    result jsonb;
 begin
-    select jsonb_build_object(
-                   'users_count', (select count(*) from users),
-                   'verified_users_count', (select count(*) from users where verified = true),
-                   'poets_count', (select count(*) from users where (roles & 1 << 0) != 0),
-                   'admins_count', (select count(*) from users where (roles & 1 << 1) != 0),
-                   'contributions_count', (select count(*) from contributions),
-                   'albums_count', (select count(*) from albums),
-                   'verified_albums_count', (select count(*) from albums_view where verified = true),
-                   'poems_count', (select count(*) from poems),
-                   'verified_poems_count', (select count(*) from poems_view where verified = true),
-                   'annotations_count', (select count(*) from annotations),
-                   'verified_annotations_count', (select count(*) from annotations_view where verified = true),
-                   'likes', (select count(*) from reactions where type = 0),
-                   'dislikes', (select count(*) from reactions where type = 1)
-           )
-    into result;
-    return result;
+    return jsonb_build_object(
+            'users_count', (select count(*) from users),
+            'verified_users_count', (select count(*) from users where verified = true),
+            'poets_count', (select count(*) from users where (roles & 1 << 0) != 0),
+            'admins_count', (select count(*) from users where (roles & 1 << 1) != 0),
+            'contributions_count', (select count(*) from contributions),
+            'albums_count', (select count(*) from albums),
+            'verified_albums_count', (select count(*) from albums_view where verified = true),
+            'poems_count', (select count(*) from poems),
+            'verified_poems_count', (select count(*) from poems_view where verified = true),
+            'annotations_count', (select count(*) from annotations),
+            'verified_annotations_count', (select count(*) from annotations_view where verified = true),
+            'likes', (select count(*) from reactions where type = 0),
+            'dislikes', (select count(*) from reactions where type = 1)
+           );
 end;
 $$ language plpgsql;
 
@@ -47,17 +43,19 @@ begin
         into result
         from (select jsonb_build_object(
                              'id', r.id,
-                             'user', jsonb_build_object('id', u.id,
-                                                        'first_name', first_name,
-                                                        'last_name', last_name,
-                                                        'nickname', nickname,
-                                                        'avatar', avatar,
-                                                        'roles', roles,
-                                                        'contributions',
-                                                        (albums_contributions + poems_contributions + annotations_contributions))
+                             'user', jsonb_build_object(
+                                     'id', u.id,
+                                     'first_name', first_name,
+                                     'last_name', last_name,
+                                     'nickname', nickname,
+                                     'avatar', avatar,
+                                     'roles', roles,
+                                     'contributions',
+                                     (albums_contributions + poems_contributions + annotations_contributions))
                      ) e
               from requests r
                        join users u on r.requester_id = u.id
+              where r.post_id is null
               order by r.created_at desc
               offset start limit count) t;
     elsif type = 'album' then
@@ -65,18 +63,19 @@ begin
         into result
         from (select jsonb_build_object(
                              'id', r.id,
-                             'album', jsonb_build_object('id', av.id,
-                                                         'created_at', av.created_at,
-                                                         'updated_at', av.updated_at,
-                                                         'poster', poster,
-                                                         'author', author,
-                                                         'cover', cover,
-                                                         'title', title,
-                                                         'publication_date', publication_date,
-                                                         'contributors', contributors,
-                                                         'likes', likes,
-                                                         'dislikes', dislikes,
-                                                         'poems_count', poems_count)) e
+                             'album', jsonb_build_object(
+                                     'id', av.id,
+                                     'created_at', av.created_at,
+                                     'updated_at', av.updated_at,
+                                     'poster', poster,
+                                     'author', author,
+                                     'cover', cover,
+                                     'title', title,
+                                     'publication_date', publication_date,
+                                     'contributors', contributors,
+                                     'likes', likes,
+                                     'dislikes', dislikes,
+                                     'poems_count', poems_count)) e
               from albums_view av
                        join requests r on r.post_id = av.id
               order by r.created_at desc
@@ -86,20 +85,21 @@ begin
         into result
         from (select jsonb_build_object(
                              'id', r.id,
-                             'poem', jsonb_build_object('id', pv.id,
-                                                        'created_at', pv.created_at,
-                                                        'updated_at', pv.updated_at,
-                                                        'author', author,
-                                                        'poster', poster,
-                                                        'poem', poem,
-                                                        'language', language,
-                                                        'cover', cover,
-                                                        'title', title,
-                                                        'publication_date', publication_date,
-                                                        'main_annotation', main_annotation,
-                                                        'contributors', contributors,
-                                                        'likes', likes,
-                                                        'dislikes', dislikes)
+                             'poem', jsonb_build_object(
+                                     'id', pv.id,
+                                     'created_at', pv.created_at,
+                                     'updated_at', pv.updated_at,
+                                     'author', author,
+                                     'poster', poster,
+                                     'poem', poem,
+                                     'language', language,
+                                     'cover', cover,
+                                     'title', title,
+                                     'publication_date', publication_date,
+                                     'main_annotation', main_annotation,
+                                     'contributors', contributors,
+                                     'likes', likes,
+                                     'dislikes', dislikes)
                      ) e
               from poems_view pv
                        join requests r on r.post_id = pv.id
@@ -110,14 +110,17 @@ begin
         into result
         from (select jsonb_build_object(
                              'id', r.id,
-                             'annotation', jsonb_build_object('id', av.id,
-                                                              'created_at', av.created_at,
-                                                              'updated_at', av.updated_at,
-                                                              'poster', poster,
-                                                              'content', content,
-                                                              'contributors', contributors,
-                                                              'likes', likes,
-                                                              'dislikes', dislikes)
+                             'annotation', jsonb_build_object(
+                                     'id', av.id,
+                                     'created_at', av.created_at,
+                                     'updated_at', av.updated_at,
+                                     'poster', poster,
+                                     'content', content,
+                                     'contributors', contributors,
+                                     'likes', likes,
+                                     'dislikes', dislikes,
+                                     'poem', find_poem_card_by_id(av.poem_id)
+                                           )
                      ) e
               from annotations_view av
                        join requests r on r.post_id = av.id
@@ -232,8 +235,7 @@ begin
            )
     into result
     from users
-    where id = p_id
-      and verified = true;
+    where id = p_id;
 
     if result is null then
         raise exception 'user not found';
@@ -259,8 +261,7 @@ begin
            )
     into result
     from users
-    where id = p_id
-      and verified = true;
+    where id = p_id;
 
     if result is null then
         raise exception 'user not found';

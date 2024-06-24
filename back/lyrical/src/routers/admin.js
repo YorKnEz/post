@@ -55,8 +55,6 @@ router.post('/requests/:id', async (req, res) => {
                 const { email, name, type, extraData } =
                     result.rows[0].update_request
 
-                console.log(email, name, type, extraData)
-
                 const data = {
                     name,
                     result: req.body.approve ? 'approved' : 'denied',
@@ -89,6 +87,8 @@ router.post('/requests/:id', async (req, res) => {
                 message: 'Request not found',
             })
         }
+
+        console.error(e)
         return new InternalError()
     }
 })

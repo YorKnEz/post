@@ -77,7 +77,7 @@ router.post('/register', async (req, res) => {
 
             const pass = __hash(req.body.password)
 
-            let result = await client.query(
+            result = await client.query(
                 'insert into users(first_name, last_name, nickname, avatar, new_email, password_hash, password_salt) values($1, $2, $3, $4, $5, $6, $7) returning *',
                 [
                     req.body.firstName,
@@ -143,7 +143,6 @@ router.post('/verify', async (req, res) => {
         )
 
         if (result.rowCount == 0) {
-            client.release()
             return new JSONResponse(400, {
                 code: ErrorCodes.VERIFY_INVALID_TOKEN,
                 message: 'The given token is invalid',

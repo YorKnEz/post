@@ -93,6 +93,13 @@ auth_router.post('/', async (req, res) => {
 
         return new JSONResponse(200, toCamel(result.rows[0].add_album))
     } catch (e) {
+        if (e.code == 23503 && e.constraint == 'albums_f2') {
+            return new JSONResponse(404, {
+                code: ErrorCodes.USER_NOT_FOUND,
+                message: 'User not found',
+            })
+        }
+
         console.error(e)
         return new InternalError()
     }
