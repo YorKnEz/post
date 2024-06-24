@@ -7,8 +7,9 @@ export class Search {
             id: id + '_input',
             class: 'search__input',
             placeholder: 'Search',
-            onkeydown: this.handleKeyDown,
         })
+
+        this.input.addEventListener('keydown', this.handleKeyDown)
 
         this.inner = getElement(
             'div',
@@ -27,7 +28,13 @@ export class Search {
     }
 
     search = () => {
-        console.log(this.input.value)
+        if (location.pathname === '/search') {
+            const params = new URLSearchParams(location.search)
+            params.set('query', this.input.value)
+            location.search = params.toString()
+        } else {
+            location.assign(`/search?query=${encodeURIComponent(query)}`)
+        }
     }
 
     handleKeyDown = (event) => {

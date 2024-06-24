@@ -1,12 +1,16 @@
 import { getElement } from '../../utils/index.js'
 
 export class PostRow {
-    constructor(index, post) {
+    constructor(index, post, type) {
+        if (!type) {
+            type = post.type
+        }
+
         this.inner = getElement(
             'a',
             {
                 class: 'table__row table__row--poem-chart',
-                href: `/post/${post.id}`,
+                href: `/${type}/${post.id}`,
             },
             [
                 getElement('div', {}, [document.createTextNode(index)]),

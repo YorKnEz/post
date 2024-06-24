@@ -1,0 +1,21 @@
+@import '../../index.scss';
+
+@import '../../components/cards/index.scss';
+@import '../../components/dropdown.scss';
+@import '../../components/table.scss';
+@import '../../components/loader/loader.scss';
+@import '../../components/rows/postRow.scss';
+@import '../../components/rows/userRow.scss';
+
+.section {}
+
+.filters {
+    &__dropdowns {
+        display: flex;
+        gap: 0.6rem;
+    }
+
+    &__dropdown-container {
+        width: fit-content;
+    }
+}

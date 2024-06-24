@@ -8,7 +8,7 @@ export class AlbumCard {
                 class: small
                     ? 'card card--small col-xs-2 col-sm-2 col-md-3'
                     : 'card col-xs-2 col-sm-8 col-md-12',
-                href: `/poem/${data.id}`,
+                href: `/album/${data.id}`,
             },
             [
                 getElement('section', { class: 'card__info' }, [
