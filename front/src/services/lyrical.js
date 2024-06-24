@@ -89,3 +89,11 @@ export const updatePoem = async (id, data) => {
         body: JSON.stringify(data),
     })
 }
+
+export const addAlbum = async (data) => {
+    return await __fetch(`${API_URL}/albums`, {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify(data),
+    })
+}
