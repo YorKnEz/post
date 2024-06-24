@@ -65,6 +65,7 @@ services:
             - PUBLIC_URL=$AUTH_SERVICE_URL
             - FRONTEND_URL=$FRONTEND_URL
             - IMAGE_SERVICE_API_URL=$IMAGE_SERVICE_API_URL
+            - NODE_TLS_REJECT_UNAUTHORIZED=0
         volumes:
             - ./lib:/app/lib
             - ./back/auth:/app/back/auth
@@ -91,6 +92,7 @@ services:
             - PUBLIC_URL=$IMAGE_SERVICE_URL
             - PUBLIC_API_URL=$IMAGE_SERVICE_API_URL
             - FRONTEND_URL=$FRONTEND_URL
+            - NODE_TLS_REJECT_UNAUTHORIZED=0
         volumes:
             - ./lib:/app/lib
             - ./back/image:/app/back/image
@@ -125,6 +127,7 @@ services:
             - FRONTEND_URL=$FRONTEND_URL
             - AUTH_SERVICE_API_URL=https://auth:$AUTH_SERVICE_PORT/api
             - IMAGE_SERVICE_API_URL=$IMAGE_SERVICE_API_URL
+            - NODE_TLS_REJECT_UNAUTHORIZED=0
         volumes:
             - ./lib:/app/lib
             - ./back/lyrical:/app/back/lyrical
@@ -158,6 +161,7 @@ services:
             - PUBLIC_URL=$USER_SERVICE_URL
             - FRONTEND_URL=$FRONTEND_URL
             - AUTH_SERVICE_API_URL=https://auth:$AUTH_SERVICE_PORT/api
+            - NODE_TLS_REJECT_UNAUTHORIZED=0
         volumes:
             - ./lib:/app/lib
             - ./back/user:/app/back/user
