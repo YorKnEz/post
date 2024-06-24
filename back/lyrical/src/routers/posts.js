@@ -101,7 +101,7 @@ auth_router.post('/:id/reactions', async (req, res) => {
     }
 })
 
-auth_router.get('/:id/reactions', async (req, res) => {
+auth_router.post('/:id/reaction', async (req, res) => {
     try {
         let result = await db.query('select find_reaction($1, $2)', [
             req.params.id,

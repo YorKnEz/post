@@ -8,7 +8,7 @@ import {
     toCamel,
     validate,
 } from 'web-lib'
-import * as db from '../db/index.js'
+import db from '../db/index.js'
 import {
     sendVerifyAccountEmail,
     registerSchema,
@@ -31,8 +31,6 @@ export const router = new Router('Auth Router')
 // 4. upon verifying the account, the email will become new_email and new_email will become null
 // steps 2 and 4 are meant to make implementation of email changing easier
 router.post('/register', async (req, res) => {
-    const client = await db.getClient()
-
     try {
         // validate the user data
         validate(req.body, registerSchema)
@@ -45,6 +43,8 @@ router.post('/register', async (req, res) => {
         req.body.avatar = `${process.env.IMAGE_SERVICE_API_URL}/images/default-avatar`
     }
 
+    const client = await db.getClient()
+
     // check if the nickname exists
     let result = await client.query(
         'select nickname from users where nickname = $1',
@@ -52,6 +52,7 @@ router.post('/register', async (req, res) => {
     )
 
     if (result.rowCount > 0) {
+        client.release()
         return new JSONResponse(400, {
             code: ErrorCodes.DUPLICATE_NICKNAME,
             message: 'Nickname already used',
@@ -120,6 +121,8 @@ router.post('/register', async (req, res) => {
     // must check their email
     task()
 
+    client.release()
+
     return new JSONResponse(200, {
         code: SuccessCodes.REGISTERED,
         message: 'Registered successfully',
@@ -132,12 +135,15 @@ router.post('/verify', async (req, res) => {
     const client = await db.getClient()
 
     try {
+        await client.query('begin')
+
         let result = await client.query(
             "delete from tokens where value = $1 and type = 'emailConfirm' returning *",
             [req.query.token]
         )
 
         if (result.rowCount == 0) {
+            client.release()
             return new JSONResponse(400, {
                 code: ErrorCodes.VERIFY_INVALID_TOKEN,
                 message: 'The given token is invalid',
@@ -157,13 +163,18 @@ router.post('/verify', async (req, res) => {
             [user.id]
         )
 
+        await client.query('commit')
+
         return new JSONResponse(200, {
             code: SuccessCodes.VERIFIED,
             message: 'Verified successfully, you may now log in',
         })
     } catch (e) {
+        await client.query('rollback')
         console.error(e)
         return new InternalError()
+    } finally {
+        client.release()
     }
 })
 
@@ -173,7 +184,6 @@ router.post('/login', async (req, res) => {
     //
     // if the login is successful, a response is immediately returned
     const start = performance.now()
-    const client = await db.getClient()
 
     try {
         // validate the user data
@@ -186,7 +196,7 @@ router.post('/login', async (req, res) => {
 
     try {
         // search the user by nickname or email
-        let result = await client.query(
+        let result = await db.query(
             'select * from users where nickname = $1 or email = $1',
             [req.body.identifier]
         )
@@ -221,7 +231,7 @@ router.post('/login', async (req, res) => {
 
         // generate session token
         const token = base36token()
-        await client.query(
+        await db.query(
             "insert into tokens(value, user_id, type) values($1, $2, 'session')",
             [token, user.id]
         )
@@ -236,6 +246,7 @@ router.post('/login', async (req, res) => {
                 httpOnly: true,
             }
         )
+
         return new JSONResponse(200, {
             id: user.id,
             firstName: user.firstName,
@@ -265,10 +276,8 @@ router.post('/login', async (req, res) => {
 })
 
 router.post('/authenticated', async (req, res) => {
-    const client = await db.getClient()
-
     try {
-        let result = await client.query(
+        let result = await db.query(
             'select t.user_id user_id, u.roles user_roles from tokens t join users u on t.user_id = u.id where t.value = $1',
             [req.body.token]
         )
@@ -295,10 +304,8 @@ router.post('/logout', async (req, res) => {
         })
     }
 
-    const client = await db.getClient()
-
     try {
-        let result = await client.query(
+        let result = await db.query(
             "delete from tokens where type = 'session' and value = $1",
             [req.cookies.token]
         )
@@ -332,14 +339,14 @@ router.post('/logout', async (req, res) => {
 })
 
 router.post('/request-change', async (req, res) => {
-    const client = await db.getClient()
-
     try {
         // validate the user data
         validate(req.body, requestChangeSchema)
     } catch (e) {
         return new JSONResponse(400, e.obj())
     }
+
+    const client = await db.getClient()
 
     // start another async task for: the process of sending the email since it can be vulenrable to timing attacks
     const task = async () => {
@@ -354,8 +361,7 @@ router.post('/request-change', async (req, res) => {
 
             // invalid email provided
             if (result.rowCount == 0) {
-                console.log('invalid email or unverified')
-                return
+                throw 'invalid email or unverified'
             }
 
             const user = toCamel(result.rows[0])
@@ -393,6 +399,8 @@ router.post('/request-change', async (req, res) => {
     // must check their email
     task()
 
+    client.release()
+
     return new JSONResponse(200, {
         code: SuccessCodes.CHANGE_REQUESTED,
         message: 'Confirmation email sent, please check your email',
@@ -417,6 +425,7 @@ router.post('/change-email', async (req, res) => {
     )
 
     if (result.rowCount == 0) {
+        client.release()
         return new JSONResponse(400, {
             code: ErrorCodes.INVALID_TOKEN,
             message: 'Invalid token provided',
@@ -427,6 +436,7 @@ router.post('/change-email', async (req, res) => {
         // validate the user data
         validate(req.body, changeEmailSchema)
     } catch (e) {
+        client.release()
         return new JSONResponse(400, e.obj())
     }
 
@@ -485,6 +495,8 @@ router.post('/change-email', async (req, res) => {
     // must check their email
     task()
 
+    client.release()
+
     return new JSONResponse(200, {
         code: SuccessCodes.EMAIL_CHANGE_INITIATED,
         message: 'Confirmation email sent to the new email address',
@@ -494,7 +506,6 @@ router.post('/change-email', async (req, res) => {
 router.post('/change-nickname', async (req, res) => {
     const client = await db.getClient()
 
-
     // destroy the old token
     let result = await client.query(
         "delete from tokens where value = $1 and type = 'nicknameChange' returning *",
@@ -502,6 +513,7 @@ router.post('/change-nickname', async (req, res) => {
     )
 
     if (result.rowCount == 0) {
+        client.release()
         return new JSONResponse(400, {
             code: ErrorCodes.INVALID_TOKEN,
             message: 'Invalid token provided',
@@ -512,16 +524,17 @@ router.post('/change-nickname', async (req, res) => {
         // validate the user data
         validate(req.body, changeNicknameSchema)
     } catch (e) {
+        client.release()
         return new JSONResponse(400, e.obj())
     }
 
     const token = toCamel(result.rows[0])
 
     try {
-        await client.query('update users set updated_at = now(), nickname = $1 where id = $2', [
-            req.body.nickname,
-            token.userId,
-        ])
+        await client.query(
+            'update users set updated_at = now(), nickname = $1 where id = $2',
+            [req.body.nickname, token.userId]
+        )
 
         // invalidate all sessions after having made the change
         await client.query(
@@ -544,6 +557,8 @@ router.post('/change-nickname', async (req, res) => {
 
         console.error(e)
         return new InternalError()
+    } finally {
+        client.release()
     }
 })
 
@@ -557,6 +572,7 @@ router.post('/change-password', async (req, res) => {
     )
 
     if (result.rowCount == 0) {
+        client.release()
         return new JSONResponse(400, {
             code: ErrorCodes.INVALID_TOKEN,
             message: 'Invalid token provided',
@@ -567,6 +583,7 @@ router.post('/change-password', async (req, res) => {
         // validate the user data
         validate(req.body, changePasswordSchema)
     } catch (e) {
+        client.release()
         return new JSONResponse(400, e.obj())
     }
 
@@ -593,5 +610,7 @@ router.post('/change-password', async (req, res) => {
     } catch (e) {
         console.error(e)
         return new InternalError()
+    } finally {
+        client.release()
     }
 })

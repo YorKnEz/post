@@ -9,13 +9,18 @@ const pool = new Pool({
     port: process.env.DB_PORT,
 })
 
-export const query = async (query, params) => {
+const query = async (query, params) => {
     await pool.query('set search_path to post')
     return await pool.query(query, params)
 }
 
-export const getClient = async () => {
+const getClient = async () => {
     const client = await pool.connect()
     await client.query('set search_path to post')
     return client
+}
+
+export default {
+    query,
+    getClient,
 }

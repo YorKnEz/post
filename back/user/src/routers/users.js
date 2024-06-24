@@ -6,7 +6,7 @@ import {
     Router,
     toCamel,
 } from 'web-lib'
-import * as db from '../db/index.js'
+import db from '../db/index.js'
 import { authMiddleware } from '../utils/index.js'
 
 export const router = new Router('Users Router')
@@ -52,9 +52,9 @@ router.use('/', auth_router)
 
 auth_router.middleware(authMiddleware)
 
-auth_router.post('/', async (req, res) => {})
+auth_router.post('/', async (req, res) => { })
 
-auth_router.patch('/:id', async (req, res) => {})
+auth_router.patch('/:id', async (req, res) => { })
 
 auth_router.delete('/:id', async (req, res) => {
     try {
