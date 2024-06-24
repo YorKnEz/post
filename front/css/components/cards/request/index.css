@@ -1,0 +1,39 @@
+.request-card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--text-full-white);
+  padding: 1rem;
+  gap: 0.4rem;
+}
+.request-card__actions {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.request-card-post {
+  display: flex;
+  gap: 0.6rem;
+  color: inherit;
+  text-decoration: none;
+}
+.request-card-post__image {
+  width: 3rem;
+  height: 3rem;
+  aspect-ratio: 1;
+  background-size: cover;
+  background-position: center;
+  object-fit: cover;
+}
+.request-card-post__info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.request-card-post__title {
+  font-weight: 600;
+}
+.request-card-post__author {
+  font-size: 0.8rem;
+}
+
+/*# sourceMappingURL=index.css.map */

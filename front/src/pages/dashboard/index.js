@@ -1,5 +1,5 @@
-import { Loader, Navbar, UserRow } from '../../components/index.js'
-import { getRequests, getStats } from '../../services/admin.js'
+import { Loader, Navbar, RequestCard } from '../../components/index.js'
+import { getRequests, getStats } from '../../services/index.js'
 import { getElement, isAdmin } from '../../utils/index.js'
 
 window.navbar = new Navbar()
@@ -93,23 +93,19 @@ const loadStatistics = async () => {
         )
     }
 
-    await new Promise((res) => setTimeout(res, 1000))
-
     statisticsLoader.loaded()
 }
 
-const loadRequests = async (loader, length = 0, type, start = 0, count = 5) => {
+const loadRequests = async (loader, type, length = 0, start = 0, count = 5) => {
     const content = loader.getContent()
-    const response = await getRequests({ type: 'user', start, count })
+    const response = await getRequests({ type, start, count })
 
-    for (const index in response) {
-        content.appendChild(
-            new UserRow(length + parseInt(index) + 1, response[index]).inner
-        )
+    for (const request of response) {
+        content.appendChild(new RequestCard(request, type).inner)
     }
 
     content.appendChild(
-        length > 0
+        response.length > 0
             ? getElement(
                 'button',
                 {
@@ -118,9 +114,9 @@ const loadRequests = async (loader, length = 0, type, start = 0, count = 5) => {
                         content.lastChild.remove()
                         loadRequests(
                             loader,
-                            length + response.length,
                             type,
-                            start + length,
+                            length + response.length,
+                            start + response.length,
                             count
                         )
                     },
@@ -140,6 +136,13 @@ const loadRequests = async (loader, length = 0, type, start = 0, count = 5) => {
     loader.loaded()
 }
 
+const loaders = [
+    { loader: new Loader('poetic-requests'), type: 'user' },
+    { loader: new Loader('album-requests'), type: 'album' },
+    { loader: new Loader('poem-requests'), type: 'poem' },
+    { loader: new Loader('annotation-requests'), type: 'annotation' },
+]
+
 window.onload = async () => {
     let user = sessionStorage.getItem('user')
 
@@ -156,10 +159,12 @@ window.onload = async () => {
     }
 
     try {
-        loadStatistics()
-        loadPoeticRequests()
+        await loadStatistics()
+
+        for (const { loader, type } of loaders) {
+            loadRequests(loader, type)
+        }
     } catch (e) {
         console.error(e)
-        location.assign('/error')
     }
 }

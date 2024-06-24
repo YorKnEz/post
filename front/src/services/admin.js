@@ -16,3 +16,11 @@ export const getRequests = async (data) => {
         { method: 'GET', credentials: 'include' }
     )
 }
+
+export const solveRequest = async (id, approve) => {
+    return await __fetch(`${API_URL}/admin/requests/${id}`, {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify({ approve }),
+    })
+}

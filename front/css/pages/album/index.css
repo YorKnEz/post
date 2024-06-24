@@ -1246,13 +1246,17 @@ i {
   text-overflow: ellipsis;
 }
 
-.album__avatar-container {
-  justify-self: end;
-  max-height: 300px;
+.album {
+  padding: 1rem 0;
 }
 .album__avatar {
-  width: 320px;
+  justify-self: center;
+  max-width: 300px;
+  width: 100%;
   aspect-ratio: 1;
+  background-size: cover;
+  background-position: center;
+  object-fit: cover;
 }
 .album__container {
   display: flex;
@@ -1260,8 +1264,7 @@ i {
   justify-content: space-between;
 }
 .album__title {
-  margin: 0;
-  margin-bottom: 8px;
+  margin: 8px 0;
 }
 .album__author {
   color: var(--text-white);
@@ -1273,7 +1276,6 @@ i {
 }
 .album__info {
   display: flex;
-  margin-bottom: 1rem;
   gap: 1rem;
 }
 .album__item {
@@ -1294,16 +1296,8 @@ i {
 }
 .album__controls {
   display: flex;
-  margin: 2rem 0;
-}
-.album__control {
-  margin: 0 0.5rem;
-}
-.album__control:first-child {
-  margin-left: 0;
-}
-.album__control:last-child {
-  margin-right: 0;
+  margin-bottom: 2rem;
+  gap: 1rem;
 }
 .album__lyrics {
   font-size: 1.2rem;
@@ -1335,25 +1329,6 @@ i {
 }
 .album__annotated--active {
   background-color: var(--active-highlight);
-}
-
-@media (max-width: 1239px) {
-  .album__avatar {
-    width: 280px;
-  }
-  .album__avatar-container {
-    max-height: 260px;
-  }
-}
-@media (max-width: 904px) {
-  .album__avatar {
-    width: 200px;
-  }
-}
-@media (max-width: 599px) {
-  .album__avatar-container {
-    justify-self: start;
-  }
 }
 
 /*# sourceMappingURL=index.css.map */
