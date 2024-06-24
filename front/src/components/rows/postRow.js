@@ -6,7 +6,7 @@ export class PostRow {
             'a',
             {
                 class: 'table__row table__row--poem-chart',
-                href: `/post/${post.id}`,
+                href: `/${post.type}/${post.id}`,
             },
             [
                 getElement('div', {}, [document.createTextNode(index)]),

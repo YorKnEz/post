@@ -8,7 +8,7 @@ export class AlbumCard {
                     `${user.nickname} ${data.contribution} the album`
                 ),
             ]),
-            getElement('a', { class: 'contr-card-post', href: `/albums/${data.id}` }, [
+            getElement('a', { class: 'contr-card-post', href: `/album/${data.id}` }, [
                 getElement('img', {
                     src: data.cover,
                     alt: `cover of ${data.title}`,
