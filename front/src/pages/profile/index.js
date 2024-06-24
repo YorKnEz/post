@@ -17,7 +17,6 @@ window.navbar = new Navbar()
 const profileLoader = new Loader('profile')
 
 const loadProfile = async (user, ownProfile) => {
-    console.log(user)
     const content = profileLoader.getContent()
 
     const becomeAPoet = getElement(
@@ -150,69 +149,58 @@ let lastDate
 const loadContributions = async (user, type = 'all', start = 0, count = 5) => {
     const content = contributionsLoader.getContent()
 
-    try {
-        const response = await getContributions({
-            id: user.id,
-            start,
-            count,
-            type,
-        })
+    const response = await getContributions({
+        id: user.id,
+        start,
+        count,
+        type,
+    })
 
-        let length = 0
+    let length = 0
 
-        for (const { date, contributions } of response) {
-            if (lastDate != date) {
-                content.appendChild(
-                    getElement('div', { class: 'contributions__date' }, [
-                        getElement('div', { class: 'contributions__rule' }),
-                        getElement('i', { class: 'fa-regular fa-calendar' }),
-                        getElement('span', {}, [document.createTextNode(date)]),
-                        getElement('div', { class: 'contributions__rule' }),
-                    ])
-                )
+    for (const { date, contributions } of response) {
+        if (lastDate != date) {
+            content.appendChild(
+                getElement('div', { class: 'contributions__date' }, [
+                    getElement('div', { class: 'contributions__rule' }),
+                    getElement('i', { class: 'fa-regular fa-calendar' }),
+                    getElement('span', {}, [document.createTextNode(date)]),
+                    getElement('div', { class: 'contributions__rule' }),
+                ])
+            )
 
-                lastDate = date
-            }
-
-            length += contributions.length
-
-            for (const contribution of contributions) {
-                content.appendChild(
-                    new ContributionCard(user, contribution).inner
-                )
-            }
+            lastDate = date
         }
 
-        content.appendChild(
-            length > 0
-                ? getElement(
-                    'button',
-                    {
-                        class: 'btn',
-                        onclick: () => {
-                            content.lastChild.remove()
-                            loadContributions(
-                                user,
-                                type,
-                                start + length,
-                                count
-                            )
-                        },
-                    },
-                    [document.createTextNode('Load more')]
-                )
-                : getElement(
-                    'button',
-                    {
-                        class: 'btn',
-                        disabled: true,
-                    },
-                    [document.createTextNode('End of content')]
-                )
-        )
-    } catch (e) {
-        console.error(e)
+        length += contributions.length
+
+        for (const contribution of contributions) {
+            content.appendChild(new ContributionCard(user, contribution).inner)
+        }
     }
+
+    content.appendChild(
+        length > 0
+            ? getElement(
+                'button',
+                {
+                    class: 'btn',
+                    onclick: () => {
+                        content.lastChild.remove()
+                        loadContributions(user, type, start + length, count)
+                    },
+                },
+                [document.createTextNode('Load more')]
+            )
+            : getElement(
+                'button',
+                {
+                    class: 'btn',
+                    disabled: true,
+                },
+                [document.createTextNode('End of content')]
+            )
+    )
 
     contributionsLoader.loaded()
 }

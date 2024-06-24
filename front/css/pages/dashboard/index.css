@@ -1107,16 +1107,17 @@ body {
 }
 
 .section {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  background-color: var(--text-full-white);
   margin: 0.4rem 0;
-  padding: 0.5rem 1rem;
-  background-color: var(--text-white);
-  border: 1px solid var(--text-black);
-  border-radius: 10px;
 }
-.section__title {
-  margin: 0;
+.section h3 {
+  margin-top: 0;
 }
 .section__list {
+  margin: 0;
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
@@ -1128,6 +1129,30 @@ body {
 .section__list--grid {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
+}
+
+.statistics {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 0.6rem 0.2rem;
+}
+.statistics__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 0.8rem;
+}
+.statistics__info {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.statistics__description {
+  text-transform: uppercase;
+  color: var(--highlight);
+  font-weight: 200;
+  font-size: 0.7rem;
 }
 
 .request {
