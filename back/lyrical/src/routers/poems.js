@@ -12,8 +12,10 @@ import {
     authMiddleware,
     poemSchema,
     poemUpdateSchema,
+    meyersDiff,
 } from '../utils/index.js'
 import db from '../db/index.js'
+
 
 export const router = new Router('Poems Router')
 
@@ -153,6 +155,25 @@ auth_router.patch('/:id', async (req, res) => {
     }
 
     try {
+        const string1 = 'artwork'
+        const string2 = 'driftwood'
+        const annotations = [
+            {
+                id: 1,
+                offset: 1,
+                length: 1,
+            },
+            {
+                id: 2,
+                offset: 3,
+                length: 2,
+            },
+        ]
+
+        const updatedAnnotations = meyersDiff(string1, string2, annotations)
+
+        console.log(updatedAnnotations)
+
         let result = await db.query('select update_poem($1, $2, $3);', [
             req.params.id,
             req.locals.userId,
