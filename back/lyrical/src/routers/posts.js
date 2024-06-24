@@ -101,18 +101,11 @@ auth_router.post('/:id/reactions', async (req, res) => {
     }
 })
 
-auth_router.get('/:id/reactions/:userId', async (req, res) => {
-    if (req.params.userId != req.locals.userId) {
-        return new JSONResponse(403, {
-            code: ErrorCodes.UNAUTHORIZED,
-            message: "You can't see other peoples reactions",
-        })
-    }
-
+auth_router.get('/:id/reactions', async (req, res) => {
     try {
         let result = await db.query('select find_reaction($1, $2)', [
             req.params.id,
-            req.params.userId,
+            req.locals.userId,
         ])
 
         return new JSONResponse(200, toCamel(result.rows[0].find_reaction))

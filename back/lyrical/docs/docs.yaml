@@ -975,6 +975,40 @@ paths:
                                 description: List of matched posts
 
     /api/posts/{id}/reactions:
+        get:
+            summary: Get the reaction of a user for a specific post
+            description: This route returns the reaction the user has, can be -1 for no reaction, 0 like, 1 dislike
+            tags:
+                - posts
+                - auth
+            security:
+                - cookieauth: []
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                  description: The id of the post
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    type:
+                                        type: integer
+                                        description: The id of the reaction, -1, 0 or 1
+                                required:
+                                    - properties
+                '404':
+                    description: Post not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Message'
         post:
             summary: Add or remove a reaction
             tags:
@@ -1012,54 +1046,6 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Message'
-                '400':
-                    description: Already reacted to this post
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Message'
-                '404':
-                    description: Post not found
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Message'
-
-    /api/posts/{id}/reactions/{userId}:
-        get:
-            summary: Get the reaction of a user for a specific post
-            description: This route returns the reaction the user has, can be -1 for no reaction, 0 like, 1 dislike
-            tags:
-                - posts
-                - auth
-            security:
-                - cookieauth: []
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                      type: integer
-                  description: The id of the post
-                - name: userId
-                  in: path
-                  required: true
-                  schema:
-                      type: integer
-                  description: The id of the user
-            responses:
-                '200':
-                    description: Successful response
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    type:
-                                        type: integer
-                                        description: The id of the reaction, -1, 0 or 1
-                                required:
-                                    - properties
                 '400':
                     description: Already reacted to this post
                     content:
