@@ -16,66 +16,58 @@ const loadAlbum = async (id) => {
 
     album = await getAlbum(id)
 
-    content.appendChild(
-        getElement(
-            'div',
-            {
-                class: 'col-xs-4 col-sm-3 col-md-4 col-lg-5 album__avatar-container',
-            },
-            [
-                getElement('img', {
-                    class: 'album__avatar',
-                    src: album.cover,
-                    alt: `cover of ${album.title}`,
-                }),
-            ]
-        )
-    )
-    content.appendChild(
-        getElement(
-            'div',
-            {
-                class: 'album__container col-xs-4 off-sm-4 col-sm-5 off-md-5 col-md-8 off-lg-6 col-lg-7',
-            },
-            [
-                getElement('div', {}, [
-                    getElement('h1', { class: 'album__title' }, [
-                        document.createTextNode(album.title),
+    content.append(
+        ...[
+            getElement('img', {
+                class: 'album__avatar col-xs-4 col-sm-4 col-md-5',
+                src: album.cover,
+                alt: `cover of ${album.title}`,
+            }),
+            getElement(
+                'div',
+                {
+                    class: 'album__container col-xs-4 col-sm-4 col-md-7',
+                },
+                [
+                    getElement('div', {}, [
+                        getElement('h1', { class: 'album__title' }, [
+                            document.createTextNode(album.title),
+                        ]),
+                        getElement(
+                            'a',
+                            {
+                                class: 'album__author',
+                                href: `/profile/${album.author.id}`,
+                            },
+                            [document.createTextNode(album.author.nickname)]
+                        ),
                     ]),
-                    getElement(
-                        'a',
-                        {
-                            class: 'album__author',
-                            href: `/profile/${album.author.id}`,
-                        },
-                        [document.createTextNode(album.author.nickname)]
-                    ),
-                ]),
-                getElement('div', { class: 'album__info' }, [
-                    getElement('div', { class: 'album__item' }, [
-                        getElement('i', { class: 'fa-solid fa-calendar' }),
-                        getElement('span', {}, [
-                            document.createTextNode(
-                                new Date(album.createdAt).toLocaleDateString(
-                                    'en-US',
-                                    {
-                                        year: 'numeric',
-                                        month: 'short',
-                                        day: '2-digit',
-                                    }
-                                )
-                            ),
+                    getElement('div', { class: 'album__info' }, [
+                        getElement('div', { class: 'album__item' }, [
+                            getElement('i', { class: 'fa-solid fa-calendar' }),
+                            getElement('span', {}, [
+                                document.createTextNode(
+                                    new Date(album.createdAt).toLocaleDateString(
+                                        'en-US',
+                                        {
+                                            year: 'numeric',
+                                            month: 'short',
+                                            day: '2-digit',
+                                        }
+                                    )
+                                ),
+                            ]),
+                        ]),
+                        getElement('div', { class: 'album__item' }, [
+                            getElement('i', { class: 'fa-solid fa-eye' }),
+                            getElement('span', {}, [
+                                document.createTextNode(album.likes),
+                            ]),
                         ]),
                     ]),
-                    getElement('div', { class: 'album__item' }, [
-                        getElement('i', { class: 'fa-solid fa-eye' }),
-                        getElement('span', {}, [
-                            document.createTextNode(album.likes),
-                        ]),
-                    ]),
-                ]),
-            ]
-        )
+                ]
+            ),
+        ]
     )
 
     albumLoader.loaded()
