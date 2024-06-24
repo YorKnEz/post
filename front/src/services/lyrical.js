@@ -35,6 +35,18 @@ export const addPoemToAlbum = async (albumId, poemId) => {
     })
 }
 
+export const addAlbum = async (data) => {
+    return await __fetch(`${API_URL}/albums`, {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify(data),
+    })
+}
+
+export const getAlbum = async (id) => {
+    return await __fetch(`${API_URL}/albums/${id}`, { method: 'GET' })
+}
+
 // poems
 export const getPoem = async (id) => {
     return await __fetch(`${API_URL}/poems/${id}`, { method: 'GET' })
@@ -85,14 +97,6 @@ export const addPoemTranslation = async (id, data) => {
 export const updatePoem = async (id, data) => {
     return await __fetch(`${API_URL}/poems/${id}`, {
         method: 'PATCH',
-        credentials: 'include',
-        body: JSON.stringify(data),
-    })
-}
-
-export const addAlbum = async (data) => {
-    return await __fetch(`${API_URL}/albums`, {
-        method: 'POST',
         credentials: 'include',
         body: JSON.stringify(data),
     })
