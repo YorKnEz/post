@@ -16,7 +16,6 @@ import {
 } from '../utils/index.js'
 import db from '../db/index.js'
 
-
 export const router = new Router('Poems Router')
 
 router.get('/', async (req, res) => {
@@ -154,34 +153,37 @@ auth_router.patch('/:id', async (req, res) => {
         return new JSONResponse(400, e.obj())
     }
 
+    const client = await db.getClient()
+
     try {
-        const string1 = 'artwork'
-        const string2 = 'driftwood'
-        const annotations = [
-            {
-                id: 1,
-                offset: 1,
-                length: 1,
-            },
-            {
-                id: 2,
-                offset: 3,
-                length: 2,
-            },
-        ]
+        await client.query('begin')
+        let result = await client.query(
+            'select content, annotations from poems_view where id = $1',
+            [req.params.id]
+        )
+        const oldContent = result.rows[0].content
+        const annotations = result.rows[0].annotations
 
-        const updatedAnnotations = meyersDiff(string1, string2, annotations)
+        const updatedAnnotations = meyersDiff(
+            oldContent,
+            req.body.content,
+            annotations
+        )
 
-        console.log(updatedAnnotations)
+        await client.query('delete from annotations where id = any($1::int[])', [
+            updatedAnnotations.filter(ann => ann.offset == -1).map(ann => ann.id),
+        ])
 
-        let result = await db.query('select update_poem($1, $2, $3);', [
+        result = await client.query('select update_poem($1, $2, $3);', [
             req.params.id,
             req.locals.userId,
             req.body,
         ])
 
+        await client.query('commit')
         return new JSONResponse(200, toCamel(result.rows[0].update_poem))
     } catch (e) {
+        await client.query('rollback')
         // db threw 404
         if (e.code == 'P0001' && e.message == 'poem not found') {
             return new JSONResponse(404, {
