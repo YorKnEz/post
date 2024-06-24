@@ -93,10 +93,13 @@ export class EditAnnotation {
 
     save = async (ev) => {
         try {
-            this.component.annotation = await updateAnnotation(
-                this.component.annotation.id,
-                this.textarea.value
-            )
+            this.component.annotation = {
+                ...this.component.annotation,
+                ...(await updateAnnotation(
+                    this.component.annotation.id,
+                    this.textarea.value
+                )),
+            }
 
             this.component.setState(this.component.viewState)
         } catch (e) {
