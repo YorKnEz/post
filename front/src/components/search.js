@@ -33,7 +33,7 @@ export class Search {
             params.set('query', this.input.value)
             location.search = params.toString()
         } else {
-            location.assign(`/search?query=${encodeURIComponent(query)}`)
+            location.assign(`/search?query=${encodeURIComponent(this.input.value)}`)
         }
     }
 

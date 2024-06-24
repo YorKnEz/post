@@ -975,7 +975,7 @@ i {
   -webkit-box-orient: vertical;
 }
 .card__description {
-  white-space: pre;
+  white-space: pre-wrap;
   font-size: 0.8rem;
   display: block;
   overflow: hidden;

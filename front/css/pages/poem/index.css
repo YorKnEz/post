@@ -973,6 +973,12 @@ i {
   margin-bottom: 1rem;
   justify-content: space-between;
 }
+.annotation__text {
+  width: 100%;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow: hidden;
+}
 .annotation__textarea {
   width: calc(100% - 20px - 2px);
   height: 10rem;
@@ -991,9 +997,6 @@ i {
 .annotation__footer {
   width: 100%;
 }
-.annotation__edit-footer {
-  width: 100%;
-}
 .annotation__controls {
   display: flex;
   gap: 0.8rem;
@@ -1004,6 +1007,14 @@ i {
   font-size: 0.8rem;
   display: flex;
   justify-content: space-between;
+}
+.annotation__reactions {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+.annotation__reacted {
+  color: var(--primary);
 }
 .annotation__subtitle {
   font-size: 1rem;
@@ -1047,10 +1058,15 @@ i {
   font-weight: inherit;
   font-family: inherit;
   font-size: inherit;
+  box-sizing: border-box;
   border: 1px solid;
   color: var(--text-black);
   background-color: var(--text-white);
   padding: 4px 16px;
+  gap: 0.2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .btn:hover {
   border-color: var(--text-black);
@@ -1061,7 +1077,7 @@ i {
   border-radius: 2rem;
 }
 .btn--span {
-  width: calc(100% - 32px - 2px);
+  width: 100%;
 }
 .btn--transparent {
   color: inherit;
@@ -1143,25 +1159,24 @@ i {
   width: 100%;
   font-size: 0.9rem;
   row-gap: 1rem;
-}
-.share--lyrics {
-  margin-bottom: 1rem;
+  margin: 1rem 0;
 }
 .share__title {
   font-weight: inherit;
   font-size: inherit;
   text-align: center;
-  margin-bottom: 1rem;
+  margin: 0;
 }
 .share__buttons {
   display: flex;
   gap: 1rem;
-  margin-bottom: 1rem;
 }
 .share__row {
   display: flex;
   align-items: center;
   width: 100%;
+  gap: 0.6rem;
+  flex-wrap: wrap;
 }
 .share__label {
   width: fit-content;
@@ -1171,13 +1186,17 @@ i {
   flex-grow: 1;
 }
 
-.poem__avatar-container {
-  justify-self: end;
-  max-height: 300px;
+.poem {
+  padding: 1rem 0;
 }
 .poem__avatar {
-  width: 320px;
+  justify-self: center;
+  max-width: 300px;
+  width: 100%;
   aspect-ratio: 1;
+  background-size: cover;
+  background-position: center;
+  object-fit: cover;
 }
 .poem__container {
   display: flex;
@@ -1185,8 +1204,7 @@ i {
   justify-content: space-between;
 }
 .poem__title {
-  margin: 0;
-  margin-bottom: 8px;
+  margin: 8px 0;
 }
 .poem__author {
   color: var(--text-white);
@@ -1198,7 +1216,6 @@ i {
 }
 .poem__info {
   display: flex;
-  margin-bottom: 1rem;
   gap: 1rem;
 }
 .poem__item {
@@ -1219,16 +1236,8 @@ i {
 }
 .poem__controls {
   display: flex;
-  margin: 2rem 0;
-}
-.poem__control {
-  margin: 0 0.5rem;
-}
-.poem__control:first-child {
-  margin-left: 0;
-}
-.poem__control:last-child {
-  margin-right: 0;
+  margin-bottom: 2rem;
+  gap: 1rem;
 }
 .poem__lyrics {
   font-size: 1.2rem;
@@ -1260,25 +1269,6 @@ i {
 }
 .poem__annotated--active {
   background-color: var(--active-highlight);
-}
-
-@media (max-width: 1239px) {
-  .poem__avatar {
-    width: 280px;
-  }
-  .poem__avatar-container {
-    max-height: 260px;
-  }
-}
-@media (max-width: 904px) {
-  .poem__avatar {
-    width: 200px;
-  }
-}
-@media (max-width: 599px) {
-  .poem__avatar-container {
-    justify-self: start;
-  }
 }
 
 /*# sourceMappingURL=index.css.map */

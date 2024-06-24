@@ -36,6 +36,12 @@
   margin-bottom: 1rem;
   justify-content: space-between;
 }
+.annotation__text {
+  width: 100%;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow: hidden;
+}
 .annotation__textarea {
   width: calc(100% - 20px - 2px);
   height: 10rem;
@@ -54,9 +60,6 @@
 .annotation__footer {
   width: 100%;
 }
-.annotation__edit-footer {
-  width: 100%;
-}
 .annotation__controls {
   display: flex;
   gap: 0.8rem;
@@ -67,6 +70,14 @@
   font-size: 0.8rem;
   display: flex;
   justify-content: space-between;
+}
+.annotation__reactions {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+.annotation__reacted {
+  color: var(--primary);
 }
 .annotation__subtitle {
   font-size: 1rem;

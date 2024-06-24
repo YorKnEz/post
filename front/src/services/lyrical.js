@@ -18,6 +18,21 @@ export const getContributions = async (data) => {
     )
 }
 
+export const getReaction = async (id) => {
+    return await __fetch(`${API_URL}/posts/${id}/reaction`, {
+        method: 'POST',
+        credentials: 'include',
+    })
+}
+
+export const addReaction = async (id, data) => {
+    return await __fetch(`${API_URL}/posts/${id}/reactions`, {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify(data),
+    })
+}
+
 // albums
 export const getAlbumsSuggestions = async (query) => {
     return (
@@ -87,5 +102,26 @@ export const updatePoem = async (id, data) => {
         method: 'PATCH',
         credentials: 'include',
         body: JSON.stringify(data),
+    })
+}
+
+export const addPoemAnnotation = async (id, data) => {
+    return await __fetch(`${API_URL}/poems/${id}/annotations`, {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify(data),
+    })
+}
+
+// annotations
+export const getAnnotation = async (id) => {
+    return await __fetch(`${API_URL}/annotations/${id}`, { method: 'GET' })
+}
+
+export const updateAnnotation = async (id, content) => {
+    return await __fetch(`${API_URL}/annotations/${id}`, {
+        method: 'PATCH',
+        credentials: 'include',
+        body: JSON.stringify({ content }),
     })
 }

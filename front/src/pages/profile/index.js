@@ -16,45 +16,45 @@ const profileLoader = new Loader('profile')
 const loadProfile = async (user) => {
     const content = profileLoader.getContent()
 
-    content.appendChild(
-        getElement('img', {
-            class: 'profile__avatar col-xs-4 col-sm-4 col-md-5',
-            src: user.avatar,
-        })
-    )
-    content.appendChild(
-        getElement(
-            'div',
-            { class: 'profile__container col-xs-4 col-sm-4 col-md-7' },
-            [
-                getElement('div', { class: 'profile__info' }, [
-                    getElement('h1', { class: 'profile__name' }, [
-                        document.createTextNode(
-                            `${user.firstName} ${user.lastName} (AKA ${user.nickname})`
-                        ),
+    content.append(
+        ...[
+            getElement('img', {
+                class: 'profile__avatar col-xs-4 col-sm-4 col-md-5',
+                src: user.avatar,
+            }),
+            getElement(
+                'div',
+                { class: 'profile__container col-xs-4 col-sm-4 col-md-7' },
+                [
+                    getElement('div', { class: 'profile__info' }, [
+                        getElement('h1', { class: 'profile__name' }, [
+                            document.createTextNode(
+                                `${user.firstName} ${user.lastName} (AKA ${user.nickname})`
+                            ),
+                        ]),
+                        getElement('h3', { class: 'profile__role' }, [
+                            document.createTextNode(getUserRole(user.role)),
+                        ]),
+                        getElement('span', { class: 'profile__joined' }, [
+                            document.createTextNode(
+                                `Joined on ${new Date(
+                                    user.createdAt
+                                ).toLocaleDateString('en-US', {
+                                    year: 'numeric',
+                                    month: 'short',
+                                    day: '2-digit',
+                                })}`
+                            ),
+                        ]),
                     ]),
-                    getElement('h3', { class: 'profile__role' }, [
-                        document.createTextNode(getUserRole(user.role)),
+                    getElement('button', { class: 'btn profile__editor-btn' }, [
+                        getElement('span', { class: 'btn__label' }, [
+                            document.createTextNode('Become a Poet'),
+                        ]),
                     ]),
-                    getElement('span', { class: 'profile__joined' }, [
-                        document.createTextNode(
-                            `Joined on ${new Date(
-                                user.createdAt
-                            ).toLocaleDateString('en-US', {
-                                year: 'numeric',
-                                month: 'short',
-                                day: '2-digit',
-                            })}`
-                        ),
-                    ]),
-                ]),
-                getElement('button', { class: 'btn profile__editor-btn' }, [
-                    getElement('span', { class: 'btn__label' }, [
-                        document.createTextNode('Become a Poet'),
-                    ]),
-                ]),
-            ]
-        )
+                ]
+            ),
+        ]
     )
 
     profileLoader.loaded()
@@ -165,29 +165,29 @@ const loadContributions = async (user, type = 'all', start = 0, count = 5) => {
         content.appendChild(
             length > 0
                 ? getElement(
-                    'button',
-                    {
-                        class: 'btn',
-                        onclick: () => {
-                            content.lastChild.remove()
-                            loadContributions(
-                                user,
-                                type,
-                                start + length,
-                                count
-                            )
-                        },
-                    },
-                    [document.createTextNode('Load more')]
-                )
+                      'button',
+                      {
+                          class: 'btn',
+                          onclick: () => {
+                              content.lastChild.remove()
+                              loadContributions(
+                                  user,
+                                  type,
+                                  start + length,
+                                  count
+                              )
+                          },
+                      },
+                      [document.createTextNode('Load more')]
+                  )
                 : getElement(
-                    'button',
-                    {
-                        class: 'btn',
-                        disabled: true,
-                    },
-                    [document.createTextNode('End of content')]
-                )
+                      'button',
+                      {
+                          class: 'btn',
+                          disabled: true,
+                      },
+                      [document.createTextNode('End of content')]
+                  )
         )
     } catch (e) {
         console.error(e)
@@ -203,7 +203,7 @@ window.onload = async () => {
     const path = location.pathname.replace('/profile', '')
 
     if (path.length == 0) {
-        userId = JSON.parse(localStorage.getItem('user'))
+        userId = JSON.parse(sessionStorage.getItem('user'))
 
         if (!userId) {
             location.assign('/')
