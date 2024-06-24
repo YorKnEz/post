@@ -56,7 +56,6 @@ paths:
             summary: Create a new user
             tags:
                 - users
-                - TODO
             requestBody:
                 required: true
                 content:
@@ -127,7 +126,6 @@ paths:
             description: Update the first name and/or last name of the user
             tags:
                 - users
-                - TODO
             parameters:
                 - name: id
                   in: path
@@ -271,6 +269,7 @@ components:
                     description: The english message associated with the code
             required:
                 - code
+                - message
         User:
             type: object
             properties:

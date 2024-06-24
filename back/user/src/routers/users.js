@@ -52,9 +52,30 @@ router.use('/', auth_router)
 
 auth_router.middleware(authMiddleware)
 
-auth_router.post('/', async (req, res) => { })
+auth_router.post('/', async (req, res) => {
+    try {
+        let result = await db.query('select insert_user($1)', [req.body])
 
-auth_router.patch('/:id', async (req, res) => { })
+        return new JSONResponse(201, toCamel(result.rows[0]))
+    } catch (e) {
+        console.error(e)
+        return new InternalError()
+    }
+})
+
+auth_router.patch('/:id', async (req, res) => {
+    try {
+        let result = await db.query('select update_user($1)', [{
+            ...req.body,
+            id: req.params.id
+        }])
+        
+        return new JSONResponse(200, toCamel(result.rows[0]))
+    } catch (e) {
+        console.error(e)
+        return new InternalError()
+    }
+})
 
 auth_router.delete('/:id', async (req, res) => {
     try {
