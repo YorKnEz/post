@@ -34,6 +34,8 @@ services:
             - ./front:/app/front
             - ./lib:/app/lib
             - ./web_server:/app/web_server
+            - ./cert.key:/app/web_server/cert.key
+            - ./cert.pem:/app/web_server/cert.pem
             - /app/web_server/node_modules
 
     auth:
@@ -60,11 +62,14 @@ services:
             - EMAIL_USER=$EMAIL_USER
             - EMAIL_PASS=$EMAIL_PASS
             - PUBLIC_DOMAIN=$PUBLIC_DOMAIN
+            - PUBLIC_URL=$AUTH_SERVICE_URL
             - FRONTEND_URL=$FRONTEND_URL
             - IMAGE_SERVICE_API_URL=$IMAGE_SERVICE_API_URL
         volumes:
             - ./lib:/app/lib
             - ./back/auth:/app/back/auth
+            - ./cert.key:/app/back/auth/cert.key
+            - ./cert.pem:/app/back/auth/cert.pem
             - /app/back/auth/node_modules
 
     image:
@@ -83,11 +88,14 @@ services:
             - HOST=0.0.0.0
             - PORT=$IMAGE_SERVICE_PORT
             - DOCS_LOCATION=/app/back/image/docs/
+            - PUBLIC_URL=$IMAGE_SERVICE_URL
+            - PUBLIC_API_URL=$IMAGE_SERVICE_API_URL
             - FRONTEND_URL=$FRONTEND_URL
-            - IMAGE_SERVICE_API_URL=$IMAGE_SERVICE_API_URL
         volumes:
             - ./lib:/app/lib
             - ./back/image:/app/back/image
+            - ./cert.key:/app/back/image/cert.key
+            - ./cert.pem:/app/back/image/cert.pem
             - /app/back/image/node_modules
 
     lyrical:
@@ -113,12 +121,15 @@ services:
             - DB_PASS=$DB_PASS
             - EMAIL_USER=$EMAIL_USER
             - EMAIL_PASS=$EMAIL_PASS
+            - PUBLIC_URL=$LYRICAL_SERVICE_URL
             - FRONTEND_URL=$FRONTEND_URL
-            - AUTH_SERVICE_API_URL=http://auth:$AUTH_SERVICE_PORT/api
+            - AUTH_SERVICE_API_URL=https://auth:$AUTH_SERVICE_PORT/api
             - IMAGE_SERVICE_API_URL=$IMAGE_SERVICE_API_URL
         volumes:
             - ./lib:/app/lib
             - ./back/lyrical:/app/back/lyrical
+            - ./cert.key:/app/back/lyrical/cert.key
+            - ./cert.pem:/app/back/lyrical/cert.pem
             - /app/back/lyrical/node_modules
 
     user:
@@ -144,11 +155,14 @@ services:
             - DB_PASS=$DB_PASS
             - EMAIL_USER=$EMAIL_USER
             - EMAIL_PASS=$EMAIL_PASS
+            - PUBLIC_URL=$USER_SERVICE_URL
             - FRONTEND_URL=$FRONTEND_URL
-            - AUTH_SERVICE_API_URL=http://auth:$AUTH_SERVICE_PORT/api
+            - AUTH_SERVICE_API_URL=https://auth:$AUTH_SERVICE_PORT/api
         volumes:
             - ./lib:/app/lib
             - ./back/user:/app/back/user
+            - ./cert.key:/app/back/user/cert.key
+            - ./cert.pem:/app/back/user/cert.pem
             - /app/back/user/node_modules
 
 networks:

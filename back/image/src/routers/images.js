@@ -80,7 +80,7 @@ router.post('/', async (req, res) => {
 
             resolve(
                 new JSONResponse(200, {
-                    url: `${process.env.IMAGE_SERVICE_API_URL}/images/${basefilename}`,
+                    url: `${process.env.PUBLIC_API_URL}/images/${basefilename}`,
                 })
             )
         })
