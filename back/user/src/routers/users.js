@@ -153,13 +153,6 @@ auth_router.post('/:id/active-request', async (req, res) => {
             [req.params.id]
         )
 
-        if (result.rowCount == 0) {
-            return new JSONResponse(404, {
-                code: ErrorCodes.USER_NOT_FOUND,
-                message: 'User not found',
-            })
-        }
-
         let hasActiveReq = false
 
         for (const request of toCamel(result.rows)) {

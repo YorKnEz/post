@@ -609,6 +609,7 @@ paths:
             summary: Delete an album and it's related content by id
             tags:
                 - albums
+                - admin
                 - auth
             security:
                 - cookieAuth: []
@@ -929,6 +930,7 @@ paths:
             summary: Delete a poem and all of the related translations and annotations by id
             tags:
                 - poems
+                - admin
                 - auth
             security:
                 - cookieAuth: []
@@ -1167,6 +1169,7 @@ paths:
             summary: Delete an annotation
             tags:
                 - annotations
+                - admin
                 - auth
             security:
                 - cookieAuth: []
