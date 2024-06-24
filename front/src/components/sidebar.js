@@ -15,17 +15,12 @@ export class Sidebar {
             user = JSON.parse(user)
         }
 
-        console.log(user)
-
         this.search = new Search('search', 'sidebar')
 
         this.inner = getElement('nav', { id: 'sideabar', class: 'sidebar' }, [
             this.search.inner,
-        ])
-
-        if (!user) {
-            this.inner.append(
-                ...[
+            ...(!user
+                ? [
                     getElement(
                         'a',
                         { class: 'sidebar__item', href: '/login' },
@@ -51,10 +46,7 @@ export class Sidebar {
                         ]
                     ),
                 ]
-            )
-        } else {
-            this.inner.append(
-                ...[
+                : [
                     isAdmin(user.roles) &&
                     getElement(
                         'a',
@@ -98,58 +90,50 @@ export class Sidebar {
                             ]),
                         ]
                     ),
+                ]),
+            getElement(
+                'a',
+                { class: 'sidebar__item sidebar__item--nav', href: '/rss' },
+                [
+                    getElement('i', {
+                        class: 'fa-solid fa-rss sidebar__icon',
+                    }),
+                    getElement('span', {}, [document.createTextNode('RSS')]),
                 ]
-            )
-        }
-
-        this.inner.append(
-            ...[
-                getElement(
-                    'a',
-                    { class: 'sidebar__item sidebar__item--nav', href: '/rss' },
-                    [
-                        getElement('i', {
-                            class: 'fa-solid fa-rss sidebar__icon',
-                        }),
-                        getElement('span', {}, [
-                            document.createTextNode('RSS'),
-                        ]),
-                    ]
-                ),
-                getElement('div', { class: 'sidebar__separator' }),
-                user &&
-                getElement(
-                    'button',
-                    {
-                        class: 'sidebar__item sidebar__item--button',
-                        onclick: this.__handleLogout,
-                    },
-                    [
-                        getElement('i', {
-                            class: 'fa-solid fa-right-from-bracket sidebar__icon',
-                        }),
-                        getElement('span', {}, [
-                            document.createTextNode('Log out'),
-                        ]),
-                    ]
-                ),
-                getElement(
-                    'button',
-                    {
-                        class: 'sidebar__item sidebar__item--button sidebar__item--nav',
-                        onclick: toggleTheme,
-                    },
-                    [
-                        getElement('i', {
-                            class: 'fa-solid fa-sun sidebar__icon',
-                        }),
-                        getElement('span', {}, [
-                            document.createTextNode('Toggle Theme'),
-                        ]),
-                    ]
-                ),
-            ]
-        )
+            ),
+            getElement('div', { class: 'sidebar__separator' }),
+            user &&
+            getElement(
+                'button',
+                {
+                    class: 'sidebar__item sidebar__item--button',
+                    onclick: this.__handleLogout,
+                },
+                [
+                    getElement('i', {
+                        class: 'fa-solid fa-right-from-bracket sidebar__icon',
+                    }),
+                    getElement('span', {}, [
+                        document.createTextNode('Log out'),
+                    ]),
+                ]
+            ),
+            getElement(
+                'button',
+                {
+                    class: 'sidebar__item sidebar__item--button sidebar__item--nav',
+                    onclick: toggleTheme,
+                },
+                [
+                    getElement('i', {
+                        class: 'fa-solid fa-sun sidebar__icon',
+                    }),
+                    getElement('span', {}, [
+                        document.createTextNode('Toggle Theme'),
+                    ]),
+                ]
+            ),
+        ])
 
         if (user) {
             this.__setUser(user)
