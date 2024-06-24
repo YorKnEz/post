@@ -65,15 +65,15 @@ window.form = new Form(
                 content: data.lyrics,
             }
 
-            if (data.by) {
+            if (data.by && author) {
                 poemData.authorId = author.id
             }
 
-            const response = data.poem
+            const response = (data.poem && poem)
                 ? await addPoemTranslation(poem.id, poemData)
                 : await addPoem(poemData)
 
-            if (data.album) {
+            if (data.album && album) {
                 await addPoemToAlbum(album.id, response.id)
             }
 
