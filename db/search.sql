@@ -725,14 +725,17 @@ $$ language plpgsql;
 create or replace function find_poem_translations(p_id integer) returns jsonb as
 $$
 declare
-    result jsonb;
+    result  jsonb;
+    poem_id integer;
 begin
+    select (poem ->> 'id')::int into poem_id from poems_view where id = p_id;
+
     select jsonb_agg(e)
     into result
     from (select jsonb_build_object('id', id, 'language', language) e
           from poems_view
-          where (poem ->> 'id')::int = p_id
-             or id = p_id) t;
+          where (id = p_id or (poem ->> 'id')::int = p_id)
+             or (id = poem_id or (poem ->> 'id')::int = poem_id)) t;
 
     if result is null then
         raise exception 'poem not found'; -- at least one language must be available
