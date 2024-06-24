@@ -4,10 +4,8 @@ import {
     Loader,
     ContributionCard,
 } from '../../components/index.js'
-import { getContributions } from '../../services/lyrical.js'
-import { getUser } from '../../services/users.js'
-import { getElement } from '../../utils/html.js'
-import { getUserRole } from '../../utils/index.js'
+import { getContributions, getUser } from '../../services/index.js'
+import { getElement, getUserRole } from '../../utils/index.js'
 
 window.navbar = new Navbar()
 
@@ -165,29 +163,29 @@ const loadContributions = async (user, type = 'all', start = 0, count = 5) => {
         content.appendChild(
             length > 0
                 ? getElement(
-                      'button',
-                      {
-                          class: 'btn',
-                          onclick: () => {
-                              content.lastChild.remove()
-                              loadContributions(
-                                  user,
-                                  type,
-                                  start + length,
-                                  count
-                              )
-                          },
-                      },
-                      [document.createTextNode('Load more')]
-                  )
+                    'button',
+                    {
+                        class: 'btn',
+                        onclick: () => {
+                            content.lastChild.remove()
+                            loadContributions(
+                                user,
+                                type,
+                                start + length,
+                                count
+                            )
+                        },
+                    },
+                    [document.createTextNode('Load more')]
+                )
                 : getElement(
-                      'button',
-                      {
-                          class: 'btn',
-                          disabled: true,
-                      },
-                      [document.createTextNode('End of content')]
-                  )
+                    'button',
+                    {
+                        class: 'btn',
+                        disabled: true,
+                    },
+                    [document.createTextNode('End of content')]
+                )
         )
     } catch (e) {
         console.error(e)
