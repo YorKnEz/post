@@ -1109,6 +1109,11 @@ i {
   margin-top: 0.8rem;
 }
 
+.suggestion-dropdown {
+  width: 100%;
+  box-sizing: border-box;
+}
+
 @media only screen and (min-width: 600px) {
   .guide__title {
     margin: 0;

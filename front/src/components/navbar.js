@@ -6,6 +6,8 @@ export class Navbar {
     constructor() {
         initTheme()
 
+        let user = sessionStorage.getItem('user')
+
         this.search = new Search('search', 'nav')
 
         this.inner = getElement('nav', { id: 'nav', class: 'nav' }, [
@@ -21,9 +23,12 @@ export class Navbar {
             ]),
             this.search.inner,
             getElement('div', { class: 'nav__buttons nav__item' }, [
-                getElement('a', { class: 'nav__button', href: '/add-poem' }, [
-                    getElement('i', { class: 'fa-solid fa-plus' }),
-                ]),
+                user &&
+                    getElement(
+                        'a',
+                        { class: 'nav__button', href: '/add-poem' },
+                        [getElement('i', { class: 'fa-solid fa-plus' })]
+                    ),
                 getElement(
                     'a',
                     {
@@ -41,7 +46,7 @@ export class Navbar {
             ]),
         ])
 
-        this.sidebar = new Sidebar()
+        this.sidebar = new Sidebar(user)
 
         this.previousWindowWidth = window.innerWidth
 

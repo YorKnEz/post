@@ -5,25 +5,25 @@ import {
     PostRow,
     UserRow,
 } from '../../components/index.js'
-import { getPoems, getUsers } from '../../services/index.js'
+import { getPosts, getUsers } from '../../services/index.js'
 import { getElement } from '../../utils/index.js'
 
 window.navbar = new Navbar()
 
-const poemsLoader = new Loader('poems')
-let poemsLength = 0
+const postsLoader = new Loader('posts')
+let postsLength = 0
 
-const loadPoems = async (
+const loadPosts = async (
     query = '',
     sort = 'popular',
     order = 'desc',
     start = 0,
     count = 5
 ) => {
-    const content = poemsLoader.getContent()
+    const content = postsLoader.getContent()
 
     try {
-        const response = await getPoems({
+        const response = await getPosts({
             query,
             start,
             count,
@@ -34,48 +34,48 @@ const loadPoems = async (
         for (const index in response) {
             content.appendChild(
                 new PostRow(
-                    poemsLength + parseInt(index) + 1,
+                    postsLength + parseInt(index) + 1,
                     response[index],
-                    'poem'
+                    response[index].type
                 ).inner
             )
         }
 
-        poemsLength += response.length
+        postsLength += response.length
 
         content.appendChild(
             response.length > 0
                 ? getElement(
-                    'button',
-                    {
-                        class: 'btn',
-                        onclick: () => {
-                            content.lastChild.remove()
-                            loadPoems(
-                                query,
-                                sort,
-                                order,
-                                start + poemsLength,
-                                count
-                            )
-                        },
-                    },
-                    [document.createTextNode('Load more')]
-                )
+                      'button',
+                      {
+                          class: 'btn',
+                          onclick: () => {
+                              content.lastChild.remove()
+                              loadPosts(
+                                  query,
+                                  sort,
+                                  order,
+                                  start + postsLength,
+                                  count
+                              )
+                          },
+                      },
+                      [document.createTextNode('Load more')]
+                  )
                 : getElement(
-                    'button',
-                    {
-                        class: 'btn',
-                        disabled: true,
-                    },
-                    [document.createTextNode('End of content')]
-                )
+                      'button',
+                      {
+                          class: 'btn',
+                          disabled: true,
+                      },
+                      [document.createTextNode('End of content')]
+                  )
         )
     } catch (e) {
         console.error(e)
     }
 
-    poemsLoader.loaded()
+    postsLoader.loaded()
 }
 
 const usersLoader = new Loader('users')
@@ -111,30 +111,30 @@ const loadUsers = async (
         content.appendChild(
             response.length > 0
                 ? getElement(
-                    'button',
-                    {
-                        class: 'btn',
-                        onclick: () => {
-                            content.lastChild.remove()
-                            loadUsers(
-                                query,
-                                sort,
-                                order,
-                                start + usersLength,
-                                count
-                            )
-                        },
-                    },
-                    [document.createTextNode('Load more')]
-                )
+                      'button',
+                      {
+                          class: 'btn',
+                          onclick: () => {
+                              content.lastChild.remove()
+                              loadUsers(
+                                  query,
+                                  sort,
+                                  order,
+                                  start + usersLength,
+                                  count
+                              )
+                          },
+                      },
+                      [document.createTextNode('Load more')]
+                  )
                 : getElement(
-                    'button',
-                    {
-                        class: 'btn',
-                        disabled: true,
-                    },
-                    [document.createTextNode('End of content')]
-                )
+                      'button',
+                      {
+                          class: 'btn',
+                          disabled: true,
+                      },
+                      [document.createTextNode('End of content')]
+                  )
         )
     } catch (e) {
         console.error(e)
@@ -150,7 +150,7 @@ window.onload = async () => {
     const order = params.get('order') ?? 'desc'
 
     try {
-        loadPoems(query, sort, order)
+        loadPosts(query, sort, order)
         loadUsers(query, sort, order)
     } catch (e) {
         console.error(e)

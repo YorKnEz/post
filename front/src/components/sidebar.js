@@ -9,9 +9,7 @@ import {
 import { Search, UserSmallCard } from './index.js'
 
 export class Sidebar {
-    constructor() {
-        let user = sessionStorage.getItem('user')
-
+    constructor(user) {
         if (user) {
             user = JSON.parse(user)
         }

@@ -49,3 +49,11 @@ window.form = new Form(
         }
     }
 )
+
+window.onload = () => {
+    const user = sessionStorage.getItem('user')
+
+    if (!user) {
+        location.assign('/')
+    }
+}
