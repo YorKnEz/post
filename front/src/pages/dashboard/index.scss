@@ -4,6 +4,8 @@
 @import '../../components/input.scss';
 @import '../../components/form.scss';
 @import '../../components/dropdown.scss';
+@import '../../components/loader/loader.scss';
+@import '../../components/cards/request/index.scss';
 
 body {
     min-height: calc(100vh - 48px);
@@ -62,6 +64,13 @@ body {
         font-weight: 200;
         font-size: 0.7rem;
     }
+}
+
+.requests {
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+    height: 200px;
 }
 
 .request {

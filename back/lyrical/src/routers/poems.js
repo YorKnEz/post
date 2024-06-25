@@ -23,6 +23,10 @@ router.get('/', async (req, res) => {
     req.query.count = parseInt(req.query.count)
 
     try {
+        if (req.locals.userRoles && req.locals.userRoles & 0b10) {
+            req.query.all = true
+        }
+
         let result = await db.query('select find_poem_cards($1)', [req.query])
 
         return new JSONResponse(200, toCamel(result.rows[0].find_poem_cards))
@@ -199,6 +203,13 @@ auth_router.patch('/:id', async (req, res) => {
 
 auth_router.delete('/:id', async (req, res) => {
     try {
+        if (!(req.locals.userRoles & 0b10)) {
+            return new JSONResponse(403, {
+                code: ErrorCodes.UNAUTHORIZED,
+                message: 'You are not an admin',
+            })
+        }
+
         await db.query('call delete_poem($1)', [req.params.id])
 
         return new JSONResponse(200, {

@@ -183,6 +183,21 @@ paths:
                                     $ref: '#/components/schemas/PostCard'
                                 description: List of matched posts
 
+    /api/posts/rss.xml:
+        get:
+            summary: Get a RSS feed of the top 20 most popular posts of all time
+            description: This route returns the top 20 posts sorted by popularity as XML feed
+            tags:
+                - posts
+                - rss
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/xml:
+                            schema:
+                                type: object
+
     /api/posts/{id}/reactions:
         post:
             summary: Add or remove a reaction
@@ -427,6 +442,12 @@ paths:
                   schema:
                       type: string
                   description: The query string to search by
+                - name: all
+                  in: query
+                  required: false
+                  schema:
+                      type: boolean
+                  description: Get all posts or only verified ones (default only verified)
                 - name: start
                   in: query
                   required: true
@@ -609,6 +630,7 @@ paths:
             summary: Delete an album and it's related content by id
             tags:
                 - albums
+                - admin
                 - auth
             security:
                 - cookieAuth: []
@@ -732,6 +754,12 @@ paths:
                   schema:
                       type: string
                   description: The query string to search by
+                - name: all
+                  in: query
+                  required: false
+                  schema:
+                      type: boolean
+                  description: Get all posts or only verified ones (default only verified)
                 - name: start
                   in: query
                   required: true
@@ -820,7 +848,6 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Message'
-
                 '404':
                     description: Author not found
                     content:
@@ -929,6 +956,7 @@ paths:
             summary: Delete a poem and all of the related translations and annotations by id
             tags:
                 - poems
+                - admin
                 - auth
             security:
                 - cookieAuth: []
@@ -1099,6 +1127,48 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/Message'
 
+    /api/annotations:
+        get:
+            summary: Get paginated annotations by specified filters
+            description: This route returns a paginated list of annotations, based on some filtering criteria
+            tags:
+                - annotations
+            parameters:
+                - name: query
+                  in: query
+                  required: false
+                  schema:
+                      type: string
+                  description: The query string to search by
+                - name: all
+                  in: query
+                  required: false
+                  schema:
+                      type: boolean
+                  description: Get all posts or only verified ones (default only verified)
+                - name: start
+                  in: query
+                  required: true
+                  schema:
+                      type: integer
+                  description: Offset of results to start from
+                - name: count
+                  in: query
+                  required: true
+                  schema:
+                      type: integer
+                  description: Number of results to return
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/Annotation'
+                                description: List of matched annotations
+
     /api/annotations/{id}:
         get:
             summary: Get an annotation by id
@@ -1167,6 +1237,7 @@ paths:
             summary: Delete an annotation
             tags:
                 - annotations
+                - admin
                 - auth
             security:
                 - cookieAuth: []

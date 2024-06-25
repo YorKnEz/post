@@ -1,9 +1,5 @@
 import { getElement, scrollToElem } from '../../utils/index.js'
-import {
-    Loader,
-    Navbar,
-    PostRow,
-} from '../../components/index.js'
+import { Loader, Navbar, PostRow, Share } from '../../components/index.js'
 import { getAlbum } from '../../services/lyrical.js'
 
 window.navbar = new Navbar()
@@ -47,14 +43,13 @@ const loadAlbum = async (id) => {
                             getElement('i', { class: 'fa-solid fa-calendar' }),
                             getElement('span', {}, [
                                 document.createTextNode(
-                                    new Date(album.createdAt).toLocaleDateString(
-                                        'en-US',
-                                        {
-                                            year: 'numeric',
-                                            month: 'short',
-                                            day: '2-digit',
-                                        }
-                                    )
+                                    new Date(
+                                        album.createdAt
+                                    ).toLocaleDateString('en-US', {
+                                        year: 'numeric',
+                                        month: 'short',
+                                        day: '2-digit',
+                                    })
                                 ),
                             ]),
                         ]),
@@ -104,42 +99,24 @@ const loadPoems = async (album) => {
     const content = poemsLoader.getContent()
 
     if (album.poems.length === 0) {
-        content.appendChild(getElement('h1', {}, [
-            document.createTextNode('No poems here.')
-        ]))
-        poemsLoader.loaded()
-        return
-    }
-
-    // <div class="table__row table__row--top table__row--poem-chart">
-    //     <div>Rank</div>
-    //     <div>Name</div>
-    //     <div>Likes</div>
-    //     <div>Contributors</div>
-    // </div>
-
-    content.appendChild(getElement('div', { class: 'table__row table__row--top table__row--poem-chart' },
-        [
-            getElement('div', {}, [
-                document.createTextNode(`Number`),
-            ]),
-            getElement('div', {}, [
-                document.createTextNode(`Name`),
-            ]),
-            getElement('div', {}, [
-                document.createTextNode(`Likes`),
-            ]),
-            getElement('div', {}, [
-                document.createTextNode(`Contributions`),
-            ]),
-        ]
-    ))
-
-    for (const index in album.poems) {
         content.appendChild(
-            new PostRow(parseInt(index) + 1, album.poems[index]).inner
+            getElement('h1', {}, [document.createTextNode('No poems here.')])
         )
+    } else {
+        for (const index in album.poems) {
+            content.appendChild(
+                new PostRow(parseInt(index) + 1, album.poems[index]).inner
+            )
+        }
     }
+
+    content.appendChild(
+        new Share('Share this album', {
+            title: `Check out this album ${album.title}`,
+            content: `The album is made by ${album.author.nickname} and has ${album.poems.length} poems`,
+            url: location.href,
+        }).inner
+    )
 
     poemsLoader.loaded()
 }

@@ -163,6 +163,7 @@ paths:
             summary: Delete a user and it's work by id
             tags:
                 - users
+                - admin
             parameters:
                 - name: id
                   in: path

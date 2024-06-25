@@ -17,482 +17,57 @@
 
     <main class="container">
         <h1>Dashboard</h1>
+
         <div class="row">
             <section class="col-xs-4 col-sm-8 col-md-12 section">
                 <h3 class="section__title">Stats</h3>
-                <div id="statistics" class="statistics">
-                </div>
+                <div id="statistics" class="statistics"></div>
             </section>
         </div>
+
         <div class="row">
             <section class="col-xs-4 col-sm-4 col-md-6 section">
                 <h3 class="section__title">Poetic requests</h3>
-                <!-- <ol class="section__list"> -->
-                <!--     <li> -->
-                <!--         <div class="request"> -->
-                <!--             <span class="request__text"> -->
-                <!--                 <a class="request__link" href="/profile">Gigel</a> wants to become a poet. -->
-                <!--             </span> -->
-                <!--             <div class="request__controls"> -->
-                <!--                 <button class="btn request__control"> -->
-                <!--                     <i class="fa-solid fa-check"></i> -->
-                <!--                 </button> -->
-                <!--                 <button class="btn request__control"> -->
-                <!--                     <i class="fa-solid fa-close"></i> -->
-                <!--                 </button> -->
-                <!--             </div> -->
-                <!--         </div> -->
-                <!--     </li> -->
-                <!--     <li> -->
-                <!--         <div class="request"> -->
-                <!--             <span class="request__text"> -->
-                <!--                 <a class="request__link" href="/profile">Gigel</a> wants to become a poet. -->
-                <!--             </span> -->
-                <!--             <div class="request__controls"> -->
-                <!--                 <button class="btn request__control"> -->
-                <!--                     <i class="fa-solid fa-check"></i> -->
-                <!--                 </button> -->
-                <!--                 <button class="btn request__control"> -->
-                <!--                     <i class="fa-solid fa-close"></i> -->
-                <!--                 </button> -->
-                <!--             </div> -->
-                <!--         </div> -->
-                <!--     </li> -->
-                <!--     <li> -->
-                <!--         <div class="request"> -->
-                <!--             <span class="request__text"> -->
-                <!--                 <a class="request__link" href="/profile">Gigel</a> wants to become a poet. -->
-                <!--             </span> -->
-                <!--             <div class="request__controls"> -->
-                <!--                 <button class="btn request__control"> -->
-                <!--                     <i class="fa-solid fa-check"></i> -->
-                <!--                 </button> -->
-                <!--                 <button class="btn request__control"> -->
-                <!--                     <i class="fa-solid fa-close"></i> -->
-                <!--                 </button> -->
-                <!--             </div> -->
-                <!--         </div> -->
-                <!--     </li> -->
-                <!--     <li> -->
-                <!--         <div class="request"> -->
-                <!--             <span class="request__text"> -->
-                <!--                 <a class="request__link" href="/profile">Gigel</a> wants to become a poet. -->
-                <!--             </span> -->
-                <!--             <div class="request__controls"> -->
-                <!--                 <button class="btn request__control"> -->
-                <!--                     <i class="fa-solid fa-check"></i> -->
-                <!--                 </button> -->
-                <!--                 <button class="btn request__control"> -->
-                <!--                     <i class="fa-solid fa-close"></i> -->
-                <!--                 </button> -->
-                <!--             </div> -->
-                <!--         </div> -->
-                <!--     </li> -->
-                <!--     <li> -->
-                <!--         <div class="request"> -->
-                <!--             <span class="request__text"> -->
-                <!--                 <a class="request__link" href="/profile">Gigel</a> wants to become a poet. -->
-                <!--             </span> -->
-                <!--             <div class="request__controls"> -->
-                <!--                 <button class="btn request__control"> -->
-                <!--                     <i class="fa-solid fa-check"></i> -->
-                <!--                 </button> -->
-                <!--                 <button class="btn request__control"> -->
-                <!--                     <i class="fa-solid fa-close"></i> -->
-                <!--                 </button> -->
-                <!--             </div> -->
-                <!--         </div> -->
-                <!--     </li> -->
-                <!-- </ol> -->
+                <div id="poetic-requests" class="requests"></div>
             </section>
 
             <section class="col-xs-4 col-sm-4 col-md-6 section">
-                <h3 class="section__title">Approvals</h3>
-                <ol class="section__list">
-                    <li class="section__item">
-                        <div class="request">
-                            <span class="request__text">
-                                <a class="request__link" href="/profile">User</a> wants to add the poem <a
-                                    class="request__link" href="/poem">P1</a>
-                            </span>
-                            <div class="request__controls">
-                                <button class="btn request__control">
-                                    <i class="fa-solid fa-check"></i>
-                                </button>
-                                <button class="btn request__control">
-                                    <i class="fa-solid fa-close"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="section__item">
-                        <div class="request">
-                            <span class="request__text">
-                                <a class="request__link" href="/profile">User</a> wants to add the poem <a
-                                    class="request__link" href="/poem">P1</a>
-                            </span>
-                            <div class="request__controls">
-                                <button class="btn request__control">
-                                    <i class="fa-solid fa-check"></i>
-                                </button>
-                                <button class="btn request__control">
-                                    <i class="fa-solid fa-close"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="section__item">
-                        <div class="request">
-                            <span class="request__text">
-                                <a class="request__link" href="/profile">User</a> wants to add the poem <a
-                                    class="request__link" href="/poem">P1</a>
-                            </span>
-                            <div class="request__controls">
-                                <button class="btn request__control">
-                                    <i class="fa-solid fa-check"></i>
-                                </button>
-                                <button class="btn request__control">
-                                    <i class="fa-solid fa-close"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="section__item">
-                        <div class="request">
-                            <span class="request__text">
-                                <a class="request__link" href="/profile">User</a> wants to add the poem <a
-                                    class="request__link" href="/poem">P1</a>
-                            </span>
-                            <div class="request__controls">
-                                <button class="btn request__control">
-                                    <i class="fa-solid fa-check"></i>
-                                </button>
-                                <button class="btn request__control">
-                                    <i class="fa-solid fa-close"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="section__item">
-                        <div class="request">
-                            <span class="request__text">
-                                <a class="request__link" href="/profile">User</a> wants to add the poem <a
-                                    class="request__link" href="/poem">P1</a>
-                            </span>
-                            <div class="request__controls">
-                                <button class="btn request__control">
-                                    <i class="fa-solid fa-check"></i>
-                                </button>
-                                <button class="btn request__control">
-                                    <i class="fa-solid fa-close"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="section__item">
-                        <div class="request">
-                            <span class="request__text">
-                                <a class="request__link" href="/profile">User</a> wants to add the poem <a
-                                    class="request__link" href="/poem">P1</a>
-                            </span>
-                            <div class="request__controls">
-                                <button class="btn request__control">
-                                    <i class="fa-solid fa-check"></i>
-                                </button>
-                                <button class="btn request__control">
-                                    <i class="fa-solid fa-close"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="section__item">
-                        <div class="request">
-                            <span class="request__text">
-                                <a class="request__link" href="/profile">User</a> wants to add the poem <a
-                                    class="request__link" href="/poem">P1</a>
-                            </span>
-                            <div class="request__controls">
-                                <button class="btn request__control">
-                                    <i class="fa-solid fa-check"></i>
-                                </button>
-                                <button class="btn request__control">
-                                    <i class="fa-solid fa-close"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </li>
-                </ol>
+                <h3 class="section__title">Album Approvals</h3>
+                <div id="album-requests" class="requests"></div>
             </section>
         </div>
+
         <div class="row">
-            <section class="col-xs-4 col-sm-8 col-md-4 section">
+            <section class="col-xs-4 col-sm-4 col-md-6 section">
+                <h3 class="section__title">Poem Approvals</h3>
+                <div id="poem-requests" class="requests"></div>
+            </section>
+
+            <section class="col-xs-4 col-sm-4 col-md-6 section">
+                <h3 class="section__title">Annotation Approvals</h3>
+                <div id="annotation-requests" class="requests"></div>
+            </section>
+        </div>
+
+        <div class="row">
+            <section class="col-xs-4 col-sm-4 col-md-6 section">
                 <h3 class="section__title">Users</h3>
-                <ol class="section__list">
-                    <li class="section__item">
-                        <div class="request">
-                            <span class="request__text">
-                                <a class="request__link" href="/profile">User 1</a>
-                            </span>
-                            <div class="request__controls">
-                                <button class="btn request__control">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="section__item">
-                        <div class="request">
-                            <span class="request__text">
-                                <a class="request__link" href="/profile">User 2</a>
-                            </span>
-                            <div class="request__controls">
-                                <button class="btn request__control">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="section__item">
-                        <div class="request">
-                            <span class="request__text">
-                                <a class="request__link" href="/profile">User 3</a>
-                            </span>
-                            <div class="request__controls">
-                                <button class="btn request__control">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="section__item">
-                        <div class="request">
-                            <span class="request__text">
-                                <a class="request__link" href="/profile">User 4</a>
-                            </span>
-                            <div class="request__controls">
-                                <button class="btn request__control">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="section__item">
-                        <div class="request">
-                            <span class="request__text">
-                                <a class="request__link" href="/profile">User 5</a>
-                            </span>
-                            <div class="request__controls">
-                                <button class="btn request__control">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="section__item">
-                        <div class="request">
-                            <span class="request__text">
-                                <a class="request__link" href="/profile">User 5</a>
-                            </span>
-                            <div class="request__controls">
-                                <button class="btn request__control">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="section__item">
-                        <div class="request">
-                            <span class="request__text">
-                                <a class="request__link" href="/profile">User 5</a>
-                            </span>
-                            <div class="request__controls">
-                                <button class="btn request__control">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="section__item">
-                        <div class="request">
-                            <span class="request__text">
-                                <a class="request__link" href="/profile">User 5</a>
-                            </span>
-                            <div class="request__controls">
-                                <button class="btn request__control">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="section__item">
-                        <div class="request">
-                            <span class="request__text">
-                                <a class="request__link" href="/profile">User 5</a>
-                            </span>
-                            <div class="request__controls">
-                                <button class="btn request__control">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </li>
-                </ol>
+                <div id="users-delete" class="requests delete"></div>
             </section>
 
-            <section class="col-xs-4 col-sm-4 col-md-4 section">
+            <section class="col-xs-4 col-sm-4 col-md-6 section">
+                <h3 class="section__title">Albums</h3>
+                <div id="albums-delete" class="requests delete"></div>
+            </section>
+
+            <section class="col-xs-4 col-sm-4 col-md-6 section">
                 <h3 class="section__title">Poems</h3>
-                <ol class="section__list">
-                    <li class="section__item">
-                        <div class="request">
-                            <span class="request__text">
-                                <a class="request__link" href="/poem">Poem</a>
-                            </span>
-                            <div class="request__controls">
-                                <button class="btn request__control">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="section__item">
-                        <div class="request">
-                            <span class="request__text">
-                                <a class="request__link" href="/poem">Poem</a>
-                            </span>
-                            <div class="request__controls">
-                                <button class="btn request__control">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="section__item">
-                        <div class="request">
-                            <span class="request__text">
-                                <a class="request__link" href="/poem">Poem</a>
-                            </span>
-                            <div class="request__controls">
-                                <button class="btn request__control">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="section__item">
-                        <div class="request">
-                            <span class="request__text">
-                                <a class="request__link" href="/poem">Poem</a>
-                            </span>
-                            <div class="request__controls">
-                                <button class="btn request__control">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="section__item">
-                        <div class="request">
-                            <span class="request__text">
-                                <a class="request__link" href="/poem">Poem</a>
-                            </span>
-                            <div class="request__controls">
-                                <button class="btn request__control">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="section__item">
-                        <div class="request">
-                            <span class="request__text">
-                                <a class="request__link" href="/poem">Poem</a>
-                            </span>
-                            <div class="request__controls">
-                                <button class="btn request__control">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="section__item">
-                        <div class="request">
-                            <span class="request__text">
-                                <a class="request__link" href="/poem">Poem</a>
-                            </span>
-                            <div class="request__controls">
-                                <button class="btn request__control">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="section__item">
-                        <div class="request">
-                            <span class="request__text">
-                                <a class="request__link" href="/poem">Poem</a>
-                            </span>
-                            <div class="request__controls">
-                                <button class="btn request__control">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="section__item">
-                        <div class="request">
-                            <span class="request__text">
-                                <a class="request__link" href="/poem">Poem</a>
-                            </span>
-                            <div class="request__controls">
-                                <button class="btn request__control">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </li>
-                </ol>
+                <div id="poems-delete" class="requests delete"></div>
             </section>
 
-            <section class="col-xs-4 col-sm-4 col-md-4 section">
-                <h3>Poems</h3>
-                <ol class="section__list">
-                    <li class="section__item">
-                        <div class="request">
-                            <span class="request__text">
-                                <a class="request__link" href="/poem/#test-id1">Annotation</a>
-                            </span>
-                            <div class="request__controls">
-                                <button class="btn request__control">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="section__item">
-                        <div class="request">
-                            <span class="request__text">
-                                <a class="request__link" href="/poem/#test-id1">Annotation</a>
-                            </span>
-                            <div class="request__controls">
-                                <button class="btn request__control">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="section__item">
-                        <div class="request">
-                            <span class="request__text">
-                                <a class="request__link" href="/poem/#test-id1">Annotation</a>
-                            </span>
-                            <div class="request__controls">
-                                <button class="btn request__control">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </li>
-                </ol>
+            <section class="col-xs-4 col-sm-4 col-md-6 section">
+                <h3 class="section__title">Annotations</h3>
+                <div id="annotations-delete" class="requests delete"></div>
             </section>
         </div>
     </main>

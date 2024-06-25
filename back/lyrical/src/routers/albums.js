@@ -18,6 +18,10 @@ router.get('/', async (req, res) => {
     req.query.count = parseInt(req.query.count)
 
     try {
+        if (req.locals.userRoles && req.locals.userRoles & 0b10) {
+            req.query.all = true
+        }
+
         let result = await db.query('select find_album_cards($1)', [req.query])
 
         return new JSONResponse(200, toCamel(result.rows[0].find_album_cards))
@@ -93,6 +97,13 @@ auth_router.post('/', async (req, res) => {
 
         return new JSONResponse(200, toCamel(result.rows[0].add_album))
     } catch (e) {
+        if (e.code == 23503 && e.constraint == 'albums_f2') {
+            return new JSONResponse(404, {
+                code: ErrorCodes.USER_NOT_FOUND,
+                message: 'User not found',
+            })
+        }
+
         console.error(e)
         return new InternalError()
     }
@@ -130,6 +141,13 @@ auth_router.patch('/:id', async (req, res) => {
 
 auth_router.delete('/:id', async (req, res) => {
     try {
+        if (!(req.locals.userRoles & 0b10)) {
+            return new JSONResponse(403, {
+                code: ErrorCodes.UNAUTHORIZED,
+                message: 'You are not an admin',
+            })
+        }
+
         await db.query('call delete_album($1)', [req.params.id])
 
         return new JSONResponse(200, {

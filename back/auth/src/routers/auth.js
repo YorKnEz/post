@@ -144,7 +144,6 @@ router.post('/verify', async (req, res) => {
         )
 
         if (result.rowCount == 0) {
-            client.release()
             return new JSONResponse(400, {
                 code: ErrorCodes.VERIFY_INVALID_TOKEN,
                 message: 'The given token is invalid',

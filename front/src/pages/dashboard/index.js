@@ -1,5 +1,17 @@
-import { Loader, Navbar, UserRow } from '../../components/index.js'
-import { getRequests, getStats } from '../../services/admin.js'
+import {
+    DeleteCard,
+    Loader,
+    Navbar,
+    RequestApproveCard,
+} from '../../components/index.js'
+import {
+    getAlbums,
+    getAnnotations,
+    getPoems,
+    getRequests,
+    getStats,
+    getUsers,
+} from '../../services/index.js'
 import { getElement, isAdmin } from '../../utils/index.js'
 
 window.navbar = new Navbar()
@@ -93,48 +105,116 @@ const loadStatistics = async () => {
         )
     }
 
-    await new Promise((res) => setTimeout(res, 1000))
-
     statisticsLoader.loaded()
 }
 
-const loadRequests = async (loader, length = 0, type, start = 0, count = 5) => {
-    const content = loader.getContent()
-    const response = await getRequests({ type: 'user', start, count })
+const loaders = [
+    { loader: new Loader('poetic-requests'), type: 'user' },
+    { loader: new Loader('album-requests'), type: 'album' },
+    { loader: new Loader('poem-requests'), type: 'poem' },
+    { loader: new Loader('annotation-requests'), type: 'annotation' },
+]
 
-    for (const index in response) {
-        content.appendChild(
-            new UserRow(length + parseInt(index) + 1, response[index]).inner
-        )
+const loadRequests = async (loader, type, length = 0, start = 0, count = 5) => {
+    const content = loader.getContent()
+    const response = await getRequests({ type, start, count })
+
+    for (const request of response) {
+        content.appendChild(new RequestApproveCard(request, type).inner)
     }
 
     content.appendChild(
-        length > 0
+        response.length > 0
             ? getElement(
-                'button',
-                {
-                    class: 'btn',
-                    onclick: () => {
-                        content.lastChild.remove()
-                        loadRequests(
-                            loader,
-                            length + response.length,
-                            type,
-                            start + length,
-                            count
-                        )
-                    },
-                },
-                [document.createTextNode('Load more')]
-            )
+                  'button',
+                  {
+                      class: 'btn',
+                      onclick: () => {
+                          content.lastChild.remove()
+                          loadRequests(
+                              loader,
+                              type,
+                              length + response.length,
+                              start + response.length,
+                              count
+                          )
+                      },
+                  },
+                  [document.createTextNode('Load more')]
+              )
             : getElement(
-                'button',
-                {
-                    class: 'btn',
-                    disabled: true,
-                },
-                [document.createTextNode('End of content')]
-            )
+                  'button',
+                  {
+                      class: 'btn',
+                      disabled: true,
+                  },
+                  [document.createTextNode('End of content')]
+              )
+    )
+
+    loader.loaded()
+}
+
+const deleteLoaders = [
+    { loader: new Loader('users-delete'), type: 'user', getData: getUsers },
+    { loader: new Loader('albums-delete'), type: 'album', getData: getAlbums },
+    { loader: new Loader('poems-delete'), type: 'poem', getData: getPoems },
+    {
+        loader: new Loader('annotations-delete'),
+        type: 'annotation',
+        getData: getAnnotations,
+    },
+]
+
+const loadEntities = async (
+    loader,
+    type,
+    getData,
+    length = 0,
+    start = 0,
+    count = 5
+) => {
+    const content = loader.getContent()
+    const response = await getData({
+        type,
+        start,
+        count,
+        sort: 'new',
+        order: 'desc',
+    })
+
+    for (const request of response) {
+        content.appendChild(new DeleteCard(request, type).inner)
+    }
+
+    content.appendChild(
+        response.length > 0
+            ? getElement(
+                  'button',
+                  {
+                      class: 'btn',
+                      onclick: () => {
+                          content.lastChild.remove()
+                          loadRequests(
+                              loader,
+                              type,
+                              getData,
+                              length + response.length,
+                              start + response.length,
+                              count
+                          )
+                      },
+                  },
+                  [document.createTextNode('Load more')]
+              )
+            : getElement(
+                  'button',
+                  {
+                      class: 'btn',
+                      disabled: true,
+                  },
+                  [document.createTextNode('End of content')]
+              )
     )
 
     loader.loaded()
@@ -156,10 +236,16 @@ window.onload = async () => {
     }
 
     try {
-        loadStatistics()
-        loadPoeticRequests()
+        await loadStatistics()
+
+        for (const { loader, type } of loaders) {
+            loadRequests(loader, type)
+        }
+
+        for (const { loader, type, getData } of deleteLoaders) {
+            loadEntities(loader, type, getData)
+        }
     } catch (e) {
         console.error(e)
-        location.assign('/error')
     }
 }

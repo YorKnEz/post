@@ -7,6 +7,8 @@ import {
     toCamel,
     validate,
 } from 'web-lib'
+import RSS from 'rss'
+
 import { authMiddleware, reactionSchema } from '../utils/index.js'
 import db from '../db/index.js'
 
@@ -20,6 +22,50 @@ router.get('/', async (req, res) => {
         let result = await db.query('select find_post_cards($1)', [req.query])
 
         return new JSONResponse(200, toCamel(result.rows[0].find_post_cards))
+    } catch (e) {
+        console.error(e)
+        return new InternalError()
+    }
+})
+
+router.get('/rss.xml', async (req, res) => {
+    try {
+        let result = await db.query('select find_post_cards($1)', [
+            { start: 0, count: 20, order: 'desc', sort: 'popular' },
+        ])
+
+        const posts = toCamel(result.rows[0].find_post_cards)
+
+        const tmp = new RSS({
+            title: 'Most popular posts',
+            description: 'Top 20 on PoST',
+            site_url: `${process.env.FRONTEND_URL}`,
+            feed_url: `${process.env.PUBLIC_URL}/api/posts/rss.xml`,
+            ttl: 60,
+            language: 'en',
+            pubDate: new Date(),
+        })
+
+        posts.forEach((post) => {
+            tmp.item({
+                title: post.title,
+                description: (post.type == 'poem' ? post.mainAnnotation.content : `This album has ${post.poemsCount} poems`),
+                url: `${process.env.FRONTEND_URL}/${post.type}/${post.id}`,
+                guid: post.id,
+                author: `${post.author.firstName} ${post.author.lastName} (AKA ${post.author.nickname})`,
+                date: `${post.publicationDate ?? post.createdAt}`,
+                enclosure: {
+                    url: post.cover,
+                    type: 'image/jpeg'
+                },
+            })
+        })
+
+        const xml = tmp.xml({ indent: true })
+
+        res.statusCode = 200
+        res.setHeader('Content-Type', 'application/xml')
+        res.end(xml)
     } catch (e) {
         console.error(e)
         return new InternalError()

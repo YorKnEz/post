@@ -3,13 +3,15 @@ import { ErrorCodes, JSONResponse, getAuthMiddleware } from 'web-lib'
 export * from './email.js'
 export * from './validation.js'
 
-export const authMiddleware = getAuthMiddleware(process.env.AUTH_SERVICE_API_URL)
+export const authMiddleware = getAuthMiddleware(
+    process.env.AUTH_SERVICE_API_URL
+)
 
 export const adminMiddleware = async (req, res, next) => {
     if (!(req.locals.userRoles & 0b10)) {
         return new JSONResponse(403, {
             code: ErrorCodes.UNAUTHORIZED,
-            message: 'You are not an admin'
+            message: 'You are not an admin',
         })
     }
 
@@ -30,7 +32,10 @@ const updateIntervals = (deletions, annotations) => {
             continue
         }
 
-        if (annotations[i].offset + annotations[i].length - 1 < deletions[j].start) {
+        if (
+            annotations[i].offset + annotations[i].length - 1 <
+            deletions[j].start
+        ) {
             //-----[-------]----- annotation
             //---------------[-]- deletion
             //save current annotation
@@ -40,7 +45,11 @@ const updateIntervals = (deletions, annotations) => {
             continue
         }
 
-        if (deletions[j].start <= annotations[i].offset && annotations[i].offset + annotations[i].length - 1 <= deletions[j].end) {
+        if (
+            deletions[j].start <= annotations[i].offset &&
+            annotations[i].offset + annotations[i].length - 1 <=
+            deletions[j].end
+        ) {
             //-----[-------]----- annotation
             //---[-----------]--- deletion
             //save the current annotation with offset -1 so we know it needs to be deleted
@@ -66,7 +75,10 @@ const updateIntervals = (deletions, annotations) => {
             continue
         }
 
-        if (annotations[i].offset + annotations[i].length - 1 <= deletions[j].end) {
+        if (
+            annotations[i].offset + annotations[i].length - 1 <=
+            deletions[j].end
+        ) {
             //-----[---------]--- annotation
             //----------[------]- deletion
             //update the offset of the annotation
@@ -125,8 +137,14 @@ export const meyersDiff = (old, curr, annotations) => {
             y = x - k
 
             // clone previous operations and add the current operation
-            const operations = currentTrace[prevK + max] ? [...currentTrace[prevK + max]] : []
-            operations.push({ type: op, x: op === 'delete' ? x - 1 : x, y: op === 'insert' ? y : y - 1 })
+            const operations = currentTrace[prevK + max]
+                ? [...currentTrace[prevK + max]]
+                : []
+            operations.push({
+                type: op,
+                x: op === 'delete' ? x - 1 : x,
+                y: op === 'insert' ? y : y - 1,
+            })
 
             // extend the "snake" of matching characters
             while (x < m && y < n && old[x] === curr[y]) {
@@ -140,7 +158,9 @@ export const meyersDiff = (old, curr, annotations) => {
 
             // check if we have reached the end of both strings
             if (x >= m && y >= n) {
-                const deletions = operations.filter(op => op.type === 'delete')
+                const deletions = operations.filter(
+                    (op) => op.type === 'delete'
+                )
                 if (deletions.length == 0) {
                     return annotations
                 }
@@ -148,16 +168,15 @@ export const meyersDiff = (old, curr, annotations) => {
                 let deletionIntervals = []
                 let interval = {
                     start: deletions[0].x,
-                    end: deletions[0].x
+                    end: deletions[0].x,
                 }
 
                 //extract the intervals that have been removed from the old string
                 for (let i = 1; i < deletions.length; i++) {
                     if (deletions[i].x == deletions[i - 1].x + 1) {
-                        interval.end++;
-                    }
-                    else {
-                        deletionIntervals.push({...interval})
+                        interval.end++
+                    } else {
+                        deletionIntervals.push({ ...interval })
                         interval.start = deletions[i].x
                         interval.end = deletions[i].x
                     }
@@ -168,5 +187,5 @@ export const meyersDiff = (old, curr, annotations) => {
             }
         }
     }
-    return annotations;
+    return annotations
 }

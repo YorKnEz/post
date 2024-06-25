@@ -52,10 +52,9 @@ router.post('/requests/:id', async (req, res) => {
         // start a task to notify the user that their request has been handled
         const task = async () => {
             try {
-                const { email, name, type, extraData } =
+                const { email, name, type, extraData } = toCamel(
                     result.rows[0].update_request
-
-                console.log(email, name, type, extraData)
+                )
 
                 const data = {
                     name,
@@ -64,10 +63,20 @@ router.post('/requests/:id', async (req, res) => {
 
                 if (type == 'user') {
                     data.reason = 'becoming a poet'
-                } else if (type == 'annotation') {
-                    data.reason = `approving <a href="${process.env.FRONTEND_URL}/${type}/${extraData.poemId}#${extraData.id}">your annotation</a>`
                 } else {
-                    data.reason = `approving <a href="${process.env.FRONTEND_URL}/${type}/${extraData.id}">${extraData.title}</a>`
+                    if (req.body.approve) {
+                        if (type == 'annotation') {
+                            data.reason = `approving <a href="${process.env.FRONTEND_URL}/${type}/${extraData.poemId}#${extraData.id}">your annotation</a>`
+                        } else {
+                            data.reason = `approving <a href="${process.env.FRONTEND_URL}/${type}/${extraData.id}">${extraData.title}</a>`
+                        }
+                    } else {
+                        if (type == 'annotation') {
+                            data.reason = `approving your annotation on <a href="${process.env.FRONTEND_URL}/${type}/${extraData.poemId}">this poem</a>`
+                        } else {
+                            data.reason = `approving ${extraData.title}`
+                        }
+                    }
                 }
 
                 await sendRequestSolvedEmail(email, data)
@@ -89,6 +98,8 @@ router.post('/requests/:id', async (req, res) => {
                 message: 'Request not found',
             })
         }
+
+        console.error(e)
         return new InternalError()
     }
 })

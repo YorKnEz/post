@@ -10,7 +10,7 @@ export class AnnotationCard {
             ]),
             getElement(
                 'a',
-                { class: 'contr-card-post', href: `/poem/${data.poem.id}` },
+                { class: 'contr-card-post', href: `/poem/${data.poem.id}#${data.id}` },
                 [
                     getElement('img', {
                         src: data.poem.cover,
