@@ -39,3 +39,10 @@ export const makePoetRequest = async (userId) => {
         credentials: 'include',
     })
 }
+
+export const deleteUser = async (id) => {
+    return await __fetch(`${API_URL}/users/${id}`, {
+        method: 'DELETE',
+        credentials: 'include',
+    })
+}

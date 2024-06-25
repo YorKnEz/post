@@ -1,9 +1,9 @@
 import { getElement } from '../../../utils/index.js'
 
 export class AlbumCard {
-    constructor(data) {
+    constructor(data, hide) {
         this.inner = getElement('div', { class: 'request-card' }, [
-            getElement('span', { class: 'request-card__description' }, [
+            !hide && getElement('span', { class: 'request-card__description' }, [
                 document.createTextNode(
                     `${data.poster.nickname} wants to verify`
                 ),

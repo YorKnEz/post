@@ -1,13 +1,19 @@
 import { getElement } from '../../../utils/index.js'
 
 export class AnnotationCard {
-    constructor(data) {
+    constructor(data, hide) {
         this.inner = getElement('div', { class: 'request-card' }, [
-            getElement('a', { class: 'request-card__description' }, [
-                document.createTextNode(
-                    `${data.poster.nickname} wants to verify their annotation on`
-                ),
-            ]),
+            !hide
+                ? getElement('a', { class: 'request-card__description' }, [
+                      document.createTextNode(
+                          `${data.poster.nickname} wants to verify their annotation on`
+                      ),
+                  ])
+                : getElement('a', { class: 'request-card__description' }, [
+                      document.createTextNode(
+                          `${data.poster.nickname}'s annotation on`
+                      ),
+                  ]),
             getElement(
                 'a',
                 {

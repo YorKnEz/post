@@ -139,16 +139,21 @@ $$ language plpgsql;
 create or replace function find_user_cards(p_filters jsonb) returns jsonb as
 $$
 declare
-    query     text := '';
-    start     int  := 0;
-    count     int  := 10;
-    sort      text := 'created_at';
-    "order"   text := 'asc';
+    query     text    := '';
+    start     int     := 0;
+    count     int     := 10;
+    sort      text    := 'created_at';
+    "order"   text    := 'asc';
+    p_all     boolean := false;
     sql_query text;
     result    jsonb;
 begin
     if p_filters ? 'query' then
         query := lower(trim(p_filters ->> 'query'));
+    end if;
+
+    if p_filters ? 'all' then
+        p_all = (p_filters ->> 'all')::boolean;
     end if;
 
     if not p_filters ? 'start' or not p_filters ? 'count' then
@@ -185,7 +190,7 @@ begin
                                                 ''roles'', roles,
                                                 ''contributions'', (albums_contributions + poems_contributions + annotations_contributions)) e
                       from users
-                      where verified = true and (%s)
+                      where %s and (%s)
                       order by %s %s
                       offset %s limit %s) t;
             ';
@@ -196,10 +201,11 @@ begin
                                 lower(nickname) like ''%%'' || $1 || ''%%''
                                 or lower(first_name) like ''%%'' || $1 || ''%%''
                                 or lower(last_name) like ''%%'' || $1 || ''%%''
-                            ', sort, "order", start, count);
+                            ', case when p_all then 'true' else 'verified = true' end, sort, "order", start, count);
         execute sql_query into result using lower(trim(p_filters ->> 'query'));
     else
-        sql_query := format(sql_query, 'true', sort, "order", start, count);
+        sql_query := format(sql_query, 'true',
+                            case when p_all then 'true' else 'verified = true' end, sort, "order", start, count);
         execute sql_query into result;
     end if;
 
@@ -537,15 +543,20 @@ $$ language plpgsql;
 create or replace function find_album_cards(p_filters jsonb) returns jsonb as
 $$
 declare
-    start     int  := 0;
-    count     int  := 10;
-    sort      text := 'new';
-    "order"   text := 'asc';
+    start     int     := 0;
+    count     int     := 10;
+    sort      text    := 'new';
+    "order"   text    := 'asc';
     sql_query text;
+    p_all     boolean := false;
     result    jsonb;
 begin
     if not p_filters ? 'start' or not p_filters ? 'count' then
         raise exception '`start` and `count` are missing';
+    end if;
+
+    if p_filters ? 'all' then
+        p_all = (p_filters ->> 'all')::boolean;
     end if;
 
     start := (p_filters -> 'start')::int;
@@ -592,7 +603,7 @@ begin
                                                 ''dislikes'', dislikes,
                                                 ''poems_count'', poems_count) e
                       from albums_view
-                      where verified = true and (%s)
+                      where %s and (%s)
                       order by %s %s
                       offset %s limit %s) t;
             ';
@@ -602,7 +613,7 @@ begin
                             '
                                 (author ->> ''id'')::int = $1 or
                                 (poster ->> ''id'')::int = $1
-                            ', sort, "order", start, count);
+                            ', case when p_all then 'true' else 'verified = true' end, sort, "order", start, count);
         execute sql_query into result using (p_filters ->> 'userId')::int;
     elsif p_filters ? 'query' then
         sql_query := format(sql_query,
@@ -614,10 +625,12 @@ begin
                                 or lower(poster ->> ''first_name'') like ''%%'' || $1 || ''%%''
                                 or lower(poster ->> ''last_name'') like ''%%'' || $1 || ''%%''
                                 or lower(title) like ''%%'' || $1 || ''%%''
-                            ', sort, "order", start, count);
+                            ', case when p_all then 'true' else 'verified = true' end, sort, "order", start, count);
         execute sql_query into result using lower(trim(p_filters ->> 'query'));
     else
-        sql_query := format(sql_query, 'true', sort, "order", start, count);
+        sql_query :=
+                format(sql_query, 'true', case when p_all then 'true' else 'verified = true' end, sort, "order", start,
+                       count);
         execute sql_query into result;
     end if;
 
@@ -662,15 +675,20 @@ $$ language plpgsql;
 create or replace function find_poem_cards(p_filters jsonb) returns jsonb as
 $$
 declare
-    start     int  := 0;
-    count     int  := 10;
-    sort      text := 'new';
-    "order"   text := 'asc';
+    start     int     := 0;
+    count     int     := 10;
+    sort      text    := 'new';
+    "order"   text    := 'asc';
     sql_query text;
+    p_all     boolean := false;
     result    jsonb;
 begin
     if not p_filters ? 'start' or not p_filters ? 'count' then
         raise exception '`start` and `count` are missing';
+    end if;
+
+    if p_filters ? 'all' then
+        p_all = (p_filters ->> 'all')::boolean;
     end if;
 
     start := (p_filters -> 'start')::int;
@@ -718,7 +736,7 @@ begin
                                                 ''likes'', likes,
                                                 ''dislikes'', dislikes) e
                       from poems_view
-                      where verified = true and (%s)
+                      where %s and (%s)
                       order by %s %s
                       offset %s limit %s) t;
             ';
@@ -728,7 +746,7 @@ begin
                             '
                                 (author ->> ''id'')::int = $1 or
                                 (poster ->> ''id'')::int = $1
-                            ', sort, "order", start, count);
+                            ', case when p_all then 'true' else 'verified = true' end, sort, "order", start, count);
         execute sql_query into result using (p_filters ->> 'userId')::int;
     elsif p_filters ? 'query' then
         sql_query := format(sql_query,
@@ -740,10 +758,12 @@ begin
                                 or lower(poster ->> ''first_name'') like ''%%'' || $1 || ''%%''
                                 or lower(poster ->> ''last_name'') like ''%%'' || $1 || ''%%''
                                 or lower(title) like ''%%'' || $1 || ''%%''
-                            ', sort, "order", start, count);
+                            ', case when p_all then 'true' else 'verified = true' end, sort, "order", start, count);
         execute sql_query into result using lower(trim(p_filters ->> 'query'));
     else
-        sql_query := format(sql_query, 'true', sort, "order", start, count);
+        sql_query :=
+                format(sql_query, 'true', case when p_all then 'true' else 'verified = true' end, sort, "order", start,
+                       count);
         execute sql_query into result;
     end if;
 
@@ -877,6 +897,50 @@ begin
 
     if result is null then
         raise exception 'poem not found'; -- at least one language must be available
+    end if;
+
+    return result;
+end;
+$$ language plpgsql;
+
+create or replace function find_annotation_cards(p_filters jsonb) returns jsonb as
+$$
+declare
+    start  int     := 0;
+    count  int     := 10;
+    p_all  boolean := false;
+    result jsonb;
+begin
+    if not p_filters ? 'start' or not p_filters ? 'count' then
+        raise exception '`start` and `count` are missing';
+    end if;
+
+    if p_filters ? 'all' then
+        p_all = (p_filters ->> 'all')::boolean;
+    end if;
+
+    start := (p_filters -> 'start')::int;
+    count := (p_filters -> 'count')::int;
+
+    select jsonb_agg(e)
+    from (select jsonb_build_object('id', id,
+                                    'created_at', created_at,
+                                    'updated_at', updated_at,
+                                    'poster', poster,
+                                    'content', content,
+                                    'contributors', contributors,
+                                    'likes', likes,
+                                    'dislikes', dislikes,
+                                    'poem', find_poem_card_by_id(poem_id)
+                 ) e
+          into result
+          from annotations_view
+          where case when p_all then true else verified = true end
+          order by created_at desc
+          offset start limit count) t;
+
+    if result is null then
+        return '[]'::jsonb;
     end if;
 
     return result;

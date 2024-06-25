@@ -34,6 +34,13 @@ export const addReaction = async (id, data) => {
 }
 
 // albums
+export const getAlbums = async (data) => {
+    return await __fetch(
+        `${API_URL}/albums?query=${data.query ?? ''}&start=${data.start}&count=${data.count}&sort=${data.sort}&order=${data.order}`,
+        { method: 'GET' }
+    )
+}
+
 export const getAlbumsSuggestions = async (query) => {
     return (
         await __fetch(`${API_URL}/albums/suggestions?query=${query}`, {
@@ -60,6 +67,13 @@ export const addAlbum = async (data) => {
 
 export const getAlbum = async (id) => {
     return await __fetch(`${API_URL}/albums/${id}`, { method: 'GET' })
+}
+
+export const deleteAlbum = async (id) => {
+    return await __fetch(`${API_URL}/albums/${id}`, {
+        method: 'DELETE',
+        credentials: 'include',
+    })
 }
 
 // poems
@@ -125,7 +139,21 @@ export const addPoemAnnotation = async (id, data) => {
     })
 }
 
+export const deletePoem = async (id) => {
+    return await __fetch(`${API_URL}/poems/${id}`, {
+        method: 'DELETE',
+        credentials: 'include',
+    })
+}
+
 // annotations
+export const getAnnotations = async (data) => {
+    return await __fetch(
+        `${API_URL}/annotations?start=${data.start}&count=${data.count}`,
+        { method: 'GET' }
+    )
+}
+
 export const getAnnotation = async (id) => {
     return await __fetch(`${API_URL}/annotations/${id}`, { method: 'GET' })
 }
@@ -135,5 +163,12 @@ export const updateAnnotation = async (id, content) => {
         method: 'PATCH',
         credentials: 'include',
         body: JSON.stringify({ content }),
+    })
+}
+
+export const deleteAnnotation = async (id) => {
+    return await __fetch(`${API_URL}/annotations/${id}`, {
+        method: 'DELETE',
+        credentials: 'include',
     })
 }

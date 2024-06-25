@@ -1,13 +1,14 @@
 import { getElement } from '../../../utils/index.js'
 
 export class UserCard {
-    constructor(data, approve, deny) {
+    constructor(data, hide) {
         this.inner = getElement('div', { class: 'request-card' }, [
-            getElement('span', { class: 'request-card__description' }, [
-                document.createTextNode(
-                    `${data.nickname} wants to become a poet`
-                ),
-            ]),
+            !hide &&
+                getElement('span', { class: 'request-card__description' }, [
+                    document.createTextNode(
+                        `${data.nickname} wants to become a poet`
+                    ),
+                ]),
             getElement(
                 'a',
                 { class: 'request-card-post', href: `/profile/${data.id}` },

@@ -427,6 +427,12 @@ paths:
                   schema:
                       type: string
                   description: The query string to search by
+                - name: all
+                  in: query
+                  required: false
+                  schema:
+                      type: boolean
+                  description: Get all posts or only verified ones (default only verified)
                 - name: start
                   in: query
                   required: true
@@ -733,6 +739,12 @@ paths:
                   schema:
                       type: string
                   description: The query string to search by
+                - name: all
+                  in: query
+                  required: false
+                  schema:
+                      type: boolean
+                  description: Get all posts or only verified ones (default only verified)
                 - name: start
                   in: query
                   required: true
@@ -821,7 +833,6 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Message'
-
                 '404':
                     description: Author not found
                     content:
@@ -1100,6 +1111,48 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Message'
+
+    /api/annotations:
+        get:
+            summary: Get paginated annotations by specified filters
+            description: This route returns a paginated list of annotations, based on some filtering criteria
+            tags:
+                - annotations
+            parameters:
+                - name: query
+                  in: query
+                  required: false
+                  schema:
+                      type: string
+                  description: The query string to search by
+                - name: all
+                  in: query
+                  required: false
+                  schema:
+                      type: boolean
+                  description: Get all posts or only verified ones (default only verified)
+                - name: start
+                  in: query
+                  required: true
+                  schema:
+                      type: integer
+                  description: Offset of results to start from
+                - name: count
+                  in: query
+                  required: true
+                  schema:
+                      type: integer
+                  description: Number of results to return
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/Annotation'
+                                description: List of matched annotations
 
     /api/annotations/{id}:
         get:

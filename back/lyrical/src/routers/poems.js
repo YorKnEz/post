@@ -23,6 +23,10 @@ router.get('/', async (req, res) => {
     req.query.count = parseInt(req.query.count)
 
     try {
+        if (req.locals.userRoles && req.locals.userRoles & 0b10) {
+            req.query.all = true
+        }
+
         let result = await db.query('select find_poem_cards($1)', [req.query])
 
         return new JSONResponse(200, toCamel(result.rows[0].find_poem_cards))
