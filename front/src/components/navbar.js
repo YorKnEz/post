@@ -1,9 +1,11 @@
 import env from '../env.js'
-import { getElement, toggleTheme } from '../utils/index.js'
+import { getElement, initTheme, toggleTheme } from '../utils/index.js'
 import { Search, Sidebar } from './index.js'
 
 export class Navbar {
     constructor() {
+        initTheme()
+
         this.search = new Search('search', 'nav')
 
         this.inner = getElement('nav', { id: 'nav', class: 'nav' }, [

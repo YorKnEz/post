@@ -1,10 +1,7 @@
 export * from './api.js'
 export * from './html.js'
 export * from './user.js'
-
-export const toggleTheme = () => {
-    document.documentElement.classList.toggle('theme-dark')
-}
+export { initTheme, toggleTheme } from './theme.js'
 
 // make a textarea resize based on its content
 export const autoGrow = (oField) => {

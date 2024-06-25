@@ -1067,8 +1067,10 @@ i {
 
 .modal {
   box-sizing: border-box;
-  width: 300px;
+  width: 400px;
   max-height: 70vh;
+  box-sizing: border-box;
+  margin: 1rem;
   padding: 1rem;
   background-color: var(--text-white);
   border-radius: 10px;

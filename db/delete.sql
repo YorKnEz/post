@@ -16,6 +16,7 @@ begin
     delete from contributions where contributor_id = p_user_id;
     delete from requests where requester_id = p_user_id;
     delete from reactions where user_id = p_user_id;
+    delete from tokens where user_id = p_user_id;
     delete from users where id = p_user_id returning id into deleted;
 
     if deleted is null then
