@@ -1,3 +1,4 @@
+import env from '../env.js'
 import { getElement, toggleTheme } from '../utils/index.js'
 import { Search, Sidebar } from './index.js'
 
@@ -21,9 +22,15 @@ export class Navbar {
                 getElement('a', { class: 'nav__button', href: '/add-poem' }, [
                     getElement('i', { class: 'fa-solid fa-plus' }),
                 ]),
-                getElement('a', { class: 'nav__button', href: '/rss' }, [
-                    getElement('i', { class: 'fa-solid fa-rss' }),
-                ]),
+                getElement(
+                    'a',
+                    {
+                        class: 'nav__button',
+                        href: `${env.LYRICAL_SERVICE_API_URL}/posts/rss`,
+                        target: '_blank',
+                    },
+                    [getElement('i', { class: 'fa-solid fa-rss' })]
+                ),
                 getElement(
                     'button',
                     { class: 'nav__button', onclick: this.changeTheme },

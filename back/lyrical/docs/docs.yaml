@@ -183,6 +183,21 @@ paths:
                                     $ref: '#/components/schemas/PostCard'
                                 description: List of matched posts
 
+    /api/posts/rss.xml:
+        get:
+            summary: Get a RSS feed of the top 20 most popular posts of all time
+            description: This route returns the top 20 posts sorted by popularity as XML feed
+            tags:
+                - posts
+                - rss
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/xml:
+                            schema:
+                                type: object
+
     /api/posts/{id}/reactions:
         post:
             summary: Add or remove a reaction
