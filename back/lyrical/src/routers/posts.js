@@ -15,7 +15,6 @@ import db from '../db/index.js'
 export const router = new Router('Posts Router')
 
 router.get('/', async (req, res) => {
-    console.log(req.query)
     req.query.start = parseInt(req.query.start)
     req.query.count = parseInt(req.query.count)
 
