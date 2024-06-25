@@ -105,7 +105,8 @@ const loadPoems = async (album) => {
     } else {
         for (const index in album.poems) {
             content.appendChild(
-                new PostRow(parseInt(index) + 1, album.poems[index]).inner
+                new PostRow(parseInt(index) + 1, album.poems[index], 'poem')
+                    .inner
             )
         }
     }
