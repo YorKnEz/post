@@ -26,7 +26,7 @@ export class Navbar {
                     'a',
                     {
                         class: 'nav__button',
-                        href: `${env.LYRICAL_SERVICE_API_URL}/posts/rss`,
+                        href: `${env.LYRICAL_SERVICE_API_URL}/posts/rss.xml`,
                         target: '_blank',
                     },
                     [getElement('i', { class: 'fa-solid fa-rss' })]

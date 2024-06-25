@@ -96,7 +96,7 @@ export class Sidebar {
                 'a',
                 {
                     class: 'sidebar__item sidebar__item--nav',
-                    href: `${env.LYRICAL_SERVICE_API_URL}/posts/rss`,
+                    href: `${env.LYRICAL_SERVICE_API_URL}/posts/rss.xml`,
                     target: '_blank',
                 },
                 [
