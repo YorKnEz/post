@@ -7,9 +7,21 @@ declare
 begin
     for temprow in (select id, type from posts where poster_id = p_user_id) loop
         case
-            when temprow.type = 'album' then call delete_album(temprow.id);
-            when temprow.type = 'poem' then call delete_poem(temprow.id);
-            when temprow.type = 'annotation' then call delete_annotation(temprow.id);
+            when temprow.type = 'album' then begin
+                call delete_album(temprow.id);
+            exception
+                when others then
+            end;
+            when temprow.type = 'poem' then begin
+                call delete_poem(temprow.id);
+            exception
+                when others then
+            end;
+            when temprow.type = 'annotation' then begin
+                call delete_annotation(temprow.id);
+            exception
+                when others then
+            end;
         end case;
     end loop;
 
