@@ -195,7 +195,7 @@ const loadEntities = async (
                       class: 'btn',
                       onclick: () => {
                           content.lastChild.remove()
-                          loadRequests(
+                          loadEntities(
                               loader,
                               type,
                               getData,
